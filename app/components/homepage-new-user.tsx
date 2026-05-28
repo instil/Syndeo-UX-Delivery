@@ -1,109 +1,105 @@
 "use client"
 
-import { AIAssistant } from "@/components/ai-assistant"
-import { Card } from "@/components/ui/card"
-import { CheckCircle2, MessageSquare, Globe, BarChart3 } from "lucide-react"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Plus, Send, Sparkles, Mic, Globe, HelpCircle } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 export function HomepageNewUser() {
-  const steps = [
-    {
-      icon: MessageSquare,
-      title: "Create your first flow",
-      description: "Build a conversational flow to handle customer interactions",
-      status: "pending" as const,
-    },
-    {
-      icon: Globe,
-      title: "Connect a channel",
-      description: "Link your bot to Facebook, WhatsApp, or web chat",
-      status: "pending" as const,
-    },
-    {
-      icon: BarChart3,
-      title: "Monitor conversations",
-      description: "Track engagement and analyze bot performance",
-      status: "locked" as const,
-    },
+  const router = useRouter()
+  const [input, setInput] = useState("")
+
+  const quickActions = [
+    { label: "Create my first flow", icon: Plus, action: () => router.push("/flows?new=true") },
+    { label: "Connect a channel", icon: Globe, action: () => router.push("/channels") },
+    { label: "What can Syndeo do?", icon: HelpCircle, action: () => setInput("What can Syndeo do?") },
   ]
+
+  const handleSend = () => {
+    if (!input.trim()) return
+    const userInput = input.toLowerCase()
+    if (userInput.includes("create") && userInput.includes("flow")) {
+      router.push("/flows?new=true")
+    } else if (userInput.includes("channel")) {
+      router.push("/channels")
+    }
+  }
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault()
+      handleSend()
+    }
+  }
 
   return (
     <div className="h-[calc(100vh-64px)] overflow-hidden bg-gradient-to-b from-[#F6F8FA] to-white">
-      <div className="container mx-auto px-6 py-5 h-full flex flex-col">
-        {/* Welcome Header */}
-        <div className="mb-4 shrink-0">
-          <h1 className="text-2xl font-bold text-[#3B4760] mb-1">Welcome to Syndeo</h1>
-          <p className="text-sm text-[#6A738A]">Let's get your conversational AI agent up and running</p>
-        </div>
+      <div className="container mx-auto px-6 py-5 h-full flex items-center justify-center">
+        <div className="w-full max-w-2xl flex flex-col justify-center relative">
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-0">
-          {/* AI Assistant - Main Focus */}
-          <div className="lg:col-span-2 min-h-0">
-            <AIAssistant isNewUser={true} />
+          {/* Glow */}
+          <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+            <div className="w-[700px] h-[500px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(47,143,255,0.18)_0%,rgba(47,143,255,0.06)_45%,transparent_70%)] blur-3xl" />
           </div>
 
-          {/* Getting Started Checklist */}
-          <div className="lg:col-span-1 flex flex-col gap-4 min-h-0">
-            <Card className="bg-white border border-[#E8F0FB] rounded-lg p-5 shrink-0">
-              <h3 className="text-base font-semibold text-[#3B4760] mb-4">Getting Started</h3>
-              <div className="space-y-4">
-                {steps.map((step, index) => {
-                  const Icon = step.icon
-                  return (
-                    <div key={index} className="flex gap-3">
-                      <div
-                        className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                          step.status === "completed"
-                            ? "bg-[#10B981] text-white"
-                            : step.status === "pending"
-                              ? "bg-[#E8F0FB] text-[#2F8FFF]"
-                              : "bg-[#F6F8FA] text-[#94A3B8]"
-                        }`}
-                      >
-                        {step.status === "completed" ? <CheckCircle2 className="h-4 w-4" /> : <Icon className="h-4 w-4" />}
-                      </div>
-                      <div className="flex-1">
-                        <h4
-                          className={`text-sm font-medium ${
-                            step.status === "locked" ? "text-[#94A3B8]" : "text-[#3B4760]"
-                          }`}
-                        >
-                          {step.title}
-                        </h4>
-                        <p
-                          className={`text-xs mt-0.5 ${
-                            step.status === "locked" ? "text-[#94A3B8]" : "text-[#6A738A]"
-                          }`}
-                        >
-                          {step.description}
-                        </p>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </Card>
+          <div className="text-center relative z-10">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#2F8FFF] rounded-full mb-3 shadow-sm">
+              <Sparkles className="h-4 w-4 text-white" />
+              <span className="text-sm font-medium text-white">Your Syndeo Assistant</span>
+            </div>
 
-            {/* Resources Card */}
-            <Card className="bg-white border border-[#E8F0FB] rounded-lg p-5 shrink-0">
-              <h3 className="text-base font-semibold text-[#3B4760] mb-3">Learn More</h3>
-              <div className="space-y-2.5">
-                <a href="#" className="block text-sm text-[#2F8FFF] hover:text-[#1E7FEF] hover:underline">
-                  📖 Platform documentation
-                </a>
-                <a href="#" className="block text-sm text-[#2F8FFF] hover:text-[#1E7FEF] hover:underline">
-                  🎥 Video tutorials
-                </a>
-                <a href="#" className="block text-sm text-[#2F8FFF] hover:text-[#1E7FEF] hover:underline">
-                  💬 Community forum
-                </a>
-                <a href="#" className="block text-sm text-[#2F8FFF] hover:text-[#1E7FEF] hover:underline">
-                  📧 Contact support
-                </a>
+            <h1 className="text-3xl font-bold text-[#3B4760] mb-2">
+              Welcome IKEA! Let's get started.
+            </h1>
+
+            <div className="my-6">
+              <div className="relative">
+                <Input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Hi, I'm Syndeo 👋, ask me anything."
+                  className="w-full h-14 pl-6 pr-28 text-base bg-white border-2 border-[#E8F0FB] rounded-2xl shadow-lg focus:border-[#2F8FFF] focus:ring-2 focus:ring-[#2F8FFF]/20 text-[#3B4760] placeholder:text-[#94A3B8]"
+                />
+                <Button
+                  onClick={handleSend}
+                  disabled={!input.trim()}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#2F8FFF] hover:bg-[#1E7FEF] text-white h-10 w-10 p-0 rounded-xl"
+                >
+                  <Send className="h-4 w-4" />
+                </Button>
+                <div className="absolute right-14 top-1/2 -translate-y-1/2 group">
+                  <button className="h-10 w-10 p-0 rounded-xl flex items-center justify-center text-[#6A738A] hover:text-[#2F8FFF] hover:bg-[#E8F0FB] transition-all">
+                    <Mic className="h-4 w-4" />
+                  </button>
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-[#1E293B] text-white text-xs font-medium rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                    Use voice mode
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#1E293B]" />
+                  </div>
+                </div>
               </div>
-            </Card>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              {quickActions.map((action, index) => {
+                const Icon = action.icon
+                return (
+                  <button
+                    key={index}
+                    onClick={action.action}
+                    className="flex items-center gap-2 px-4 py-2.5 bg-white/40 backdrop-blur-sm border border-white rounded-full hover:bg-white/70 transition-all text-sm font-medium text-[#3B4760] shadow-[0_2px_12px_rgba(47,143,255,0.2)]"
+                  >
+                    <Icon className="h-4 w-4 text-[#6A738A]" />
+                    {action.label}
+                  </button>
+                )
+              })}
+            </div>
           </div>
         </div>
       </div>
     </div>
   )
 }
+

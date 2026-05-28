@@ -41,7 +41,7 @@ export default function DashboardPage() {
       <main>
         {isNewUser ? <HomepageNewUser /> : <HomepageReturningUser />}
       </main>
-      <CompactSimulator />
+      <CompactSimulator theme={isNewUser ? "default" : "ikea"} />
     </div>
   )
 }

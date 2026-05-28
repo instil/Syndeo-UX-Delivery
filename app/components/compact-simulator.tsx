@@ -15,18 +15,26 @@ import {
 } from "lucide-react"
 import { Input } from "@/components/ui/input"
 
-export function CompactSimulator() {
+export function CompactSimulator({ theme = "ikea" }: { theme?: "ikea" | "default" }) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [isMaximized, setIsMaximized] = useState(false)
+
+  const isIkea = theme === "ikea"
+  const headerBg = isIkea ? "bg-[#FFDA1A]" : "bg-[#2F8FFF]"
+  const headerText = isIkea ? "text-black" : "text-white"
+  const borderColor = isIkea ? "border-[#FFDA1A]" : "border-[#2F8FFF]"
+  const userBubbleBg = isIkea ? "bg-[#FFDA1A]" : "bg-[#2F8FFF]"
+  const userBubbleText = isIkea ? "text-[#111111]" : "text-white"
+  const title = isIkea ? "IKEA Simulator" : "Simulator"
 
   return (
     <div className="fixed bottom-6 left-6 z-50">
       <Card
-        className={`bg-white shadow-2xl border-2 border-[#FFDA1A] transition-all duration-300 px-2 !gap-0 ${isExpanded ? "!py-0" : "!py-4"} ${isMaximized ? "w-[400px]" : "w-72"}`}
+        className={`bg-white shadow-2xl border-2 ${borderColor} transition-all duration-300 px-2 !gap-0 ${isExpanded ? "!py-0" : "!py-4"} ${isMaximized ? "w-[400px]" : "w-72"}`}
       >
-        {/* IKEA-branded header */}
+        {/* Header */}
         <div
-          className={`bg-[#FFDA1A] px-4 py-3 flex items-center justify-between cursor-pointer -mx-2 ${isExpanded ? "rounded-t-lg" : ""}`}
+          className={`${headerBg} px-4 py-3 flex items-center justify-between cursor-pointer -mx-2 ${isExpanded ? "rounded-t-lg" : ""}`}
           onClick={(e) => {
             if ((e.target as HTMLElement).tagName !== "BUTTON" && !(e.target as HTMLElement).closest("button")) {
               setIsExpanded(!isExpanded)
@@ -34,16 +42,15 @@ export function CompactSimulator() {
           }}
         >
           <div className="flex items-center gap-2">
-            <MessageSquare className="w-4 h-4 text-black" />
-            <span className="text-sm font-bold text-black">IKEA Chat Simulator</span>
-            <ArrowLeftRight className="w-3.5 h-3.5 text-black opacity-50" />
+            <span className={`text-sm font-bold ${headerText}`}>{title}</span>
+            <ArrowLeftRight className={`w-3.5 h-3.5 ${headerText} opacity-50`} />
           </div>
           <div className="flex items-center gap-1">
             <div className="group relative">
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-6 w-6 text-black hover:bg-black/10"
+                className={`h-6 w-6 ${headerText} hover:bg-black/10`}
                 onClick={(e) => { e.stopPropagation() }}
               >
                 <RefreshCw className="w-3.5 h-3.5" />
@@ -57,7 +64,7 @@ export function CompactSimulator() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-6 w-6 text-black hover:bg-black/10"
+                className={`h-6 w-6 ${headerText} hover:bg-black/10`}
                 onClick={(e) => { e.stopPropagation(); setIsExpanded(false) }}
               >
                 <Minimize2 className="w-3.5 h-3.5" />
@@ -71,7 +78,7 @@ export function CompactSimulator() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-6 w-6 text-black hover:bg-black/10"
+                className={`h-6 w-6 ${headerText} hover:bg-black/10`}
                 onClick={(e) => { e.stopPropagation(); setIsMaximized(!isMaximized) }}
               >
                 <Maximize2 className="w-3.5 h-3.5" />
@@ -85,7 +92,7 @@ export function CompactSimulator() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-6 w-6 text-black hover:bg-black/10"
+                className={`h-6 w-6 ${headerText} hover:bg-black/10`}
                 onClick={(e) => { e.stopPropagation(); setIsExpanded(!isExpanded) }}
               >
                 {isExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
@@ -123,8 +130,8 @@ export function CompactSimulator() {
               </div>
 
               <div className="flex justify-end">
-                <div className="bg-[#FFDA1A] rounded-2xl rounded-tr-sm px-4 py-3 max-w-[80%]">
-                  <p className="text-sm text-[#111111]">I need help with my order</p>
+                <div className={`${userBubbleBg} rounded-2xl rounded-tr-sm px-4 py-3 max-w-[80%]`}>
+                  <p className={`text-sm ${userBubbleText}`}>I need help with my order</p>
                 </div>
               </div>
             </div>
