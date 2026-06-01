@@ -252,3 +252,46 @@ This session covered the complete cycle of designing, prototyping, presenting, a
 
 **Session Status:** Complete and documented  
 **Overall:** Highly successful - concept to client approval in 2 days
+
+---
+
+## Session Update — 28 May 2026 (afternoon, continued)
+
+### Changes Made
+
+**compact-simulator.tsx**
+- Fixed broken file (orphaned old code removed)
+- Added `theme` prop (`"ikea"` | `"default"`) — blue for new user, yellow for returning user
+- Removed speech bubble icon from header
+- Renamed to "IKEA Simulator" / "Simulator"
+- Smooth expand/collapse animation via max-height transition
+- Tooltips on all 4 control buttons (Restart, Collapse, Expand/Shrink, Open/Close chat)
+- Yellow border, consistent padding, rounded corners
+- IKEA yellow user bubbles, grey quick-action chips
+
+**homepage-returning-user.tsx**
+- Welcome text: "Welcome back IKEA! What's next?"
+- Subtitle removed
+- Search bar placeholder: "Hi, I'm Syndeo 👋, ask me anything."
+- Added spacing above/below search bar (`my-6`)
+
+**homepage-new-user.tsx**
+- Rebuilt to match returning user visual style (glow, search bar, chips)
+- Centred layout — no right column, no metrics, no channels
+- Welcome text: "Welcome IKEA! Let's get started."
+- Quick actions: Create my first flow / Connect a channel / What can Syndeo do?
+
+**app/page.tsx**
+- Passes `theme="ikea"` to simulator for returning user, `theme="default"` for new user
+
+**GitHub**
+- All changes committed to `feature/homepage-ai-assistant`
+- New repo `Syndeo-UX-v2` created at github.com/catherineinstil/Syndeo-UX-v2
+- v1 (original): catherineinstil.github.io/Syndeo-UX
+- v2 (today's): catherineinstil.github.io/Syndeo-UX-v2
+
+### Status
+- [x] Returning user dashboard complete
+- [x] New user view complete  
+- [x] IKEA simulator styled and themed
+- [x] All committed to GitHub
