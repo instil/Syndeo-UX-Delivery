@@ -70,7 +70,7 @@ export function HomepageReturningUserV4() {
               <div className="h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle,rgba(47,143,255,0.2)_0%,transparent_70%)] blur-3xl" />
             </div>
 
-            <div className="relative z-10 mx-auto w-full max-w-xl">
+            <div className="relative z-10 mx-auto w-full max-w-xl text-center">
               <div className="mb-6 inline-flex items-center gap-2">
                 <span
                   className="block w-4 bg-[#2F8FFF]"
