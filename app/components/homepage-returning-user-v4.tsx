@@ -1,168 +1,223 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef, type KeyboardEvent } from "react"
 import { useRouter } from "next/navigation"
-import { Calendar, CheckCircle2, Package, ShoppingCart, Sparkles, Truck } from "lucide-react"
+import { ArrowRight, ChevronDown, MessageSquare, Send, X } from "lucide-react"
 
-// ── Data ──────────────────────────────────────────────────────────────────────
-
-const OPPORTUNITIES = [
-  {
-    id: "stock-check",
-    icon: Package,
-    accentColor: "#2F8FFF",
-    accentBg: "rgba(47,143,255,0.07)",
-    accentBorder: "rgba(47,143,255,0.2)",
-    title: "Stock Availability Queries",
-    stat: "742",
-    statContext: "customers asked about stock this month",
-    impact: "A Stock Check Agent could handle these automatically, reducing contact centre demand.",
-    agentLabel: "Stock Check Agent",
-  },
-  {
-    id: "abandoned-cart",
-    icon: ShoppingCart,
-    accentColor: "#F59E0B",
-    accentBg: "rgba(245,158,11,0.07)",
-    accentBorder: "rgba(245,158,11,0.2)",
-    title: "Abandoned Cart Recovery",
-    stat: "£28k",
-    statContext: "in potential revenue left on the table this month",
-    impact: "An Abandoned Cart Agent could re-engage customers at the moment they leave.",
-    agentLabel: "Abandoned Cart Agent",
-  },
-  {
-    id: "order-tracking",
-    icon: Truck,
-    accentColor: "#A64E8D",
-    accentBg: "rgba(166,78,141,0.07)",
-    accentBorder: "rgba(166,78,141,0.2)",
-    title: "Order Tracking Requests",
-    stat: "2,103",
-    statContext: "order status queries submitted this week",
-    impact: "An Order Tracking Agent could automate 85% of these, saving 280 agent hours.",
-    agentLabel: "Order Tracking Agent",
-  },
+const CHAT_CHIPS = [
+  "📦Manage your Order",
+  "📄Case Status",
+  "🔧Spare Parts",
+  "💥Damaged Item",
+  "❓Missing Item",
+  "🖥Make a claim",
 ]
 
-// ── Component ─────────────────────────────────────────────────────────────────
+const BOT_REPLIES: Record<string, string> = {
+  "📦Manage your Order": "Sure! Please provide your order number and I'll pull up the details for you.",
+  "📄Case Status": "I can help with that. Could you share your case reference number?",
+  "🔧Spare Parts": "I can help you find spare parts. What product are you looking for parts for?",
+  "💥Damaged Item": "I'm sorry to hear that. Can you describe the damage and share your order number so I can raise this for you?",
+  "❓Missing Item": "That's frustrating — let's sort this out. Please share your order number and which item is missing.",
+  "🖥Make a claim": "I can start a claim for you. Could you tell me what happened and share any relevant order details?",
+}
+
+const DEFAULT_BOT_REPLY = "Thanks for your message! Let me look into that for you. Could you provide a bit more detail so I can help?"
+
+type ChatMessage = { role: "user" | "bot"; text: string }
+
+const FLOWS = [
+  { name: "Returns Flow", meta: "Last edited 1 hour ago", path: "/flows?flow=Returns" },
+  { name: "Order Tracking", meta: "Draft", path: "/flows?flow=Order%20Tracking" },
+  { name: "Account Set Up", meta: "Published", path: "/flows?flow=Account%20Set%20Up" },
+]
 
 export function HomepageReturningUserV4() {
   const router = useRouter()
-  const [installed, setInstalled] = useState<Set<string>>(new Set())
+  const [chatInput, setChatInput] = useState("")
+  const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [isTyping, setIsTyping] = useState(false)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [messages, isTyping])
+
+  const handleChatSend = (text?: string) => {
+    const msg = (text ?? chatInput).trim()
+    if (!msg) return
+    setChatInput("")
+    setMessages(prev => [...prev, { role: "user", text: msg }])
+    setIsTyping(true)
+    setTimeout(() => {
+      setIsTyping(false)
+      setMessages(prev => [...prev, { role: "bot", text: BOT_REPLIES[msg] ?? DEFAULT_BOT_REPLY }])
+    }, 1500)
+  }
+
+  const handleChatKey = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") { e.preventDefault(); handleChatSend() }
+  }
 
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-[#272C41] overflow-y-auto">
-      <div className="container mx-auto px-6 py-16">
+    <div className="h-[calc(100vh-64px)] overflow-hidden bg-[#272C41]">
+      <div className="container mx-auto h-full px-6 py-5">
+        <div className="grid h-full grid-cols-12 gap-8">
 
-        {/* Hero */}
-        <div className="max-w-2xl mx-auto text-center mb-16">
-          <div className="mb-5 inline-flex items-center gap-2.5">
-            <span
-              className="block w-4 bg-[#2F8FFF]"
-              style={{ height: "3px", animation: "spin-pause 2.4s linear infinite" }}
-            />
-            <span className="text-xs font-semibold uppercase tracking-widest text-white/45">
-              Syndeo Agent
-            </span>
-          </div>
-          <h1 className="text-5xl font-light tracking-tight text-white mb-4">
-            Automation Opportunities
-          </h1>
-          <p className="text-white/45 text-lg font-light">
-            {"We've identified "}
-            <span className="text-white/75">3 opportunities</span>
-            {" where AI could reduce customer effort and increase automation."}
-          </p>
-        </div>
-
-        {/* Opportunity Cards */}
-        <div className="grid grid-cols-3 gap-6 max-w-5xl mx-auto">
-          {OPPORTUNITIES.map((opp) => {
-            const Icon = opp.icon
-            const isInstalled = installed.has(opp.id)
-            return (
+          {/* Left — IKEA chat widget (V2) */}
+          <div className="col-span-5 flex flex-col items-center justify-center py-4">
+            <div className="w-full max-w-[376px]">
               <div
-                key={opp.id}
-                className="rounded-2xl border bg-white/[0.04] backdrop-blur-sm p-8 flex flex-col gap-6"
-                style={{ borderColor: "rgba(255,255,255,0.1)" }}
+                className="flex flex-col overflow-hidden h-[580px] rounded-[4px]"
+                style={{
+                  fontFamily: '"Noto IKEA","Noto Sans","Roboto","Open Sans",system-ui,sans-serif',
+                  boxShadow: "0 2px 16px rgba(0,0,0,0.14)",
+                }}
               >
-                {/* Icon */}
-                <div
-                  className="h-12 w-12 rounded-2xl flex items-center justify-center border"
-                  style={{ background: opp.accentBg, borderColor: opp.accentBorder }}
-                >
-                  <Icon className="h-5 w-5" style={{ color: opp.accentColor }} />
-                </div>
-
-                {/* Title */}
-                <div>
-                  <h2 className="text-white font-semibold text-lg leading-snug mb-1">
-                    {opp.title}
-                  </h2>
-                  {isInstalled && (
-                    <span className="inline-flex items-center gap-1.5 text-emerald-400 text-xs font-medium">
-                      <CheckCircle2 className="h-3.5 w-3.5" /> Agent Installed
-                    </span>
-                  )}
-                </div>
-
-                {/* Stat */}
-                <div
-                  className="rounded-xl px-5 py-4 border"
-                  style={{ background: opp.accentBg, borderColor: opp.accentBorder }}
-                >
-                  <span className="block text-4xl font-bold mb-1" style={{ color: opp.accentColor }}>
-                    {opp.stat}
-                  </span>
-                  <span className="text-white/50 text-sm">{opp.statContext}</span>
-                </div>
-
-                {/* Impact */}
-                <p className="text-white/50 text-sm leading-relaxed flex-1">
-                  {opp.impact}
-                </p>
-
-                {/* Actions */}
-                <div className="flex flex-col gap-2.5 mt-auto">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Sparkles className="h-3 w-3 text-white/25" />
-                    <span className="text-xs text-white/35">{opp.agentLabel}</span>
+                {/* Yellow header */}
+                <div className="bg-[#FFDA1A] px-5 py-4 flex items-center justify-between shrink-0">
+                  <div className="flex items-center gap-3">
+                    <MessageSquare className="w-5 h-5 text-[#111111]" strokeWidth={2} />
+                    <span className="text-[17px] font-bold text-[#111111] tracking-tight">Live IKEA Chat Simulator</span>
                   </div>
+                  <div className="flex items-center gap-3">
+                    <button type="button" aria-label="Minimise" className="hover:opacity-60 transition-opacity">
+                      <ChevronDown className="w-5 h-5 text-[#111111]" strokeWidth={2} />
+                    </button>
+                    <button type="button" aria-label="Close" className="hover:opacity-60 transition-opacity">
+                      <X className="w-5 h-5 text-[#111111]" strokeWidth={2} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Messages */}
+                <div className="flex-1 overflow-y-auto bg-white px-4 pt-5 pb-3 space-y-4">
+                  <p className="text-[13px] text-[#767676]">Billie the bot 🤖 has connected to the chat</p>
+
+                  <div className="border border-[#E0E0E0] bg-white rounded-[12px] px-4 py-3 max-w-[90%]">
+                    <p className="text-[15px] text-[#111111] leading-relaxed">
+                      Hej! I&apos;m Billie 🤖, your IKEA United Kingdom customer support bot.
+                    </p>
+                  </div>
+
+                  <div className="border border-[#E0E0E0] bg-white rounded-[12px] px-4 py-3 max-w-[90%]">
+                    <p className="text-[15px] text-[#111111] leading-relaxed">
+                      I perform best when you ask full questions. To get started, type your question or choose one of the following options:
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    {CHAT_CHIPS.map((label) => (
+                      <button
+                        key={label}
+                        type="button"
+                        onClick={() => handleChatSend(label)}
+                        className="bg-[#EBEBEB] rounded-[20px] px-3 py-3 text-[14px] font-bold text-[#111111] text-left leading-tight hover:bg-[#DCDCDC] transition-colors"
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {messages.map((msg, i) => (
+                    msg.role === "user" ? (
+                      <div key={i} className="flex justify-end">
+                        <div className="px-4 py-3 max-w-[80%] bg-[#FFDA1A] rounded-[12px]">
+                          <p className="text-[15px] text-[#111111] leading-relaxed">{msg.text}</p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div key={i} className="border border-[#E0E0E0] bg-white rounded-[12px] px-4 py-3 max-w-[90%]">
+                        <p className="text-[15px] text-[#111111] leading-relaxed">{msg.text}</p>
+                      </div>
+                    )
+                  ))}
+
+                  {isTyping && (
+                    <div className="border border-[#E0E0E0] bg-white rounded-[12px] px-4 py-3 max-w-[72px]">
+                      <div className="flex items-center gap-1">
+                        {[0, 1, 2].map((i) => (
+                          <span
+                            key={i}
+                            className="h-2 w-2 rounded-full bg-[#767676]"
+                            style={{ animation: `bounce 1.2s ease-in-out ${i * 0.2}s infinite` }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  <div ref={messagesEndRef} />
+                </div>
+
+                {/* Input */}
+                <div className="shrink-0 bg-white border-t border-[#E0E0E0] px-5 py-4 flex items-center gap-3">
+                  <input
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                    onKeyDown={handleChatKey}
+                    placeholder="Test your simulator here"
+                    className="flex-1 text-[15px] text-[#111111] placeholder:text-[#767676] bg-transparent border-none outline-none"
+                    style={{ fontFamily: '"Noto IKEA","Noto Sans","Roboto",system-ui,sans-serif' }}
+                  />
                   <button
                     type="button"
-                    onClick={() => setInstalled(prev => new Set(prev).add(opp.id))}
-                    disabled={isInstalled}
-                    className="w-full py-2.5 rounded-xl text-sm font-semibold border transition-all"
-                    style={
-                      isInstalled
-                        ? {
-                            background: "rgba(16,185,129,0.1)",
-                            color: "#10B981",
-                            borderColor: "rgba(16,185,129,0.3)",
-                          }
-                        : {
-                            background: opp.accentColor,
-                            color: "#fff",
-                            borderColor: "transparent",
-                          }
-                    }
+                    onClick={() => handleChatSend()}
+                    disabled={!chatInput.trim()}
+                    className="text-[#767676] disabled:text-[#CCCCCC] hover:text-[#111111] transition-colors"
                   >
-                    {isInstalled ? "Installed ✓" : "Install Agent"}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => router.push("/flows?new=true")}
-                    className="w-full py-2 rounded-xl text-sm font-medium border border-white/12 text-white/50 hover:text-white/75 hover:border-white/25 transition-colors"
-                  >
-                    View Agent
+                    <Send className="w-5 h-5" strokeWidth={1.5} />
                   </button>
                 </div>
               </div>
-            )
-          })}
-        </div>
+            </div>
+          </div>
 
+          {/* Right — Pick up where you left off */}
+          <div className="relative col-span-7 flex flex-col justify-center">
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+              <div className="h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle,rgba(47,143,255,0.2)_0%,transparent_70%)] blur-3xl" />
+            </div>
+
+            <div className="relative z-10 mx-auto w-full max-w-xl">
+              {/* Syndeo Agent label */}
+              <div className="mb-6 inline-flex items-center gap-2">
+                <span
+                  className="block w-4 bg-[#2F8FFF]"
+                  style={{ height: "3px", animation: "spin-pause 2.4s linear infinite" }}
+                />
+                <span className="text-xs font-semibold uppercase tracking-widest text-white/50">
+                  Syndeo Agent
+                </span>
+              </div>
+
+              <h1 className="text-5xl font-light tracking-tight text-white mb-10">
+                Pick up where you left off
+              </h1>
+
+              {/* Flow buttons */}
+              <div className="flex flex-col gap-3">
+                {FLOWS.map((flow) => (
+                  <button
+                    key={flow.name}
+                    type="button"
+                    onClick={() => router.push(flow.path)}
+                    className="w-full flex items-center gap-5 rounded-2xl border border-white/10 bg-white/[0.04] px-7 py-5 text-left hover:bg-white/[0.08] hover:border-white/20 transition-all group"
+                  >
+                    <span className="h-3 w-3 rounded-full bg-[#A64E8D] shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-white text-xl font-medium group-hover:text-white/90 transition-colors">
+                        {flow.name}
+                      </p>
+                      <p className="text-white/35 text-sm mt-0.5">{flow.meta}</p>
+                    </div>
+                    <ArrowRight className="h-5 w-5 text-white/20 group-hover:text-white/50 group-hover:translate-x-0.5 transition-all shrink-0" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
   )
