@@ -5,12 +5,16 @@ import { Header } from "@/components/header"
 import { SplashScreen } from "@/components/splash-screen"
 import { HomepageNewUser } from "@/components/homepage-new-user"
 import { HomepageReturningUser } from "@/components/homepage-returning-user"
+import { HomepageReturningUserV2 } from "@/components/homepage-returning-user-v2"
+import { HomepageReturningUserV3 } from "@/components/homepage-returning-user-v3"
 import { CompactSimulator } from "@/components/compact-simulator"
+import { VersionSwitcher } from "@/components/version-switcher"
 
 export default function DashboardPage() {
   const [showSplash, setShowSplash] = useState(true)
   // Toggle this to test new user vs returning user experience
   const [isNewUser, setIsNewUser] = useState(true)
+  const [homepageVersion, setHomepageVersion] = useState<"v1" | "v2" | "v3">("v1")
 
   const handleEnterPrototype = () => {
     setShowSplash(false)
@@ -25,23 +29,35 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F6F8FA]">
-      <Header onShowSplash={handleShowSplash} showingDashboard={!showSplash} />
-      
-      {/* Toggle button for testing (can be removed in production) */}
-      <div className="fixed top-20 right-6 z-50">
-        <button
-          onClick={() => setIsNewUser(!isNewUser)}
-          className="bg-white border border-[#E8F0FB] text-xs px-3 py-2 rounded-lg shadow-sm hover:shadow-md transition-shadow text-[#6A738A]"
-        >
-          {isNewUser ? "👋 New User" : "👤 Returning User"}
-        </button>
-      </div>
+    <div
+      className={`min-h-screen ${
+        !isNewUser && (homepageVersion === "v2" || homepageVersion === "v3")
+          ? "bg-[#272C41]"
+          : "bg-[#F6F8FA]"
+      }`}
+    >
+      <Header onShowSplash={handleShowSplash} showingDashboard={!showSplash} dark={!isNewUser && (homepageVersion === "v2" || homepageVersion === "v3")} />
+
+      <VersionSwitcher
+        version={homepageVersion}
+        onChange={setHomepageVersion}
+        isNewUser={isNewUser}
+        onToggleUser={() => setIsNewUser(!isNewUser)}
+      />
 
       <main>
-        {isNewUser ? <HomepageNewUser /> : <HomepageReturningUser />}
+        {isNewUser ? (
+          <HomepageNewUser />
+        ) : homepageVersion === "v2" ? (
+          <HomepageReturningUserV2 />
+        ) : homepageVersion === "v3" ? (
+          <HomepageReturningUserV3 />
+        ) : (
+          <HomepageReturningUser />
+        )}
       </main>
-      <CompactSimulator theme={isNewUser ? "default" : "ikea"} />
+      {(!isNewUser && homepageVersion === "v1") && <CompactSimulator theme="ikea" />}
+      {isNewUser && <CompactSimulator theme="default" />}
     </div>
   )
 }
