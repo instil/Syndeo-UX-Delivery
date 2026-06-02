@@ -171,7 +171,7 @@ export function HomepageReturningUserV4() {
             </div>
 
             {/* Hero headline */}
-            <h1 className="text-6xl font-light tracking-tight text-white mb-6">
+            <h1 className="text-4xl font-light tracking-tight text-white mb-6">
               Start something new
             </h1>
 
