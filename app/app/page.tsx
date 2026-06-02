@@ -18,7 +18,7 @@ export default function DashboardPage() {
   const [showSplash, setShowSplash] = useState(true)
   // Toggle this to test new user vs returning user experience
   const [isNewUser, setIsNewUser] = useState(true)
-  const [homepageVersion, setHomepageVersion] = useState<"v1" | "v2" | "v3" | "v4" | "v4a" | "v4b" | "v4c">("v1")
+  const [homepageVersion, setHomepageVersion] = useState<"v1" | "v2" | "v3" | "v4" | "v4a" | "v4b" | "v4c">("v4b")
 
   const handleEnterPrototype = () => {
     setShowSplash(false)
