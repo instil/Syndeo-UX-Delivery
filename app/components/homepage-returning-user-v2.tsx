@@ -158,8 +158,11 @@ export function HomepageReturningUserV2() {
 
               {/* Big frosted-glass prompt card */}
               <div className="mt-8 w-full">
+                {/* Gradient border: 1px wrapper, opaque inner fill */}
+                <div className="rounded-2xl p-[1px]" style={{ background: "linear-gradient(135deg, #A64E8D 0%, rgba(255,255,255,0.2) 45%, #2F8FFF 100%)" }}>
                 <div
-                  className="relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_0_0_1px_rgba(255,255,255,0.02)] cursor-text"
+                  className="relative rounded-2xl backdrop-blur-xl cursor-text"
+                  style={{ background: "#32374B" }}
                   onClick={() => textareaRef.current?.focus()}
                 >
                   {/* Animated prompt overlay (hidden when user is typing) */}
@@ -211,8 +214,7 @@ export function HomepageReturningUserV2() {
                     </button>
                   </div>
                 </div>
-
-                {/* Suggested tasks — Google AI Studio style vertical list */}
+                </div>{/* end gradient border wrapper */}
                 <div className="mt-5 flex flex-col items-center gap-1">
                   {quickActions.map((action) => (
                     <button

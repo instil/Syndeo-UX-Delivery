@@ -2,31 +2,20 @@
 
 import { useState, useEffect, useRef, type KeyboardEvent } from "react"
 import { useRouter } from "next/navigation"
-import { ChevronDown, MessageSquare, Mic, Plus, Send, X } from "lucide-react"
+import { ArrowRight, ChevronDown, CloudUpload, MessageSquare, Mic, Plus, Send, ShoppingCart, Sparkles, TestTube, TrendingUp, Upload, X } from "lucide-react"
 
 const TYPEWRITER_PROMPTS = [
-  "Show me my top performing flows this week",
-  "Create a new order tracking flow for IKEA",
-  "How many customers contacted us about returns?",
-  "Build a damaged item conversation flow",
-  "What's my bot's resolution rate this month?",
-  "Set up a spare parts request flow",
+  "Create a flow for damaged items",
+  "Show unpublished flows",
+  "Find flows using Salesforce",
+  "Create a returns journey",
 ]
 
 const quickActions = [
-  {
-    label: "Continue Account Set Up",
-    action: "/flows?flow=Account%20Set%20Up",
-  },
-  {
-    label: "Continue Order Status",
-    action: "/flows?flow=Order%20Status%20Lookup",
-  },
-  {
-    label: "Create a new flow",
-    action: "/flows?new=true",
-    icon: Plus,
-  },
+  { label: "Continue Returns Flow", action: "/flows?flow=Returns", icon: ArrowRight },
+  { label: "Create New Flow", action: "/flows?new=true", icon: Plus },
+  { label: "Test IKEA Agent", action: "/flows?test=ikea", icon: TestTube },
+  { label: "Import Existing Journey", action: "/flows?import=true", icon: Upload },
 ] as const
 
 const CHAT_CHIPS = [
@@ -58,6 +47,9 @@ export function HomepageReturningUserV3() {
   const [chatInput, setChatInput] = useState("")
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isTyping, setIsTyping] = useState(false)
+  const [showModal, setShowModal] = useState(false)
+  const [installed, setInstalled] = useState(false)
+  const [showSimulator, setShowSimulator] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // Typewriter state
@@ -70,7 +62,7 @@ export function HomepageReturningUserV3() {
   // Typewriter effect — pauses when user is typing
   useEffect(() => {
     if (isFocused || input) return
-    const currentPrompt = TYPEWRITER_PROMPTS[promptIndex]
+    const currentPrompt = TYPEWRITER_PROMPTS[promptIndex % TYPEWRITER_PROMPTS.length]
     let timeout: ReturnType<typeof setTimeout>
     if (!isDeleting) {
       if (displayText.length < currentPrompt.length) {
@@ -163,15 +155,17 @@ export function HomepageReturningUserV3() {
                 <span className="text-xs font-semibold uppercase tracking-widest text-white">Syndeo Agent</span>
               </div>
 
-              <h1 className="text-5xl tracking-tight text-white">
-                <span className="font-light">What&apos;s next, </span>
-                <span className="font-bold">IKEA?</span>
+              <h1 className="text-5xl tracking-tight text-white font-light">
+                What would you like to build today, IKEA?
               </h1>
 
               {/* Big frosted-glass prompt card */}
               <div className="mt-8 w-full">
+                {/* Gradient border: 1px wrapper, opaque inner fill */}
+                <div className="rounded-2xl p-[1px]" style={{ background: "linear-gradient(135deg, #A64E8D 0%, rgba(255,255,255,0.2) 45%, #2F8FFF 100%)" }}>
                 <div
-                  className="relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_0_0_1px_rgba(255,255,255,0.02)] cursor-text"
+                  className="relative rounded-2xl backdrop-blur-xl cursor-text"
+                  style={{ background: "#32374B" }}
                   onClick={() => textareaRef.current?.focus()}
                 >
                   {/* Animated prompt overlay (hidden when user is typing) */}
@@ -223,168 +217,155 @@ export function HomepageReturningUserV3() {
                     </button>
                   </div>
                 </div>
+                </div>{/* end gradient border wrapper */}
 
-                {/* Quick action chips */}
-                <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
-                  {quickActions.map((action) => {
-                    const Icon = ("icon" in action) ? action.icon : undefined
-                    return (
-                      <button
-                        key={action.label}
-                        type="button"
-                        onClick={() => router.push(action.action)}
-                        className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/60 transition-all hover:bg-white/10 hover:text-white"
-                      >
-                        {Icon ? <Icon className="h-3.5 w-3.5 text-white/50" /> : null}
-                        <span>{action.label}</span>
-                      </button>
-                    )
-                  })}
+                {/* Suggested tasks — Google AI Studio style vertical list */}
+                <div className="mt-5 flex flex-col items-center gap-1">
+                  {quickActions.map((action) => (
+                    <button
+                      key={action.label}
+                      type="button"
+                      onClick={() => router.push(action.action)}
+                      className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-white/50 transition-all hover:bg-white/5 hover:text-white/80 text-left group"
+                    >
+                      <action.icon className="h-4 w-4 shrink-0 text-white/30 group-hover:text-white/60 transition-colors" />
+                      <span>{action.label}</span>
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Right — IKEA Billie simulator + analytics */}
-          <div className="col-span-5 flex flex-col items-center justify-center py-4 gap-4 overflow-y-auto">
-            <div className="w-full max-w-[376px]">
+          {/* Right — Opportunity → Agent recommendation */}
+          <div className="col-span-5 flex flex-col py-4 overflow-hidden gap-4 h-full">
+            <div className="w-full max-w-[400px] mx-auto flex flex-col gap-4 flex-1 min-h-0">
 
-              {/* IKEA Billie chat widget — pixel-accurate */}
-              <div
-                className="flex flex-col overflow-hidden h-[420px] rounded-[4px]"
+              {/* Live Simulator Preview panel */}
+              <div className="border border-white/10 overflow-hidden flex flex-col min-h-0 flex-1"
                 style={{
                   fontFamily: '"Noto IKEA","Noto Sans","Roboto","Open Sans",system-ui,sans-serif',
                   boxShadow: "0 2px 16px rgba(0,0,0,0.14)",
+                  borderRadius: "4px",
                 }}
               >
-                {/* Yellow header: chat icon + "IKEA Chat" + chevron + X */}
-                <div className="bg-[#FFDA1A] px-5 py-4 flex items-center justify-between shrink-0">
-                  <div className="flex items-center gap-3">
-                    <MessageSquare className="w-5 h-5 text-[#111111]" strokeWidth={2} />
-                    <span className="text-[17px] font-bold text-[#111111] tracking-tight">IKEA Chat</span>
+                <div className="bg-[#FFDA1A] px-4 py-3 flex items-center justify-between shrink-0">
+                  <div className="flex items-center gap-2">
+                    <MessageSquare className="w-4 h-4 text-[#111111]" strokeWidth={2} />
+                    <span className="text-[15px] font-bold text-[#111111] tracking-tight">Live IKEA Chat Simulator</span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <button type="button" aria-label="Minimise chat" className="hover:opacity-60 transition-opacity">
-                      <ChevronDown className="w-5 h-5 text-[#111111]" strokeWidth={2} />
+                  <div className="flex items-center gap-2">
+                    <button type="button" aria-label="Minimise" className="hover:opacity-60 transition-opacity">
+                      <ChevronDown className="w-4 h-4 text-[#111111]" strokeWidth={2} />
                     </button>
-                    <button type="button" aria-label="Close chat" className="hover:opacity-60 transition-opacity">
-                      <X className="w-5 h-5 text-[#111111]" strokeWidth={2} />
+                    <button type="button" aria-label="Close" className="hover:opacity-60 transition-opacity">
+                      <X className="w-4 h-4 text-[#111111]" strokeWidth={2} />
                     </button>
                   </div>
                 </div>
 
-                {/* Message area */}
-                <div className="flex-1 overflow-y-auto bg-white px-4 pt-5 pb-3 space-y-4">
-                  {/* System message — left-aligned */}
-                  <p className="text-[13px] text-[#767676]">Billie the bot 🤖 has connected to the chat</p>
-
-                  {/* Bot message 1 */}
-                  <div className="border border-[#E0E0E0] bg-white rounded-[12px] px-4 py-3 max-w-[90%]">
-                    <p className="text-[15px] text-[#111111] leading-relaxed">
-                      Hej! I&apos;m Billie 🤖, your IKEA United Kingdom customer support bot.
-                    </p>
+                <div className="flex-1 overflow-y-auto bg-white px-4 pt-4 pb-2 space-y-3">
+                  <p className="text-[12px] text-[#767676]">Billie the bot 🤖 has connected to the chat</p>
+                  <div className="border border-[#E0E0E0] bg-white rounded-[12px] px-3 py-2 max-w-[90%]">
+                    <p className="text-[13px] text-[#111111] leading-relaxed">Hej! I&apos;m Billie 🤖, your IKEA United Kingdom customer support bot.</p>
                   </div>
-
-                  {/* Bot message 2 */}
-                  <div className="border border-[#E0E0E0] bg-white rounded-[12px] px-4 py-3 max-w-[90%]">
-                    <p className="text-[15px] text-[#111111] leading-relaxed">
-                      If you&apos;re contacting us about a kitchen after-sales query, please call us instead on 01733520006.
-                    </p>
-                  </div>
-
-                  {/* Bot message 3 */}
-                  <div className="border border-[#E0E0E0] bg-white rounded-[12px] px-4 py-3 max-w-[90%]">
-                    <p className="text-[15px] text-[#111111] leading-relaxed">
-                      I perform best when you ask full questions. To get started, type your question or choose one of the following options:
-                    </p>
-                  </div>
-
-                  {/* Quick reply chips — 2-column grid, gray bg, bold text */}
-                  <div className="grid grid-cols-2 gap-2">
-                    {CHAT_CHIPS.map((label) => (
-                      <button
-                        key={label}
-                        type="button"
-                        onClick={() => handleChatSend(label)}
-                        className="bg-[#EBEBEB] rounded-[20px] px-3 py-3 text-[14px] font-bold text-[#111111] text-left leading-tight hover:bg-[#DCDCDC] transition-colors"
-                      >
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {CHAT_CHIPS.slice(0, 4).map((label) => (
+                      <button key={label} type="button" onClick={() => handleChatSend(label)}
+                        className="bg-[#EBEBEB] rounded-[20px] px-2 py-2 text-[12px] font-bold text-[#111111] text-left leading-tight hover:bg-[#DCDCDC] transition-colors">
                         {label}
                       </button>
                     ))}
                   </div>
-
-                  {/* Conversation thread */}
                   {messages.map((msg, i) => (
                     msg.role === "user" ? (
                       <div key={i} className="flex justify-end">
-                        <div className="px-4 py-3 max-w-[80%] bg-[#FFDA1A] rounded-[12px]">
-                          <p className="text-[15px] text-[#111111] leading-relaxed">{msg.text}</p>
+                        <div className="px-3 py-2 max-w-[80%] bg-[#FFDA1A] rounded-[12px]">
+                          <p className="text-[13px] text-[#111111]">{msg.text}</p>
                         </div>
                       </div>
                     ) : (
-                      <div key={i} className="border border-[#E0E0E0] bg-white rounded-[12px] px-4 py-3 max-w-[90%]">
-                        <p className="text-[15px] text-[#111111] leading-relaxed">{msg.text}</p>
+                      <div key={i} className="border border-[#E0E0E0] bg-white rounded-[12px] px-3 py-2 max-w-[90%]">
+                        <p className="text-[13px] text-[#111111]">{msg.text}</p>
                       </div>
                     )
                   ))}
-
-                  {/* Typing indicator */}
                   {isTyping && (
-                    <div className="border border-[#E0E0E0] bg-white rounded-[12px] px-4 py-3 max-w-[72px]">
+                    <div className="border border-[#E0E0E0] bg-white rounded-[12px] px-3 py-2 max-w-[60px]">
                       <div className="flex items-center gap-1">
-                        {[0, 1, 2].map((i) => (
-                          <span
-                            key={i}
-                            className="h-2 w-2 rounded-full bg-[#767676]"
-                            style={{ animation: `bounce 1.2s ease-in-out ${i * 0.2}s infinite` }}
-                          />
+                        {[0,1,2].map((i) => (
+                          <span key={i} className="h-1.5 w-1.5 rounded-full bg-[#767676]"
+                            style={{ animation: `bounce 1.2s ease-in-out ${i * 0.2}s infinite` }} />
                         ))}
                       </div>
                     </div>
                   )}
-
                   <div ref={messagesEndRef} />
                 </div>
 
-                {/* Input bar */}
-                <div className="shrink-0 bg-white border-t border-[#E0E0E0] px-5 py-4 flex items-center gap-3">
-                  <input
-                    value={chatInput}
-                    onChange={(e) => setChatInput(e.target.value)}
-                    onKeyDown={handleChatKey}
-                    placeholder="Type your message here."
-                    className="flex-1 text-[15px] text-[#111111] placeholder:text-[#767676] bg-transparent border-none outline-none"
-                    style={{ fontFamily: '"Noto IKEA","Noto Sans","Roboto",system-ui,sans-serif' }}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleChatSend()}
-                    disabled={!chatInput.trim()}
-                    aria-label="Send message"
-                    className="text-[#767676] disabled:text-[#CCCCCC] hover:text-[#111111] transition-colors"
-                  >
-                    <Send className="w-5 h-5" strokeWidth={1.5} />
+                <div className="shrink-0 bg-white border-t border-[#E0E0E0] px-4 py-3 flex items-center gap-2">
+                  <input value={chatInput} onChange={(e) => setChatInput(e.target.value)} onKeyDown={handleChatKey}
+                    placeholder="Test your simulator here"
+                    className="flex-1 text-[13px] text-[#111111] placeholder:text-[#767676] bg-transparent border-none outline-none"
+                    style={{ fontFamily: '"Noto IKEA","Noto Sans","Roboto",system-ui,sans-serif' }} />
+                  <button type="button" onClick={() => handleChatSend()} disabled={!chatInput.trim()}
+                    className="text-[#767676] disabled:text-[#CCCCCC] hover:text-[#111111] transition-colors">
+                    <Send className="w-4 h-4" strokeWidth={1.5} />
                   </button>
                 </div>
               </div>
 
-              {/* Analytics cards */}
-              <div className="mt-4 grid grid-cols-2 gap-3">
-                {[
-                  { label: "Conversations today", value: "1,247", change: "+12%", up: true },
-                  { label: "Resolution rate", value: "84%", change: "+3%", up: true },
-                  { label: "Avg. handle time", value: "2m 14s", change: "-8s", up: true },
-                  { label: "CSAT score", value: "4.7 / 5", change: "+0.2", up: true },
-                ].map((stat) => (
-                  <div
-                    key={stat.label}
-                    className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl px-4 py-3"
-                  >
-                    <p className="text-[11px] text-white/50 uppercase tracking-wider mb-1">{stat.label}</p>
-                    <p className="text-[22px] font-semibold text-white leading-none">{stat.value}</p>
-                    <p className="text-[11px] text-emerald-400 mt-1">{stat.change} vs yesterday</p>
-                  </div>
-                ))}
+              {/* Recommended AI Agents panel */}
+              <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden">
+                <div className="flex items-center gap-2 px-5 py-3 border-b border-white/10">
+                  <TrendingUp className="h-4 w-4 text-amber-400" />
+                  <span className="text-xs font-semibold uppercase tracking-widest text-amber-400">Recommended AI Agents</span>
+                </div>
+                <div className="flex flex-col divide-y divide-white/10">
+                  {[
+                    {
+                      insight: 'Customers asking: "Is this item in stock?"',
+                      agent: "Stock Check",
+                      desc: "Allow customers to check stock availability automatically.",
+                      icon: ShoppingCart,
+                    },
+                    {
+                      insight: "Customers abandoning items in their basket",
+                      agent: "Abandoned Cart",
+                      desc: "Proactively engage customers who leave items in their basket.",
+                      icon: ShoppingCart,
+                    },
+                    {
+                      insight: "High volume of order tracking requests",
+                      agent: "Order Tracking",
+                      desc: "Give customers real-time order status without agent handoff.",
+                      icon: TrendingUp,
+                    },
+                  ].map((item) => (
+                    <div key={item.agent} className="px-5 py-4">
+                      <p className="text-sm font-semibold text-white mb-2 leading-snug">{item.insight}</p>
+                      <div className="flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="h-7 w-7 rounded-lg bg-[#A64E8D]/20 border border-[#A64E8D]/30 flex items-center justify-center shrink-0">
+                            <item.icon className="h-4 w-4 text-[#BA80A9]" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold text-white">{item.agent}</p>
+                            <p className="text-xs text-white/50 leading-snug">{item.desc}</p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setShowModal(true)}
+                          className="shrink-0 flex items-center gap-1.5 rounded-lg bg-[#A64E8D] hover:bg-[#8f3f78] text-white text-xs font-semibold px-3 py-2 transition-colors"
+                        >
+                          <CloudUpload className="h-3.5 w-3.5" />
+                          Install
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
             </div>
@@ -392,6 +373,61 @@ export function HomepageReturningUserV3() {
 
         </div>
       </div>
+
+      {/* Install modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-[560px] rounded-2xl bg-white shadow-2xl overflow-hidden">
+            {/* Modal header */}
+            <div className="px-8 pt-8 pb-6">
+              <div className="flex items-start justify-between mb-5">
+                <div className="flex items-center gap-4">
+                  <div className="h-14 w-14 rounded-xl bg-[#A64E8D]/10 flex items-center justify-center">
+                    <ShoppingCart className="h-7 w-7 text-[#A64E8D]" />
+                  </div>
+                  <h2 className="text-2xl font-semibold text-gray-900">Abandoned Cart</h2>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X className="h-4 w-4" /> Close
+                </button>
+              </div>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                The Abandoned Cart AI Agent is used to detect customers who have an abandoned cart and proactively offer assistance.
+              </p>
+              <p className="text-gray-700 leading-relaxed">
+                An external API is called to retrieve any abandoned cart items linked to the customer account. If any items are found, the customer is proactively asked if the items in their cart is the reason for their contact. The agent can then be configured to perform a specific task if the customer is interested (e.g. call onto another agent or transfer to a customer service advisor).
+              </p>
+            </div>
+
+            {/* Colour bar */}
+            <div className="h-2 w-full" style={{ background: "linear-gradient(to right, #A64E8D, #272C41, #2F8FFF, #2FAFB5, #A64E8D)" }} />
+
+            {/* Modal footer */}
+            <div className="px-8 py-6 flex items-center justify-between">
+              <div>
+                <p className="font-semibold text-gray-900 mb-1">Standard</p>
+                <p className="text-sm text-gray-500 max-w-[360px]">
+                  Installing this agent will create Flows and Integration groups in your environment, which you can then edit as needed.
+                </p>
+                <p className="text-xs text-gray-400 mt-2">Published by Syndeo</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => { setInstalled(true); setShowModal(false) }}
+                className="flex flex-col items-center gap-1 text-gray-700 hover:text-[#A64E8D] transition-colors ml-6 shrink-0"
+              >
+                <CloudUpload className="h-9 w-9" />
+                <span className="text-sm font-medium">Install</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }
