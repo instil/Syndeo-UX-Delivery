@@ -199,7 +199,6 @@ export function HomepageReturningUserV4() {
                           {STATUS_STYLES[flow.status].label}
                         </span>
                       </div>
-                      <p className="text-xs text-white/35 mt-1.5">{flow.meta}</p>
                     </div>
 
                     {/* Run button */}
