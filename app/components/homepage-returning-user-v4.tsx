@@ -227,10 +227,10 @@ export function HomepageReturningUserV4() {
         </div>
 
         {/* Bottom — Recent flows + simulator */}
-        <div className="grid grid-cols-12 gap-8">
+        <div className="flex justify-center gap-8">
 
           {/* Left — Your Recent Flows */}
-          <div className="col-span-7 flex flex-col">
+          <div className="flex flex-col w-full max-w-[480px]">
             <h2 className="text-2xl font-light text-white mb-5">Your recent flows</h2>
             <div className="flex flex-col gap-3">
               {FLOWS.map((flow, i) => (
@@ -277,7 +277,7 @@ export function HomepageReturningUserV4() {
           </div>
 
           {/* Right — IKEA chat simulator */}
-          <div className="col-span-5 flex flex-col" style={{ minHeight: "420px" }}>
+          <div className="w-[376px] shrink-0 flex flex-col" style={{ minHeight: "420px" }}>
             <div
               className="flex-1 flex flex-col overflow-hidden rounded-[4px]"
               style={{
