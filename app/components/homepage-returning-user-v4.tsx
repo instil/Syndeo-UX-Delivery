@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, type KeyboardEvent } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowRight, ChevronDown, MessageSquare, Send, X } from "lucide-react"
+import { ArrowRight, ChevronDown, MessageSquare, Send, Sparkles, X } from "lucide-react"
 
 const CHAT_CHIPS = [
   "📦Manage your Order",
@@ -40,6 +40,8 @@ const STATUS_STYLES: Record<string, { label: string; className: string }> = {
 
 export function HomepageReturningUserV4() {
   const router = useRouter()
+  const [prompt, setPrompt] = useState("")
+  const promptRef = useRef<HTMLInputElement>(null)
   const [chatInput, setChatInput] = useState("")
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isTyping, setIsTyping] = useState(false)
@@ -71,7 +73,7 @@ export function HomepageReturningUserV4() {
         <div className="grid h-full grid-cols-12 gap-8">
 
           {/* Left — Pick up where you left off */}
-          <div className="relative col-span-7 flex flex-col justify-center">
+          <div className="relative col-span-7 flex flex-col justify-center overflow-y-auto" style={{ scrollbarWidth: "none" }}>
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
               <div className="h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle,rgba(47,143,255,0.2)_0%,transparent_70%)] blur-3xl" />
             </div>
@@ -102,6 +104,43 @@ export function HomepageReturningUserV4() {
                     <ArrowRight className="h-5 w-5 text-white/20 group-hover:text-white/50 group-hover:translate-x-0.5 transition-all shrink-0" />
                   </button>
                 ))}
+              </div>
+
+              {/* Syndeo Agent prompt */}
+              <div className="mt-10 pt-8 border-t border-white/10">
+                <div className="flex items-center gap-2 justify-center mb-4">
+                  <span
+                    className="block w-4 bg-[#2F8FFF]"
+                    style={{ height: "3px", animation: "spin-pause 2.4s linear infinite" }}
+                  />
+                  <span className="text-xs font-semibold uppercase tracking-widest text-white/45">Syndeo Agent</span>
+                </div>
+                <p className="text-2xl font-light text-white text-center mb-5">
+                  Or start something new
+                </p>
+                <div
+                  className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-3.5 cursor-text hover:border-white/20 transition-colors"
+                  onClick={() => promptRef.current?.focus()}
+                >
+                  <Sparkles className="h-4 w-4 text-white/25 shrink-0" />
+                  <input
+                    ref={promptRef}
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter" && prompt.trim()) router.push("/flows?new=true") }}
+                    placeholder="Describe what you'd like to build…"
+                    className="flex-1 bg-transparent text-white text-sm outline-none placeholder:text-white/30"
+                    style={{ caretColor: "#2F8FFF" }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => prompt.trim() && router.push("/flows?new=true")}
+                    disabled={!prompt.trim()}
+                    className="shrink-0 text-xs font-semibold px-4 py-1.5 rounded-xl bg-[#A64E8D] text-white hover:bg-[#8f3f78] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  >
+                    Get started
+                  </button>
+                </div>
               </div>
             </div>
           </div>
