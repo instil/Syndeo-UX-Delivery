@@ -150,6 +150,14 @@ body {
   }
 }
 
+@keyframes spin-pause {
+  0%   { transform: rotate(0deg); }
+  30%  { transform: rotate(360deg); }
+  55%  { transform: rotate(360deg); }
+  85%  { transform: rotate(720deg); }
+  100% { transform: rotate(720deg); }
+}
+
 @keyframes glow-pulse {
   0%, 100% { opacity: 0.4; transform: scale(1); }
   50% { opacity: 1; transform: scale(1.3); }

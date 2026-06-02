@@ -196,12 +196,12 @@ export function HomepageReturningUserV3() {
 
             <div className="relative z-10 mx-auto flex w-full max-w-2xl flex-col items-center text-center">
               <div className="mb-4 inline-flex items-center gap-2">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#A64E8D]/70" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-[#A64E8D]" />
-                </span>
-                <span className="text-xs font-semibold uppercase tracking-widest text-white">Syndeo Agent</span>
-              </div>
+                  <span
+                    className="block w-4 h-1 bg-[#2F8FFF]"
+                    style={{ animation: "spin-pause 2.4s linear infinite" }}
+                  />
+                  <span className="text-xs font-semibold uppercase tracking-widest text-white">Syndeo Agent</span>
+                </div>
 
               <h1 className="text-5xl tracking-tight text-white font-light">
                 What would you like to build today, IKEA?

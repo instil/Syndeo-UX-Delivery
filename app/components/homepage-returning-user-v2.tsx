@@ -145,12 +145,12 @@ export function HomepageReturningUserV2() {
 
             <div className="relative z-10 mx-auto flex w-full max-w-2xl flex-col items-center text-center">
               <div className="mb-4 inline-flex items-center gap-2">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#A64E8D]/70" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-[#A64E8D]" />
-                </span>
-                <span className="text-xs font-semibold uppercase tracking-widest text-white">Syndeo Agent</span>
-              </div>
+                  <span
+                    className="block w-4 h-1 bg-[#2F8FFF]"
+                    style={{ animation: "spin-pause 2.4s linear infinite" }}
+                  />
+                  <span className="text-xs font-semibold uppercase tracking-widest text-white">Syndeo Agent</span>
+                </div>
 
               <h1 className="text-5xl tracking-tight text-white font-light">
                 What would you like to build today, IKEA?
@@ -248,7 +248,7 @@ export function HomepageReturningUserV2() {
                 <div className="bg-[#FFDA1A] px-5 py-4 flex items-center justify-between shrink-0">
                   <div className="flex items-center gap-3">
                     <MessageSquare className="w-5 h-5 text-[#111111]" strokeWidth={2} />
-                    <span className="text-[17px] font-bold text-[#111111] tracking-tight">IKEA Chat Simulator</span>
+                    <span className="text-[17px] font-bold text-[#111111] tracking-tight">Live IKEA Chat Simulator</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <button type="button" aria-label="Minimise chat" className="hover:opacity-60 transition-opacity">
