@@ -151,7 +151,7 @@ export function HomepageReturningUserV4() {
 
   return (
     <div className="h-[calc(100vh-64px)] overflow-y-auto bg-[#272C41]" style={{ scrollbarWidth: "none" }}>
-      <div className="container mx-auto px-6 py-10 flex flex-col gap-12">
+      <div className="container mx-auto px-6 py-10 flex flex-col gap-16">
 
         {/* Hero — Syndeo Agent */}
         <div className="relative flex flex-col items-center text-center">
@@ -227,7 +227,7 @@ export function HomepageReturningUserV4() {
         </div>
 
         {/* Bottom — Recent flows + simulator */}
-        <div className="flex justify-center gap-16">
+        <div className="flex justify-center gap-16 mt-8">
 
           {/* Left — Your Recent Flows */}
           <div className="flex flex-col w-full max-w-[480px]">
