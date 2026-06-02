@@ -4,25 +4,56 @@ import { useState, useEffect, useRef, type KeyboardEvent } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowRight, ChevronDown, MessageSquare, Mic, Send, Sparkles, X } from "lucide-react"
 
-const CHAT_CHIPS = [
-  "📦Manage your Order",
-  "📄Case Status",
-  "🔧Spare Parts",
-  "💥Damaged Item",
-  "❓Missing Item",
-  "🖥Make a claim",
-]
+const DEFAULT_BOT_REPLY = "Thanks for your message! Let me look into that for you. Could you provide a bit more detail so I can help?"
 
-const BOT_REPLIES: Record<string, string> = {
-  "📦Manage your Order": "Sure! Please provide your order number and I'll pull up the details for you.",
-  "📄Case Status": "I can help with that. Could you share your case reference number?",
-  "🔧Spare Parts": "I can help you find spare parts. What product are you looking for parts for?",
-  "💥Damaged Item": "I'm sorry to hear that. Can you describe the damage and share your order number so I can raise this for you?",
-  "❓Missing Item": "That's frustrating — let's sort this out. Please share your order number and which item is missing.",
-  "🖥Make a claim": "I can start a claim for you. Could you tell me what happened and share any relevant order details?",
+type SimulatorFlow = {
+  label: string
+  greeting: string
+  chips: string[]
+  replies: Record<string, string>
 }
 
-const DEFAULT_BOT_REPLY = "Thanks for your message! Let me look into that for you. Could you provide a bit more detail so I can help?"
+const SIMULATOR_FLOWS: SimulatorFlow[] = [
+  {
+    label: "Returns Flow",
+    greeting: "Hej! I'm Billie 🤖. I can help you with a return today. How would you like to get started?",
+    chips: ["📦 Start a return", "📋 Return status", "💳 Refund query", "🏷️ Missing label", "📅 Book collection", "❓ Return policy"],
+    replies: {
+      "📦 Start a return": "I can help you start a return. Please share your order number and the item you'd like to return.",
+      "📋 Return status": "I can check your return status. Could you provide your return reference number?",
+      "💳 Refund query": "Happy to look into your refund. Please share your order number and I'll check the status.",
+      "🏷️ Missing label": "I can resend your return label. Could you confirm the email address on your order?",
+      "📅 Book collection": "I can arrange a collection for your return. What date works best for you?",
+      "❓ Return policy": "IKEA's return policy allows returns within 365 days for most items. Would you like more details?",
+    },
+  },
+  {
+    label: "Order Tracking",
+    greeting: "Hej! I'm Billie 🤖. I can help you track your IKEA order. What would you like to check?",
+    chips: ["📦 Track my order", "📅 Delivery date", "🚚 Delivery issue", "❓ Order query", "🔄 Change address", "📄 Order receipt"],
+    replies: {
+      "📦 Track my order": "I can track your order right away. Please share your order number.",
+      "📅 Delivery date": "I can check your estimated delivery date. Could you provide your order number?",
+      "🚚 Delivery issue": "I'm sorry to hear there's an issue with your delivery. Please share your order number so I can investigate.",
+      "❓ Order query": "I can help with your order query. What's your order number and what would you like to know?",
+      "🔄 Change address": "I can check if your delivery address can still be updated. Please share your order number.",
+      "📄 Order receipt": "I can resend your receipt. Could you confirm the email address linked to your order?",
+    },
+  },
+  {
+    label: "Account Set Up",
+    greeting: "Hej! I'm Billie 🤖. I can help you get your IKEA account set up. What do you need help with?",
+    chips: ["👤 Create account", "🔑 Forgot password", "📧 Verify email", "🔗 Link Family card", "✏️ Update details", "❓ Account help"],
+    replies: {
+      "👤 Create account": "I can guide you through creating your IKEA account. Head to ikea.com/gb/en/profile/login/ and select 'Create account'.",
+      "🔑 Forgot password": "No worries! Visit the login page and select 'Forgot password' — we'll send a reset link to your email.",
+      "📧 Verify email": "If you haven't received a verification email, I can resend it. What email address did you register with?",
+      "🔗 Link Family card": "To link your IKEA Family card, sign in and go to My Account > IKEA Family. Would you like a direct link?",
+      "✏️ Update details": "I can help you update your account details. Are you looking to change your name, email, or address?",
+      "❓ Account help": "I'm here to help! Could you describe the issue you're experiencing with your account?",
+    },
+  },
+]
 
 type ChatMessage = { role: "user" | "bot"; text: string }
 
@@ -87,6 +118,7 @@ export function HomepageReturningUserV4() {
   const [chatInput, setChatInput] = useState("")
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isTyping, setIsTyping] = useState(false)
+  const [activeFlowIndex, setActiveFlowIndex] = useState(0)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -96,13 +128,21 @@ export function HomepageReturningUserV4() {
   const handleChatSend = (text?: string) => {
     const msg = (text ?? chatInput).trim()
     if (!msg) return
+    const activeFlow = SIMULATOR_FLOWS[activeFlowIndex]
     setChatInput("")
     setMessages(prev => [...prev, { role: "user", text: msg }])
     setIsTyping(true)
     setTimeout(() => {
       setIsTyping(false)
-      setMessages(prev => [...prev, { role: "bot", text: BOT_REPLIES[msg] ?? DEFAULT_BOT_REPLY }])
+      setMessages(prev => [...prev, { role: "bot", text: activeFlow.replies[msg] ?? DEFAULT_BOT_REPLY }])
     }, 1500)
+  }
+
+  const handleFlowSwitch = (index: number) => {
+    setActiveFlowIndex(index)
+    setMessages([])
+    setChatInput("")
+    setIsTyping(false)
   }
 
   const handleChatKey = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -211,11 +251,29 @@ export function HomepageReturningUserV4() {
             </div>
           </div>
 
-          {/* Right — IKEA chat widget (V2) */}
+          {/* Right — IKEA chat widget (V2) with flow tabs */}
           <div className="col-span-5 h-full flex flex-col items-center justify-center py-4">
             <div className="w-full max-w-[376px]">
+              {/* Flow tabs */}
+              <div className="flex gap-2 mb-3">
+                {SIMULATOR_FLOWS.map((flow, i) => (
+                  <button
+                    key={flow.label}
+                    type="button"
+                    onClick={() => handleFlowSwitch(i)}
+                    className={`flex-1 text-xs font-medium px-3 py-2 rounded-xl transition-all ${
+                      activeFlowIndex === i
+                        ? "bg-[#2F8FFF] text-white"
+                        : "bg-white/8 text-white/50 hover:bg-white/12 hover:text-white/80 border border-white/10"
+                    }`}
+                  >
+                    {flow.label}
+                  </button>
+                ))}
+              </div>
+
               <div
-                className="flex flex-col overflow-hidden h-[580px] rounded-[4px]"
+                className="flex flex-col overflow-hidden h-[560px] rounded-[4px]"
                 style={{
                   fontFamily: '"Noto IKEA","Noto Sans","Roboto","Open Sans",system-ui,sans-serif',
                   boxShadow: "0 2px 16px rgba(0,0,0,0.14)",
@@ -243,18 +301,12 @@ export function HomepageReturningUserV4() {
 
                   <div className="border border-[#E0E0E0] bg-white rounded-[12px] px-4 py-3 max-w-[90%]">
                     <p className="text-[15px] text-[#111111] leading-relaxed">
-                      Hej! I&apos;m Billie 🤖, your IKEA United Kingdom customer support bot.
-                    </p>
-                  </div>
-
-                  <div className="border border-[#E0E0E0] bg-white rounded-[12px] px-4 py-3 max-w-[90%]">
-                    <p className="text-[15px] text-[#111111] leading-relaxed">
-                      I perform best when you ask full questions. To get started, type your question or choose one of the following options:
+                      {SIMULATOR_FLOWS[activeFlowIndex].greeting}
                     </p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2">
-                    {CHAT_CHIPS.map((label) => (
+                    {SIMULATOR_FLOWS[activeFlowIndex].chips.map((label) => (
                       <button
                         key={label}
                         type="button"
