@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, type KeyboardEvent } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowRight, ChevronDown, CloudUpload, MessageSquare, Mic, Plus, Send, ShoppingCart, Sparkles, TestTube, TrendingUp, Upload, X } from "lucide-react"
+import { ArrowRight, ChevronDown, CloudUpload, MessageSquare, Mic, Package, Plus, RotateCcw, Send, ShoppingCart, Sparkles, TestTube, TrendingUp, Truck, Upload, X } from "lucide-react"
 
 const TYPEWRITER_PROMPTS = [
   "Create a flow for damaged items",
@@ -34,9 +34,49 @@ const BOT_REPLIES: Record<string, string> = {
   "💥Damaged Item": "I'm sorry to hear that. Can you describe the damage and share your order number so I can raise this for you?",
   "❓Missing Item": "That's frustrating — let's sort this out. Please share your order number and which item is missing.",
   "🖥Make a claim": "I can start a claim for you. Could you tell me what happened and share any relevant order details?",
+  // Stock Check
+  "Check a product": "Sure! Which product would you like to check availability for?",
+  "Is BILLY bookcase in stock?": "Let me check that for you… The BILLY bookcase in white is currently in stock at your nearest store and available online. Would you like to reserve one?",
+  "Find nearest store stock": "I can help with that. Could you share your postcode so I can find your nearest IKEA store?",
+  "Check online availability": "I'll check our online store for you. Which item are you interested in?",
+  // Abandoned Cart
+  "Show my basket": "Here's what you left behind: KALLAX shelf unit (×1), LACK side table (×2). Would you like to complete your order?",
+  "Apply a discount": "I can check if there are any available offers for the items in your basket. One moment…",
+  "Help me decide": "Of course! Which item are you unsure about? I can share more details, reviews, or alternatives.",
+  "Save for later": "Done — I've saved your basket. You can come back anytime and pick up where you left off.",
+  // Order Tracking
+  "Track my order": "Please share your order number and I'll get the latest status for you right away.",
+  "Where is my delivery?": "I can look into that. Could you provide your order number or the email address used at checkout?",
+  "Change delivery date": "I can help you reschedule. What date works best for you? Please note changes must be made 48 hours before delivery.",
+  "Contact courier": "I'll connect you with the courier. Your delivery is with DHL — shall I share their tracking link or arrange a callback?",
 }
 
 const DEFAULT_BOT_REPLY = "Thanks for your message! Let me look into that for you. Could you provide a bit more detail so I can help?"
+
+type AgentKey = "default" | "stock-check" | "abandoned-cart" | "order-tracking"
+
+const AGENT_SIMULATOR: Record<AgentKey, { title: string; welcome: string; chips: string[] }> = {
+  "default": {
+    title: "Live IKEA Chat Simulator",
+    welcome: "Hej! I'm Billie 🤖, your IKEA United Kingdom customer support bot.",
+    chips: CHAT_CHIPS.slice(0, 4),
+  },
+  "stock-check": {
+    title: "Stock Check Agent",
+    welcome: "Hi! 📦 I can check if any IKEA product is in stock online or at your nearest store. What are you looking for?",
+    chips: ["Check a product", "Is BILLY bookcase in stock?", "Find nearest store stock", "Check online availability"],
+  },
+  "abandoned-cart": {
+    title: "Abandoned Cart Agent",
+    welcome: "Hey! 🛒 I noticed you left some items in your basket. Want me to help you complete your order or find a better deal?",
+    chips: ["Show my basket", "Apply a discount", "Help me decide", "Save for later"],
+  },
+  "order-tracking": {
+    title: "Order Tracking Agent",
+    welcome: "Hello! 🚚 I can give you a live update on any IKEA order. Do you have your order number handy?",
+    chips: ["Track my order", "Where is my delivery?", "Change delivery date", "Contact courier"],
+  },
+}
 
 type ChatMessage = { role: "user" | "bot"; text: string }
 
@@ -50,6 +90,7 @@ export function HomepageReturningUserV3() {
   const [showModal, setShowModal] = useState(false)
   const [installed, setInstalled] = useState(false)
   const [showSimulator, setShowSimulator] = useState(false)
+  const [activeAgent, setActiveAgent] = useState<AgentKey>("default")
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // Typewriter state
@@ -133,6 +174,13 @@ export function HomepageReturningUserV3() {
 
   const handleChatKey = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") { e.preventDefault(); handleChatSend() }
+  }
+
+  const handleTryAgent = (key: AgentKey) => {
+    setActiveAgent(key)
+    setMessages([])
+    setChatInput("")
+    setIsTyping(false)
   }
 
   return (
@@ -239,110 +287,43 @@ export function HomepageReturningUserV3() {
 
           {/* Right — Opportunity → Agent recommendation */}
           <div className="col-span-5 flex flex-col py-4 overflow-hidden gap-4 h-full">
-            <div className="w-full max-w-[400px] mx-auto flex flex-col gap-4 flex-1 min-h-0">
+            <div className="w-full max-w-[400px] mx-auto flex flex-col flex-1 min-h-0">
 
-              {/* Live Simulator Preview panel */}
-              <div className="border border-white/10 overflow-hidden flex flex-col min-h-0 flex-1"
-                style={{
-                  fontFamily: '"Noto IKEA","Noto Sans","Roboto","Open Sans",system-ui,sans-serif',
-                  boxShadow: "0 2px 16px rgba(0,0,0,0.14)",
-                  borderRadius: "4px",
-                }}
-              >
-                <div className="bg-[#FFDA1A] px-4 py-3 flex items-center justify-between shrink-0">
-                  <div className="flex items-center gap-2">
-                    <MessageSquare className="w-4 h-4 text-[#111111]" strokeWidth={2} />
-                    <span className="text-[15px] font-bold text-[#111111] tracking-tight">Live IKEA Chat Simulator</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button type="button" aria-label="Minimise" className="hover:opacity-60 transition-opacity">
-                      <ChevronDown className="w-4 h-4 text-[#111111]" strokeWidth={2} />
-                    </button>
-                    <button type="button" aria-label="Close" className="hover:opacity-60 transition-opacity">
-                      <X className="w-4 h-4 text-[#111111]" strokeWidth={2} />
-                    </button>
-                  </div>
-                </div>
+              {/* Single unified panel: agents + simulator */}
+              <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden flex flex-col flex-1 min-h-0">
 
-                <div className="flex-1 overflow-y-auto bg-white px-4 pt-4 pb-2 space-y-3">
-                  <p className="text-[12px] text-[#767676]">Billie the bot 🤖 has connected to the chat</p>
-                  <div className="border border-[#E0E0E0] bg-white rounded-[12px] px-3 py-2 max-w-[90%]">
-                    <p className="text-[13px] text-[#111111] leading-relaxed">Hej! I&apos;m Billie 🤖, your IKEA United Kingdom customer support bot.</p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-1.5">
-                    {CHAT_CHIPS.slice(0, 4).map((label) => (
-                      <button key={label} type="button" onClick={() => handleChatSend(label)}
-                        className="bg-[#EBEBEB] rounded-[20px] px-2 py-2 text-[12px] font-bold text-[#111111] text-left leading-tight hover:bg-[#DCDCDC] transition-colors">
-                        {label}
-                      </button>
-                    ))}
-                  </div>
-                  {messages.map((msg, i) => (
-                    msg.role === "user" ? (
-                      <div key={i} className="flex justify-end">
-                        <div className="px-3 py-2 max-w-[80%] bg-[#FFDA1A] rounded-[12px]">
-                          <p className="text-[13px] text-[#111111]">{msg.text}</p>
-                        </div>
-                      </div>
-                    ) : (
-                      <div key={i} className="border border-[#E0E0E0] bg-white rounded-[12px] px-3 py-2 max-w-[90%]">
-                        <p className="text-[13px] text-[#111111]">{msg.text}</p>
-                      </div>
-                    )
-                  ))}
-                  {isTyping && (
-                    <div className="border border-[#E0E0E0] bg-white rounded-[12px] px-3 py-2 max-w-[60px]">
-                      <div className="flex items-center gap-1">
-                        {[0,1,2].map((i) => (
-                          <span key={i} className="h-1.5 w-1.5 rounded-full bg-[#767676]"
-                            style={{ animation: `bounce 1.2s ease-in-out ${i * 0.2}s infinite` }} />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  <div ref={messagesEndRef} />
-                </div>
-
-                <div className="shrink-0 bg-white border-t border-[#E0E0E0] px-4 py-3 flex items-center gap-2">
-                  <input value={chatInput} onChange={(e) => setChatInput(e.target.value)} onKeyDown={handleChatKey}
-                    placeholder="Test your simulator here"
-                    className="flex-1 text-[13px] text-[#111111] placeholder:text-[#767676] bg-transparent border-none outline-none"
-                    style={{ fontFamily: '"Noto IKEA","Noto Sans","Roboto",system-ui,sans-serif' }} />
-                  <button type="button" onClick={() => handleChatSend()} disabled={!chatInput.trim()}
-                    className="text-[#767676] disabled:text-[#CCCCCC] hover:text-[#111111] transition-colors">
-                    <Send className="w-4 h-4" strokeWidth={1.5} />
-                  </button>
-                </div>
-              </div>
-
-              {/* Recommended AI Agents panel */}
-              <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden">
-                <div className="flex items-center gap-2 px-5 py-3 border-b border-white/10">
-                  <TrendingUp className="h-4 w-4 text-amber-400" />
+                {/* Panel header */}
+                <div className="flex items-center gap-2 px-5 py-3 border-b border-white/10 shrink-0">
+                  <Sparkles className="h-4 w-4 text-amber-400" />
                   <span className="text-xs font-semibold uppercase tracking-widest text-amber-400">Recommended AI Agents</span>
                 </div>
-                <div className="flex flex-col divide-y divide-white/10">
-                  {[
+
+                {/* Agent rows */}
+                <div className="flex flex-col divide-y divide-white/10 shrink-0">
+                  {([
                     {
+                      key: "stock-check" as AgentKey,
                       insight: 'Customers asking: "Is this item in stock?"',
                       agent: "Stock Check",
                       desc: "Allow customers to check stock availability automatically.",
-                      icon: ShoppingCart,
+                      icon: Package,
                     },
                     {
+                      key: "abandoned-cart" as AgentKey,
                       insight: "Customers abandoning items in their basket",
                       agent: "Abandoned Cart",
                       desc: "Proactively engage customers who leave items in their basket.",
                       icon: ShoppingCart,
                     },
                     {
+                      key: "order-tracking" as AgentKey,
                       insight: "High volume of order tracking requests",
                       agent: "Order Tracking",
                       desc: "Give customers real-time order status without agent handoff.",
-                      icon: TrendingUp,
+                      icon: Truck,
                     },
-                  ].map((item) => (
-                    <div key={item.agent} className="px-5 py-4">
+                  ]).map((item) => (
+                    <div key={item.agent} className={`px-5 py-4 transition-colors ${activeAgent === item.key ? "bg-white/5" : ""}`}>
                       <p className="text-sm font-semibold text-white mb-2 leading-snug">{item.insight}</p>
                       <div className="flex items-center justify-between gap-4">
                         <div className="flex items-center gap-2.5 min-w-0">
@@ -356,18 +337,93 @@ export function HomepageReturningUserV3() {
                         </div>
                         <button
                           type="button"
-                          onClick={() => setShowModal(true)}
-                          className="shrink-0 flex items-center gap-1.5 rounded-lg bg-[#A64E8D] hover:bg-[#8f3f78] text-white text-xs font-semibold px-3 py-2 transition-colors"
+                          onClick={() => activeAgent === item.key ? setShowModal(true) : handleTryAgent(item.key)}
+                          className={`shrink-0 flex items-center gap-1.5 rounded-lg text-xs font-semibold px-3 py-2 transition-colors ${activeAgent === item.key ? "bg-white/20 hover:bg-white/30 text-white" : "bg-[#A64E8D] hover:bg-[#8f3f78] text-white"}`}
                         >
-                          <CloudUpload className="h-3.5 w-3.5" />
-                          Install
+                          {activeAgent === item.key ? <CloudUpload className="h-3.5 w-3.5" /> : <Sparkles className="h-3.5 w-3.5" />}
+                          {activeAgent === item.key ? "Install" : "Try"}
                         </button>
                       </div>
                     </div>
                   ))}
                 </div>
-              </div>
 
+                {/* Embedded IKEA simulator — padded, sits as a widget inside the panel */}
+                <div className="flex-1 min-h-0 p-4 pb-5">
+                  <div className="h-full flex flex-col overflow-hidden rounded-[4px] shadow-[0_2px_16px_rgba(0,0,0,0.2)]"
+                    style={{ fontFamily: '"Noto IKEA","Noto Sans","Roboto","Open Sans",system-ui,sans-serif' }}
+                  >
+                  <div className="bg-[#FFDA1A] px-4 py-3 flex items-center justify-between shrink-0">
+                    <div className="flex items-center gap-2">
+                      <MessageSquare className="w-4 h-4 text-[#111111]" strokeWidth={2} />
+                      <span className="text-[15px] font-bold text-[#111111] tracking-tight">{AGENT_SIMULATOR[activeAgent].title}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button type="button" aria-label="Reset chat" onClick={() => handleTryAgent("default")} className="hover:opacity-60 transition-opacity">
+                        <RotateCcw className="w-4 h-4 text-[#111111]" strokeWidth={2} />
+                      </button>
+                      <button type="button" aria-label="Minimise" className="hover:opacity-60 transition-opacity">
+                        <ChevronDown className="w-4 h-4 text-[#111111]" strokeWidth={2} />
+                      </button>
+                      <button type="button" aria-label="Close" className="hover:opacity-60 transition-opacity">
+                        <X className="w-4 h-4 text-[#111111]" strokeWidth={2} />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="flex-1 overflow-y-auto bg-white px-4 pt-4 pb-2 space-y-3">
+                    <p className="text-[12px] text-[#767676]">Billie the bot 🤖 has connected to the chat</p>
+                    <div className="border border-[#E0E0E0] bg-white rounded-[12px] px-3 py-2 max-w-[90%]">
+                      <p className="text-[13px] text-[#111111] leading-relaxed">{AGENT_SIMULATOR[activeAgent].welcome}</p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-1.5">
+                      {AGENT_SIMULATOR[activeAgent].chips.map((label) => (
+                        <button key={label} type="button" onClick={() => handleChatSend(label)}
+                          className="bg-[#EBEBEB] rounded-[20px] px-2 py-2 text-[12px] font-bold text-[#111111] text-left leading-tight hover:bg-[#DCDCDC] transition-colors">
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                    {messages.map((msg, i) => (
+                      msg.role === "user" ? (
+                        <div key={i} className="flex justify-end">
+                          <div className="px-3 py-2 max-w-[80%] bg-[#FFDA1A] rounded-[12px]">
+                            <p className="text-[13px] text-[#111111]">{msg.text}</p>
+                          </div>
+                        </div>
+                      ) : (
+                        <div key={i} className="border border-[#E0E0E0] bg-white rounded-[12px] px-3 py-2 max-w-[90%]">
+                          <p className="text-[13px] text-[#111111]">{msg.text}</p>
+                        </div>
+                      )
+                    ))}
+                    {isTyping && (
+                      <div className="border border-[#E0E0E0] bg-white rounded-[12px] px-3 py-2 max-w-[60px]">
+                        <div className="flex items-center gap-1">
+                          {[0,1,2].map((i) => (
+                            <span key={i} className="h-1.5 w-1.5 rounded-full bg-[#767676]"
+                              style={{ animation: `bounce 1.2s ease-in-out ${i * 0.2}s infinite` }} />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    <div ref={messagesEndRef} />
+                  </div>
+
+                  <div className="shrink-0 bg-white border-t border-[#E0E0E0] px-4 py-3 flex items-center gap-2">
+                    <input value={chatInput} onChange={(e) => setChatInput(e.target.value)} onKeyDown={handleChatKey}
+                      placeholder="Test your simulator here"
+                      className="flex-1 text-[13px] text-[#111111] placeholder:text-[#767676] bg-transparent border-none outline-none"
+                      style={{ fontFamily: '"Noto IKEA","Noto Sans","Roboto",system-ui,sans-serif' }} />
+                    <button type="button" onClick={() => handleChatSend()} disabled={!chatInput.trim()}
+                      className="text-[#767676] disabled:text-[#CCCCCC] hover:text-[#111111] transition-colors">
+                      <Send className="w-4 h-4" strokeWidth={1.5} />
+                    </button>
+                  </div>
+                  </div>
+                </div>
+
+              </div>
             </div>
           </div>
 
