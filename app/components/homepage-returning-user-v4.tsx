@@ -27,10 +27,16 @@ const DEFAULT_BOT_REPLY = "Thanks for your message! Let me look into that for yo
 type ChatMessage = { role: "user" | "bot"; text: string }
 
 const FLOWS = [
-  { name: "Returns Flow", meta: "Last edited 1 hour ago", path: "/flows?flow=Returns" },
-  { name: "Order Tracking", meta: "Draft", path: "/flows?flow=Order%20Tracking" },
-  { name: "Account Set Up", meta: "Published", path: "/flows?flow=Account%20Set%20Up" },
+  { name: "Returns Flow", meta: "Last edited 1 hour ago", status: "active", path: "/flows?flow=Returns" },
+  { name: "Order Tracking", meta: "Draft", status: "draft", path: "/flows?flow=Order%20Tracking" },
+  { name: "Account Set Up", meta: "Published", status: "published", path: "/flows?flow=Account%20Set%20Up" },
 ]
+
+const STATUS_STYLES: Record<string, { label: string; className: string }> = {
+  active:    { label: "Active",     className: "bg-blue-500/15 text-blue-400 border border-blue-500/25" },
+  draft:     { label: "Draft",      className: "bg-amber-500/15 text-amber-400 border border-amber-500/25" },
+  published: { label: "Published",  className: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/25" },
+}
 
 export function HomepageReturningUserV4() {
   const router = useRouter()
@@ -87,7 +93,12 @@ export function HomepageReturningUserV4() {
                       <p className="text-white text-xl font-medium group-hover:text-white/90 transition-colors">
                         {flow.name}
                       </p>
-                      <p className="text-white/35 text-sm mt-0.5">{flow.meta}</p>
+                      <div className="flex items-center gap-2 mt-1.5">
+                        <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${STATUS_STYLES[flow.status].className}`}>
+                          {STATUS_STYLES[flow.status].label}
+                        </span>
+                        <span className="text-white/35 text-xs">{flow.meta}</span>
+                      </div>
                     </div>
                     <ArrowRight className="h-5 w-5 text-white/20 group-hover:text-white/50 group-hover:translate-x-0.5 transition-all shrink-0" />
                   </button>
