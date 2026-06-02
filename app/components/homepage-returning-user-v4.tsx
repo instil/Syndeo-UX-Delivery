@@ -118,28 +118,31 @@ export function HomepageReturningUserV4() {
                 <p className="text-2xl font-light text-white text-center mb-5">
                   Or start something new
                 </p>
-                <div
-                  className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-3.5 cursor-text hover:border-white/20 transition-colors"
-                  onClick={() => promptRef.current?.focus()}
-                >
-                  <Sparkles className="h-4 w-4 text-white/25 shrink-0" />
-                  <input
-                    ref={promptRef}
-                    value={prompt}
-                    onChange={(e) => setPrompt(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === "Enter" && prompt.trim()) router.push("/flows?new=true") }}
-                    placeholder="Describe what you'd like to build…"
-                    className="flex-1 bg-transparent text-white text-sm outline-none placeholder:text-white/30"
-                    style={{ caretColor: "#2F8FFF" }}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => prompt.trim() && router.push("/flows?new=true")}
-                    disabled={!prompt.trim()}
-                    className="shrink-0 text-xs font-semibold px-4 py-1.5 rounded-xl bg-[#A64E8D] text-white hover:bg-[#8f3f78] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                <div className="rounded-2xl p-[1px]" style={{ background: "linear-gradient(135deg, #A64E8D 0%, rgba(255,255,255,0.2) 45%, #2F8FFF 100%)" }}>
+                  <div
+                    className="flex items-center gap-3 rounded-2xl px-7 py-5 cursor-text"
+                    style={{ background: "#32374B" }}
+                    onClick={() => promptRef.current?.focus()}
                   >
-                    Get started
-                  </button>
+                    <Sparkles className="h-4 w-4 text-white/25 shrink-0" />
+                    <input
+                      ref={promptRef}
+                      value={prompt}
+                      onChange={(e) => setPrompt(e.target.value)}
+                      onKeyDown={(e) => { if (e.key === "Enter" && prompt.trim()) router.push("/flows?new=true") }}
+                      placeholder="Describe what you'd like to build…"
+                      className="flex-1 bg-transparent text-white text-sm outline-none placeholder:text-white/30"
+                      style={{ caretColor: "#2F8FFF" }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => prompt.trim() && router.push("/flows?new=true")}
+                      disabled={!prompt.trim()}
+                      className="shrink-0 text-xs font-semibold px-4 py-1.5 rounded-xl bg-[#A64E8D] text-white hover:bg-[#8f3f78] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    >
+                      Get started
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
