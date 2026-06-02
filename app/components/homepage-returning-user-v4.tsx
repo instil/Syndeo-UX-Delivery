@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, type KeyboardEvent } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowRight, ChevronDown, MessageSquare, Send, Sparkles, X } from "lucide-react"
+import { ArrowRight, ChevronDown, MessageSquare, Mic, Send, Sparkles, X } from "lucide-react"
 
 const CHAT_CHIPS = [
   "📦Manage your Order",
@@ -136,11 +136,19 @@ export function HomepageReturningUserV4() {
                     />
                     <button
                       type="button"
+                      aria-label="Use microphone"
+                      className="h-11 w-11 flex items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white transition-all shrink-0"
+                    >
+                      <Mic className="h-5 w-5" />
+                    </button>
+                    <button
+                      type="button"
                       onClick={() => prompt.trim() && router.push("/flows?new=true")}
                       disabled={!prompt.trim()}
-                      className="shrink-0 text-xs font-semibold px-4 py-1.5 rounded-xl bg-[#A64E8D] text-white hover:bg-[#8f3f78] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                      aria-label="Get started"
+                      className="h-10 w-10 flex items-center justify-center rounded-xl bg-[#A64E8D] text-white hover:bg-[#8f3f78] disabled:opacity-40 disabled:cursor-not-allowed transition-colors shrink-0"
                     >
-                      Get started
+                      <Send className="h-4 w-4" />
                     </button>
                   </div>
                 </div>
