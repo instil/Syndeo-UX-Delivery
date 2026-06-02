@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, type KeyboardEvent } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowRight, ChevronDown, ChevronUp, MessageSquare, Mic, Send, Sparkles, X } from "lucide-react"
+import { ArrowRight, ChevronDown, ChevronUp, MessageSquare, Mic, Pencil, Play, Send, Sparkles, X } from "lucide-react"
 
 const DEFAULT_BOT_REPLY = "Thanks for your message! Let me look into that for you. Could you provide a bit more detail so I can help?"
 
@@ -179,26 +179,55 @@ export function HomepageReturningUserV4() {
               </h1>
 
               <div className="flex flex-col gap-3">
-                {FLOWS.map((flow) => (
-                  <button
+                {FLOWS.map((flow, i) => (
+                  <div
                     key={flow.name}
-                    type="button"
-                    onClick={() => router.push(flow.path)}
-                    className="w-full flex items-center gap-5 rounded-2xl border border-white/10 bg-white/[0.04] px-7 py-5 text-left hover:bg-white/[0.08] hover:border-white/20 transition-all group"
+                    className={`w-full flex items-center gap-4 rounded-2xl border px-6 py-4 transition-all ${
+                      activeFlowIndex === i
+                        ? "border-[#2F8FFF]/40 bg-[#2F8FFF]/[0.06]"
+                        : "border-white/10 bg-white/[0.04] hover:bg-white/[0.07] hover:border-white/20"
+                    }`}
                   >
+                    {/* Active indicator */}
+                    <div className={`h-2 w-2 rounded-full shrink-0 transition-all ${activeFlowIndex === i ? "bg-[#2F8FFF]" : "bg-white/10"}`} />
+
+                    {/* Flow info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3">
-                        <p className="text-white text-xl font-medium group-hover:text-white/90 transition-colors">
-                          {flow.name}
-                        </p>
+                        <p className="text-white text-lg font-medium">{flow.name}</p>
                         <span className={`text-sm font-medium px-3 py-1 rounded-full ${STATUS_STYLES[flow.status].className}`}>
                           {STATUS_STYLES[flow.status].label}
                         </span>
                       </div>
+                      <p className="text-xs text-white/35 mt-0.5">{flow.meta}</p>
                     </div>
-                    <ArrowRight className="h-5 w-5 text-white/20 group-hover:text-white/50 group-hover:translate-x-0.5 transition-all shrink-0" />
-                  </button>
+
+                    {/* Run button */}
+                    <button
+                      type="button"
+                      onClick={() => handleFlowSwitch(i)}
+                      className={`shrink-0 flex items-center gap-1.5 rounded-xl text-xs font-semibold px-3.5 py-2 transition-all ${
+                        activeFlowIndex === i
+                          ? "bg-[#2F8FFF] text-white"
+                          : "bg-white/8 border border-white/15 text-white/60 hover:bg-white/15 hover:text-white"
+                      }`}
+                    >
+                      <Play className="h-3 w-3" fill="currentColor" />
+                      {activeFlowIndex === i ? "Running" : "Run"}
+                    </button>
+
+                    {/* Edit button */}
+                    <button
+                      type="button"
+                      onClick={() => router.push(flow.path)}
+                      aria-label={`Edit ${flow.name}`}
+                      className="shrink-0 h-8 w-8 flex items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/40 hover:bg-white/10 hover:text-white/80 transition-all"
+                    >
+                      <Pencil className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
                 ))}
+
               </div>
 
               {/* Syndeo Agent prompt */}
