@@ -72,7 +72,7 @@ export function HomepageReturningUserV4() {
 
             <div className="relative z-10 mx-auto w-full max-w-xl text-center">
               <h1 className="text-5xl font-light tracking-tight text-white mb-10">
-                What would you like to continue with?
+                Hi IKEA, what would you like to continue with?
               </h1>
 
               <div className="flex flex-col gap-3">
