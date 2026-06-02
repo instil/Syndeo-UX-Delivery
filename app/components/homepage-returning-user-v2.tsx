@@ -2,31 +2,20 @@
 
 import { useState, useEffect, useRef, type KeyboardEvent } from "react"
 import { useRouter } from "next/navigation"
-import { ChevronDown, MessageSquare, Mic, Plus, Send, X } from "lucide-react"
+import { ArrowRight, ChevronDown, GitBranch, MessageSquare, Mic, Plus, Send, TestTube, Upload, X } from "lucide-react"
 
 const TYPEWRITER_PROMPTS = [
-  "Show me my top performing flows this week",
-  "Create a new order tracking flow for IKEA",
-  "How many customers contacted us about returns?",
-  "Build a damaged item conversation flow",
-  "What's my bot's resolution rate this month?",
-  "Set up a spare parts request flow",
+  "Create a flow for damaged items",
+  "Show unpublished flows",
+  "Find flows using Salesforce",
+  "Create a returns journey",
 ]
 
 const quickActions = [
-  {
-    label: "Continue Account Set Up",
-    action: "/flows?flow=Account%20Set%20Up",
-  },
-  {
-    label: "Continue Order Status",
-    action: "/flows?flow=Order%20Status%20Lookup",
-  },
-  {
-    label: "Create a new flow",
-    action: "/flows?new=true",
-    icon: Plus,
-  },
+  { label: "Continue Returns Flow", action: "/flows?flow=Returns", icon: ArrowRight },
+  { label: "Create New Flow", action: "/flows?new=true", icon: Plus },
+  { label: "Test IKEA Agent", action: "/flows?test=ikea", icon: TestTube },
+  { label: "Import Existing Journey", action: "/flows?import=true", icon: Upload },
 ] as const
 
 const CHAT_CHIPS = [
@@ -70,7 +59,7 @@ export function HomepageReturningUserV2() {
   // Typewriter effect — pauses when user is typing
   useEffect(() => {
     if (isFocused || input) return
-    const currentPrompt = TYPEWRITER_PROMPTS[promptIndex]
+    const currentPrompt = TYPEWRITER_PROMPTS[promptIndex % TYPEWRITER_PROMPTS.length]
     let timeout: ReturnType<typeof setTimeout>
     if (!isDeleting) {
       if (displayText.length < currentPrompt.length) {
@@ -163,9 +152,8 @@ export function HomepageReturningUserV2() {
                 <span className="text-xs font-semibold uppercase tracking-widest text-white">Syndeo Agent</span>
               </div>
 
-              <h1 className="text-5xl tracking-tight text-white">
-                <span className="font-light">What&apos;s next, </span>
-                <span className="font-bold">IKEA?</span>
+              <h1 className="text-5xl tracking-tight text-white font-light">
+                What would you like to build today, IKEA?
               </h1>
 
               {/* Big frosted-glass prompt card */}
@@ -224,22 +212,19 @@ export function HomepageReturningUserV2() {
                   </div>
                 </div>
 
-                {/* Quick action chips */}
-                <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
-                  {quickActions.map((action) => {
-                    const Icon = ("icon" in action) ? action.icon : undefined
-                    return (
-                      <button
-                        key={action.label}
-                        type="button"
-                        onClick={() => router.push(action.action)}
-                        className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/60 transition-all hover:bg-white/10 hover:text-white"
-                      >
-                        {Icon ? <Icon className="h-3.5 w-3.5 text-white/50" /> : null}
-                        <span>{action.label}</span>
-                      </button>
-                    )
-                  })}
+                {/* Suggested tasks — Google AI Studio style vertical list */}
+                <div className="mt-5 flex flex-col items-center gap-1">
+                  {quickActions.map((action) => (
+                    <button
+                      key={action.label}
+                      type="button"
+                      onClick={() => router.push(action.action)}
+                      className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-white/50 transition-all hover:bg-white/5 hover:text-white/80 text-left group"
+                    >
+                      <action.icon className="h-4 w-4 shrink-0 text-white/30 group-hover:text-white/60 transition-colors" />
+                      <span>{action.label}</span>
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
@@ -261,7 +246,7 @@ export function HomepageReturningUserV2() {
                 <div className="bg-[#FFDA1A] px-5 py-4 flex items-center justify-between shrink-0">
                   <div className="flex items-center gap-3">
                     <MessageSquare className="w-5 h-5 text-[#111111]" strokeWidth={2} />
-                    <span className="text-[17px] font-bold text-[#111111] tracking-tight">IKEA Chat</span>
+                    <span className="text-[17px] font-bold text-[#111111] tracking-tight">IKEA Chat Simulator</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <button type="button" aria-label="Minimise chat" className="hover:opacity-60 transition-opacity">
@@ -352,7 +337,7 @@ export function HomepageReturningUserV2() {
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
                     onKeyDown={handleChatKey}
-                    placeholder="Type your message here."
+                    placeholder="Test your simulator here"
                     className="flex-1 text-[15px] text-[#111111] placeholder:text-[#767676] bg-transparent border-none outline-none"
                     style={{ fontFamily: '"Noto IKEA","Noto Sans","Roboto",system-ui,sans-serif' }}
                   />
