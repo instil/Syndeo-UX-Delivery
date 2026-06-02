@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, type KeyboardEvent } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowRight, ChevronDown, ChevronUp, MessageSquare, Mic, Pencil, Play, Send, Sparkles, X } from "lucide-react"
+import { ArrowRight, ChevronDown, MessageSquare, Mic, Pencil, Play, Send, Sparkles, X } from "lucide-react"
 
 const DEFAULT_BOT_REPLY = "Thanks for your message! Let me look into that for you. Could you provide a bit more detail so I can help?"
 
@@ -119,19 +119,7 @@ export function HomepageReturningUserV4() {
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isTyping, setIsTyping] = useState(false)
   const [activeFlowIndex, setActiveFlowIndex] = useState(0)
-  const [dropdownOpen, setDropdownOpen] = useState(false)
-  const dropdownRef = useRef<HTMLDivElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setDropdownOpen(false)
-      }
-    }
-    if (dropdownOpen) document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [dropdownOpen])
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -152,7 +140,6 @@ export function HomepageReturningUserV4() {
 
   const handleFlowSwitch = (index: number) => {
     setActiveFlowIndex(index)
-    setDropdownOpen(false)
     setMessages([])
     setChatInput("")
     setIsTyping(false)
@@ -292,170 +279,104 @@ export function HomepageReturningUserV4() {
             </div>
           </div>
 
-          {/* Right — IKEA chat simulator in V3-style panel */}
-          <div className="col-span-5 h-full flex flex-col py-4 overflow-hidden">
-            <div className="w-full max-w-[400px] mx-auto flex flex-col flex-1 min-h-0">
-
-              {/* Unified panel */}
-              <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-visible flex flex-col flex-1 min-h-0">
-
-                {/* Panel header: flow dropdown */}
-                <div ref={dropdownRef} className="relative shrink-0 border-b border-white/10">
-                  <button
-                    type="button"
-                    onClick={() => setDropdownOpen(o => !o)}
-                    className="w-full flex items-center justify-between gap-3 px-5 py-3.5 hover:bg-white/[0.04] transition-colors"
-                  >
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-xs font-semibold uppercase tracking-widest text-white/35 shrink-0">Testing</span>
-                      <span className="text-white/15 shrink-0">·</span>
-                      <span className="text-sm font-medium text-white truncate">{SIMULATOR_FLOWS[activeFlowIndex].label}</span>
-                      <span className={`ml-1 text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${STATUS_STYLES[FLOWS[activeFlowIndex].status].className}`}>
-                        {STATUS_STYLES[FLOWS[activeFlowIndex].status].label}
-                      </span>
-                    </div>
-                    {dropdownOpen
-                      ? <ChevronUp className="h-4 w-4 text-white/40 shrink-0" />
-                      : <ChevronDown className="h-4 w-4 text-white/40 shrink-0" />
-                    }
-                  </button>
-
-                  {dropdownOpen && (
-                    <div className="absolute top-full left-0 right-0 mt-0 rounded-b-2xl border border-t-0 border-white/10 bg-[#1e2235] shadow-2xl z-50 overflow-hidden">
-                      <p className="px-5 pt-4 pb-2 text-[10px] font-semibold uppercase tracking-widest text-white/30">Your flows</p>
-                      {SIMULATOR_FLOWS.map((flow, i) => (
-                        <button
-                          key={flow.label}
-                          type="button"
-                          onClick={() => handleFlowSwitch(i)}
-                          className={`w-full flex items-center gap-4 px-5 py-3 text-left transition-colors hover:bg-white/[0.06] ${
-                            i === activeFlowIndex ? "bg-white/[0.04]" : ""
-                          }`}
-                        >
-                          <div className="h-9 w-9 rounded-lg bg-white/[0.07] flex items-center justify-center shrink-0">
-                            <MessageSquare className="h-4 w-4 text-white/50" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2">
-                              <span className={`text-sm font-medium ${i === activeFlowIndex ? "text-white" : "text-white/80"}`}>
-                                {flow.label}
-                              </span>
-                              <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${STATUS_STYLES[FLOWS[i].status].className}`}>
-                                {STATUS_STYLES[FLOWS[i].status].label}
-                              </span>
-                            </div>
-                            <p className="text-xs text-white/35 mt-0.5">{FLOWS[i].meta}</p>
-                          </div>
-                          {i === activeFlowIndex && (
-                            <div className="h-1.5 w-1.5 rounded-full bg-[#2F8FFF] shrink-0" />
-                          )}
-                        </button>
-                      ))}
-                      <div className="h-2" />
-                    </div>
-                  )}
-                </div>
-
-                {/* Chat widget */}
-                <div className="flex-1 min-h-0 p-4">
-                  <div
-                    className="h-full flex flex-col overflow-hidden rounded-[4px]"
-                    style={{
-                      fontFamily: '"Noto IKEA","Noto Sans","Roboto","Open Sans",system-ui,sans-serif',
-                      boxShadow: "0 2px 16px rgba(0,0,0,0.2)",
-                    }}
-                  >
-                    {/* Yellow header */}
-                    <div className="bg-[#FFDA1A] px-4 py-3 flex items-center justify-between shrink-0">
-                      <div className="flex items-center gap-2">
-                        <MessageSquare className="w-4 h-4 text-[#111111]" strokeWidth={2} />
-                        <span className="text-[15px] font-bold text-[#111111] tracking-tight">Live IKEA Chat Simulator</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <button type="button" aria-label="Minimise" className="hover:opacity-60 transition-opacity">
-                          <ChevronDown className="w-4 h-4 text-[#111111]" strokeWidth={2} />
-                        </button>
-                        <button type="button" aria-label="Close" className="hover:opacity-60 transition-opacity">
-                          <X className="w-4 h-4 text-[#111111]" strokeWidth={2} />
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Messages */}
-                    <div className="flex-1 overflow-y-auto bg-white px-4 pt-4 pb-3 space-y-3">
-                      <p className="text-[12px] text-[#767676]">Billie the bot 🤖 has connected to the chat</p>
-
-                      <div className="border border-[#E0E0E0] bg-white rounded-[12px] px-3 py-2.5 max-w-[90%]">
-                        <p className="text-[14px] text-[#111111] leading-relaxed">
-                          {SIMULATOR_FLOWS[activeFlowIndex].greeting}
-                        </p>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-2">
-                        {SIMULATOR_FLOWS[activeFlowIndex].chips.map((label) => (
-                          <button
-                            key={label}
-                            type="button"
-                            onClick={() => handleChatSend(label)}
-                            className="bg-[#EBEBEB] rounded-[20px] px-2 py-2.5 text-[13px] font-bold text-[#111111] text-left leading-tight hover:bg-[#DCDCDC] transition-colors"
-                          >
-                            {label}
-                          </button>
-                        ))}
-                      </div>
-
-                      {messages.map((msg, i) => (
-                        msg.role === "user" ? (
-                          <div key={i} className="flex justify-end">
-                            <div className="px-3 py-2.5 max-w-[80%] bg-[#FFDA1A] rounded-[12px]">
-                              <p className="text-[14px] text-[#111111] leading-relaxed">{msg.text}</p>
-                            </div>
-                          </div>
-                        ) : (
-                          <div key={i} className="border border-[#E0E0E0] bg-white rounded-[12px] px-3 py-2.5 max-w-[90%]">
-                            <p className="text-[14px] text-[#111111] leading-relaxed">{msg.text}</p>
-                          </div>
-                        )
-                      ))}
-
-                      {isTyping && (
-                        <div className="border border-[#E0E0E0] bg-white rounded-[12px] px-3 py-2.5 max-w-[60px]">
-                          <div className="flex items-center gap-1">
-                            {[0, 1, 2].map((i) => (
-                              <span
-                                key={i}
-                                className="h-2 w-2 rounded-full bg-[#767676]"
-                                style={{ animation: `bounce 1.2s ease-in-out ${i * 0.2}s infinite` }}
-                              />
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      <div ref={messagesEndRef} />
-                    </div>
-
-                    {/* Input */}
-                    <div className="shrink-0 bg-white border-t border-[#E0E0E0] px-4 py-3 flex items-center gap-3">
-                      <input
-                        value={chatInput}
-                        onChange={(e) => setChatInput(e.target.value)}
-                        onKeyDown={handleChatKey}
-                        placeholder="Test your simulator here"
-                        className="flex-1 text-[14px] text-[#111111] placeholder:text-[#767676] bg-transparent border-none outline-none"
-                        style={{ fontFamily: '"Noto IKEA","Noto Sans","Roboto",system-ui,sans-serif' }}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => handleChatSend()}
-                        disabled={!chatInput.trim()}
-                        className="text-[#767676] disabled:text-[#CCCCCC] hover:text-[#111111] transition-colors"
-                      >
-                        <Send className="w-4 h-4" strokeWidth={1.5} />
-                      </button>
-                    </div>
+          {/* Right — IKEA chat simulator */}
+          <div className="col-span-5 h-full flex flex-col items-center justify-center py-4">
+            <div className="w-full max-w-[400px] flex flex-col flex-1 min-h-0">
+              <div
+                className="flex-1 min-h-0 flex flex-col overflow-hidden rounded-[4px]"
+                style={{
+                  fontFamily: '"Noto IKEA","Noto Sans","Roboto","Open Sans",system-ui,sans-serif',
+                  boxShadow: "0 2px 16px rgba(0,0,0,0.2)",
+                }}
+              >
+                {/* Yellow header */}
+                <div className="bg-[#FFDA1A] px-4 py-3 flex items-center justify-between shrink-0">
+                  <div className="flex items-center gap-2">
+                    <MessageSquare className="w-4 h-4 text-[#111111]" strokeWidth={2} />
+                    <span className="text-[15px] font-bold text-[#111111] tracking-tight">Live IKEA Chat Simulator</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button type="button" aria-label="Minimise" className="hover:opacity-60 transition-opacity">
+                      <ChevronDown className="w-4 h-4 text-[#111111]" strokeWidth={2} />
+                    </button>
+                    <button type="button" aria-label="Close" className="hover:opacity-60 transition-opacity">
+                      <X className="w-4 h-4 text-[#111111]" strokeWidth={2} />
+                    </button>
                   </div>
                 </div>
 
+                {/* Messages */}
+                <div className="flex-1 overflow-y-auto bg-white px-4 pt-4 pb-3 space-y-3">
+                  <p className="text-[12px] text-[#767676]">Billie the bot 🤖 has connected to the chat</p>
+
+                  <div className="border border-[#E0E0E0] bg-white rounded-[12px] px-3 py-2.5 max-w-[90%]">
+                    <p className="text-[14px] text-[#111111] leading-relaxed">
+                      {SIMULATOR_FLOWS[activeFlowIndex].greeting}
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    {SIMULATOR_FLOWS[activeFlowIndex].chips.map((label) => (
+                      <button
+                        key={label}
+                        type="button"
+                        onClick={() => handleChatSend(label)}
+                        className="bg-[#EBEBEB] rounded-[20px] px-2 py-2.5 text-[13px] font-bold text-[#111111] text-left leading-tight hover:bg-[#DCDCDC] transition-colors"
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {messages.map((msg, i) => (
+                    msg.role === "user" ? (
+                      <div key={i} className="flex justify-end">
+                        <div className="px-3 py-2.5 max-w-[80%] bg-[#FFDA1A] rounded-[12px]">
+                          <p className="text-[14px] text-[#111111] leading-relaxed">{msg.text}</p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div key={i} className="border border-[#E0E0E0] bg-white rounded-[12px] px-3 py-2.5 max-w-[90%]">
+                        <p className="text-[14px] text-[#111111] leading-relaxed">{msg.text}</p>
+                      </div>
+                    )
+                  ))}
+
+                  {isTyping && (
+                    <div className="border border-[#E0E0E0] bg-white rounded-[12px] px-3 py-2.5 max-w-[60px]">
+                      <div className="flex items-center gap-1">
+                        {[0, 1, 2].map((i) => (
+                          <span
+                            key={i}
+                            className="h-2 w-2 rounded-full bg-[#767676]"
+                            style={{ animation: `bounce 1.2s ease-in-out ${i * 0.2}s infinite` }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  <div ref={messagesEndRef} />
+                </div>
+
+                {/* Input */}
+                <div className="shrink-0 bg-white border-t border-[#E0E0E0] px-4 py-3 flex items-center gap-3">
+                  <input
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                    onKeyDown={handleChatKey}
+                    placeholder="Test your simulator here"
+                    className="flex-1 text-[14px] text-[#111111] placeholder:text-[#767676] bg-transparent border-none outline-none"
+                    style={{ fontFamily: '"Noto IKEA","Noto Sans","Roboto",system-ui,sans-serif' }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleChatSend()}
+                    disabled={!chatInput.trim()}
+                    className="text-[#767676] disabled:text-[#CCCCCC] hover:text-[#111111] transition-colors"
+                  >
+                    <Send className="w-4 h-4" strokeWidth={1.5} />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
