@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
-  basePath: '/Syndeo-UX',
+  // Use basePath only for production builds (GitHub Pages)
+  basePath: process.env.NODE_ENV === 'production' ? '/Syndeo-UX' : '',
   typescript: {
     ignoreBuildErrors: true,
   },

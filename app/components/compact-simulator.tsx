@@ -6,145 +6,147 @@ import { Button } from "@/components/ui/button"
 import {
   ChevronUp,
   ChevronDown,
-  Play,
   MessageSquare,
-  Zap,
   RefreshCw,
   Minimize2,
   Maximize2,
   ArrowLeftRight,
+  Send,
 } from "lucide-react"
 import { Input } from "@/components/ui/input"
 
-export function CompactSimulator() {
+export function CompactSimulator({ theme = "ikea" }: { theme?: "ikea" | "default" }) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [isMaximized, setIsMaximized] = useState(false)
+
+  const isIkea = theme === "ikea"
+  const headerBg = isIkea ? "bg-[#FFDA1A]" : "bg-[#2F8FFF]"
+  const headerText = isIkea ? "text-black" : "text-white"
+  const borderColor = isIkea ? "border-[#FFDA1A]" : "border-[#2F8FFF]"
+  const userBubbleBg = isIkea ? "bg-[#FFDA1A]" : "bg-[#2F8FFF]"
+  const userBubbleText = isIkea ? "text-[#111111]" : "text-white"
+  const title = isIkea ? "IKEA Simulator" : "Simulator"
 
   return (
     <div className="fixed bottom-6 left-6 z-50">
       <Card
-        className={`bg-white shadow-2xl border-2 border-[#2F8FFF] overflow-hidden transition-all duration-300 ${isMaximized ? "w-[500px]" : "w-64"}`}
+        className={`bg-white shadow-2xl border-2 ${borderColor} transition-all duration-300 px-2 !gap-0 ${isExpanded ? "!py-0" : "!py-4"} ${isMaximized ? "w-[400px]" : "w-72"}`}
       >
+        {/* Header */}
         <div
-          className="bg-[#2F8FFF] px-4 py-3 flex items-center justify-between cursor-pointer"
+          className={`${headerBg} px-4 py-3 flex items-center justify-between cursor-pointer -mx-2 ${isExpanded ? "rounded-t-lg" : ""}`}
           onClick={(e) => {
             if ((e.target as HTMLElement).tagName !== "BUTTON" && !(e.target as HTMLElement).closest("button")) {
               setIsExpanded(!isExpanded)
             }
           }}
         >
-          <div className="flex items-center gap-3">
-            <ArrowLeftRight className="w-4 h-4 text-white" />
-            <span className="text-sm font-semibold text-white">Simulator</span>
-          </div>
           <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6 text-white hover:bg-[#2680E8]"
-              onClick={(e) => {
-                e.stopPropagation()
-              }}
-            >
-              <Zap className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6 text-white hover:bg-[#2680E8]"
-              onClick={(e) => {
-                e.stopPropagation()
-              }}
-            >
-              <RefreshCw className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6 text-white hover:bg-[#2680E8]"
-              onClick={(e) => {
-                e.stopPropagation()
-                setIsExpanded(false)
-              }}
-            >
-              <Minimize2 className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6 text-white hover:bg-[#2680E8]"
-              onClick={(e) => {
-                e.stopPropagation()
-                setIsMaximized(!isMaximized)
-              }}
-            >
-              <Maximize2 className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6 text-white hover:bg-[#2680E8]"
-              onClick={(e) => {
-                e.stopPropagation()
-                setIsExpanded(!isExpanded)
-              }}
-            >
-              {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
-            </Button>
+            <span className={`text-sm font-bold ${headerText}`}>{title}</span>
+            <ArrowLeftRight className={`w-3.5 h-3.5 ${headerText} opacity-50`} />
+          </div>
+          <div className="flex items-center gap-1">
+            <div className="group relative">
+              <Button
+                variant="ghost"
+                size="icon"
+                className={`h-6 w-6 ${headerText} hover:bg-black/10`}
+                onClick={(e) => { e.stopPropagation() }}
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+              </Button>
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-[#1E293B] text-white text-xs rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                Restart
+                <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#1E293B]" />
+              </div>
+            </div>
+            <div className="group relative">
+              <Button
+                variant="ghost"
+                size="icon"
+                className={`h-6 w-6 ${headerText} hover:bg-black/10`}
+                onClick={(e) => { e.stopPropagation(); setIsExpanded(false) }}
+              >
+                <Minimize2 className="w-3.5 h-3.5" />
+              </Button>
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-[#1E293B] text-white text-xs rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                Collapse
+                <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#1E293B]" />
+              </div>
+            </div>
+            <div className="group relative">
+              <Button
+                variant="ghost"
+                size="icon"
+                className={`h-6 w-6 ${headerText} hover:bg-black/10`}
+                onClick={(e) => { e.stopPropagation(); setIsMaximized(!isMaximized) }}
+              >
+                <Maximize2 className="w-3.5 h-3.5" />
+              </Button>
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-[#1E293B] text-white text-xs rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                {isMaximized ? "Shrink" : "Expand"}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#1E293B]" />
+              </div>
+            </div>
+            <div className="group relative">
+              <Button
+                variant="ghost"
+                size="icon"
+                className={`h-6 w-6 ${headerText} hover:bg-black/10`}
+                onClick={(e) => { e.stopPropagation(); setIsExpanded(!isExpanded) }}
+              >
+                {isExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
+              </Button>
+              <div className="absolute bottom-full right-0 mb-2 px-2 py-1 bg-[#1E293B] text-white text-xs rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                {isExpanded ? "Close chat" : "Open chat"}
+                <div className="absolute top-full right-2 border-4 border-transparent border-t-[#1E293B]" />
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Expanded Content */}
-        {isExpanded && (
-          <div>
-            <div className="p-4 space-y-4 h-[400px] overflow-y-auto bg-[#F6F8FA]">
-              <div className="flex gap-2">
-                <div className="w-8 h-8 rounded-full bg-[#E8F0FB] flex items-center justify-center flex-shrink-0">
-                  <MessageSquare className="w-4 h-4 text-[#2F8FFF]" />
-                </div>
-                <div className="flex-1">
-                  <div className="bg-white rounded-lg p-3 shadow-sm border border-[#E8F0FB]">
-                    <p className="text-sm text-[#3B4760]">Welcome! How can I help you today?</p>
-                  </div>
-                </div>
+        {/* Chat content */}
+        <div className={`rounded-b-lg overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"}`}>
+          <div className="p-4 space-y-3 h-[380px] overflow-y-auto bg-white">
+              <p className="text-xs text-center text-[#767676]">Billie the bot 🤖 has connected to the chat</p>
+
+              <div className="bg-white border border-[#E0E0E0] rounded-2xl rounded-tl-sm px-4 py-3">
+                <p className="text-sm text-[#111111]">Hej! I'm Billie 🤖, your IKEA United Kingdom customer support bot.</p>
               </div>
 
-              <div className="flex gap-2 justify-end">
-                <div className="flex-1 max-w-[70%]">
-                  <div className="bg-[#2F8FFF] rounded-lg p-3 shadow-sm">
-                    <p className="text-sm text-white">I need help with my account</p>
-                  </div>
-                </div>
-                <div className="w-8 h-8 rounded-full bg-[#6A738A] flex items-center justify-center flex-shrink-0">
-                  <span className="text-xs font-semibold text-white">U</span>
-                </div>
+              <div className="bg-white border border-[#E0E0E0] rounded-2xl rounded-tl-sm px-4 py-3">
+                <p className="text-sm text-[#111111]">I perform best when you ask full questions. To get started, type your question or choose one of the following options:</p>
               </div>
 
-              <div className="flex gap-2">
-                <div className="w-8 h-8 rounded-full bg-[#E8F0FB] flex items-center justify-center flex-shrink-0">
-                  <MessageSquare className="w-4 h-4 text-[#2F8FFF]" />
-                </div>
-                <div className="flex-1">
-                  <div className="bg-white rounded-lg p-3 shadow-sm border border-[#E8F0FB]">
-                    <p className="text-sm text-[#3B4760]">I'd be happy to help! Can you provide your email address?</p>
-                  </div>
+              <div className="flex flex-wrap gap-2 pt-1">
+                {["📦 Manage your Order", "📄 Case Status", "🔧 Spare Parts", "💥 Damaged Item"].map((label) => (
+                  <button
+                    key={label}
+                    className="px-3 py-2 bg-[#F0F0F0] rounded-full text-xs font-semibold text-[#111111] hover:bg-[#E0E0E0] transition-colors"
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="flex justify-end">
+                <div className={`${userBubbleBg} rounded-2xl rounded-tr-sm px-4 py-3 max-w-[80%]`}>
+                  <p className={`text-sm ${userBubbleText}`}>I need help with my order</p>
                 </div>
               </div>
             </div>
 
-            <div className="p-4 border-t border-[#E8F0FB] bg-white">
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Type a message..."
-                  className="flex-1 text-sm border-[#E8F0FB] focus:border-[#2F8FFF]"
-                />
-                <Button size="icon" className="bg-[#2F8FFF] hover:bg-[#2680E8] text-white">
-                  <Play className="w-4 h-4" />
-                </Button>
-              </div>
+            {/* Input */}
+            <div className="px-4 py-3 border-t border-[#E0E0E0] bg-white flex items-center gap-2 rounded-b-lg">
+              <Input
+                placeholder="Type your message here."
+                className="flex-1 text-sm border-none shadow-none focus-visible:ring-0 text-[#111111] placeholder:text-[#767676]"
+              />
+              <button className="text-[#767676] hover:text-[#111111] transition-colors">
+                <Send className="w-4 h-4" />
+              </button>
             </div>
           </div>
-        )}
       </Card>
     </div>
   )
