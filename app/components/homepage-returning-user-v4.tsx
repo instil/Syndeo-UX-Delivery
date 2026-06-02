@@ -149,7 +149,7 @@ export function HomepageReturningUserV4() {
               </div>
 
               {/* Syndeo Agent prompt */}
-              <div className="mt-10 pt-8 border-t border-white/10">
+              <div className="mt-10 pt-8">
                 <div className="flex items-center gap-2 justify-center mb-4">
                   <span
                     className="block w-4 bg-[#2F8FFF]"
