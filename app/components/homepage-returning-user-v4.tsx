@@ -97,7 +97,6 @@ export function HomepageReturningUserV4() {
                         <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${STATUS_STYLES[flow.status].className}`}>
                           {STATUS_STYLES[flow.status].label}
                         </span>
-                        <span className="text-white/35 text-xs">{flow.meta}</span>
                       </div>
                     </div>
                     <ArrowRight className="h-5 w-5 text-white/20 group-hover:text-white/50 group-hover:translate-x-0.5 transition-all shrink-0" />
