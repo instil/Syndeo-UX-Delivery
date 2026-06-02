@@ -246,7 +246,7 @@ export function HomepageReturningUserV3() {
           </div>
 
           {/* Right — IKEA Billie simulator + analytics */}
-          <div className="col-span-5 flex flex-col items-center justify-start py-4 gap-4 overflow-y-auto">
+          <div className="col-span-5 flex flex-col items-center justify-center py-4 gap-4 overflow-y-auto">
             <div className="w-full max-w-[376px]">
 
               {/* IKEA Billie chat widget — pixel-accurate */}
