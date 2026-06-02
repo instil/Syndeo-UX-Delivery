@@ -26,6 +26,13 @@ const DEFAULT_BOT_REPLY = "Thanks for your message! Let me look into that for yo
 
 type ChatMessage = { role: "user" | "bot"; text: string }
 
+const TYPEWRITER_PROMPTS = [
+  "Create a flow for damaged items",
+  "Show unpublished flows",
+  "Find flows using Salesforce",
+  "Create a returns journey",
+]
+
 const FLOWS = [
   { name: "Returns Flow", meta: "Last edited 1 hour ago", status: "active", path: "/flows?flow=Returns" },
   { name: "Order Tracking", meta: "Draft", status: "draft", path: "/flows?flow=Order%20Tracking" },
@@ -41,7 +48,42 @@ const STATUS_STYLES: Record<string, { label: string; className: string }> = {
 export function HomepageReturningUserV4() {
   const router = useRouter()
   const [prompt, setPrompt] = useState("")
+  const [promptFocused, setPromptFocused] = useState(false)
   const promptRef = useRef<HTMLInputElement>(null)
+
+  // Typewriter state
+  const [displayText, setDisplayText] = useState("")
+  const [promptIndex, setPromptIndex] = useState(0)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [showCursor, setShowCursor] = useState(true)
+
+  // Typewriter effect
+  useEffect(() => {
+    if (promptFocused || prompt) return
+    const current = TYPEWRITER_PROMPTS[promptIndex % TYPEWRITER_PROMPTS.length]
+    let t: ReturnType<typeof setTimeout>
+    if (!isDeleting) {
+      if (displayText.length < current.length) {
+        t = setTimeout(() => setDisplayText(current.slice(0, displayText.length + 1)), 60)
+      } else {
+        t = setTimeout(() => setIsDeleting(true), 2500)
+      }
+    } else {
+      if (displayText.length > 0) {
+        t = setTimeout(() => setDisplayText(displayText.slice(0, -1)), 30)
+      } else {
+        setIsDeleting(false)
+        setPromptIndex(i => (i + 1) % TYPEWRITER_PROMPTS.length)
+      }
+    }
+    return () => clearTimeout(t)
+  }, [displayText, isDeleting, promptIndex, promptFocused, prompt])
+
+  // Blinking cursor
+  useEffect(() => {
+    const interval = setInterval(() => setShowCursor(s => !s), 530)
+    return () => clearInterval(interval)
+  }, [])
   const [chatInput, setChatInput] = useState("")
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isTyping, setIsTyping] = useState(false)
@@ -125,15 +167,28 @@ export function HomepageReturningUserV4() {
                     onClick={() => promptRef.current?.focus()}
                   >
                     <Sparkles className="h-4 w-4 text-white/25 shrink-0" />
-                    <input
-                      ref={promptRef}
-                      value={prompt}
-                      onChange={(e) => setPrompt(e.target.value)}
-                      onKeyDown={(e) => { if (e.key === "Enter" && prompt.trim()) router.push("/flows?new=true") }}
-                      placeholder="Describe what you'd like to build…"
-                      className="flex-1 bg-transparent text-white text-sm outline-none placeholder:text-white/30"
-                      style={{ caretColor: "#2F8FFF" }}
-                    />
+                    <div className="relative flex-1">
+                      {!promptFocused && !prompt && (
+                        <div className="pointer-events-none absolute inset-0 flex items-center">
+                          <span className="text-sm text-white/30">{displayText}</span>
+                          <span
+                            className="inline-block w-[1.5px] h-[14px] bg-[#2F8FFF] ml-0.5 align-middle"
+                            style={{ opacity: showCursor ? 1 : 0, transition: "opacity 0.1s" }}
+                          />
+                        </div>
+                      )}
+                      <input
+                        ref={promptRef}
+                        value={prompt}
+                        onChange={(e) => setPrompt(e.target.value)}
+                        onFocus={() => setPromptFocused(true)}
+                        onBlur={() => setPromptFocused(false)}
+                        onKeyDown={(e) => { if (e.key === "Enter" && prompt.trim()) router.push("/flows?new=true") }}
+                        placeholder=""
+                        className="w-full bg-transparent text-white text-sm outline-none"
+                        style={{ caretColor: "#2F8FFF" }}
+                      />
+                    </div>
                     <button
                       type="button"
                       aria-label="Use microphone"
