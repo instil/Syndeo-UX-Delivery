@@ -227,7 +227,7 @@ export function HomepageReturningUserV4() {
         </div>
 
         {/* Bottom — Recent flows + simulator */}
-        <div className="flex justify-center gap-8">
+        <div className="flex justify-center gap-16">
 
           {/* Left — Your Recent Flows */}
           <div className="flex flex-col w-full max-w-[480px]">
