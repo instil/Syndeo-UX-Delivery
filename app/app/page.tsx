@@ -7,6 +7,10 @@ import { HomepageNewUser } from "@/components/homepage-new-user"
 import { HomepageReturningUser } from "@/components/homepage-returning-user"
 import { HomepageReturningUserV2 } from "@/components/homepage-returning-user-v2"
 import { HomepageReturningUserV3 } from "@/components/homepage-returning-user-v3"
+import { HomepageReturningUserV4 } from "@/components/homepage-returning-user-v4"
+import { HomepageReturningUserV4A } from "@/components/homepage-returning-user-v4a"
+import { HomepageReturningUserV4B } from "@/components/homepage-returning-user-v4b"
+import { HomepageReturningUserV4C } from "@/components/homepage-returning-user-v4c"
 import { CompactSimulator } from "@/components/compact-simulator"
 import { VersionSwitcher } from "@/components/version-switcher"
 
@@ -14,7 +18,7 @@ export default function DashboardPage() {
   const [showSplash, setShowSplash] = useState(true)
   // Toggle this to test new user vs returning user experience
   const [isNewUser, setIsNewUser] = useState(true)
-  const [homepageVersion, setHomepageVersion] = useState<"v1" | "v2" | "v3">("v1")
+  const [homepageVersion, setHomepageVersion] = useState<"v1" | "v2" | "v3" | "v4" | "v4a" | "v4b" | "v4c">("v1")
 
   const handleEnterPrototype = () => {
     setShowSplash(false)
@@ -31,12 +35,12 @@ export default function DashboardPage() {
   return (
     <div
       className={`min-h-screen ${
-        !isNewUser && (homepageVersion === "v2" || homepageVersion === "v3")
+        !isNewUser && (homepageVersion === "v2" || homepageVersion === "v3" || homepageVersion === "v4" || homepageVersion === "v4a" || homepageVersion === "v4b" || homepageVersion === "v4c")
           ? "bg-[#272C41]"
           : "bg-[#F6F8FA]"
       }`}
     >
-      <Header onShowSplash={handleShowSplash} showingDashboard={!showSplash} dark={!isNewUser && (homepageVersion === "v2" || homepageVersion === "v3")} />
+      <Header onShowSplash={handleShowSplash} showingDashboard={!showSplash} dark={!isNewUser && (homepageVersion === "v2" || homepageVersion === "v3" || homepageVersion === "v4" || homepageVersion === "v4a" || homepageVersion === "v4b" || homepageVersion === "v4c")} />
 
       <VersionSwitcher
         version={homepageVersion}
@@ -52,6 +56,14 @@ export default function DashboardPage() {
           <HomepageReturningUserV2 />
         ) : homepageVersion === "v3" ? (
           <HomepageReturningUserV3 />
+        ) : homepageVersion === "v4" ? (
+          <HomepageReturningUserV4 />
+        ) : homepageVersion === "v4a" ? (
+          <HomepageReturningUserV4A />
+        ) : homepageVersion === "v4b" ? (
+          <HomepageReturningUserV4B />
+        ) : homepageVersion === "v4c" ? (
+          <HomepageReturningUserV4C />
         ) : (
           <HomepageReturningUser />
         )}
