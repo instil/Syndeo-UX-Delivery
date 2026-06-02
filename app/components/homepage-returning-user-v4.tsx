@@ -92,10 +92,10 @@ export function HomepageReturningUserV4() {
                     className="w-full flex items-center gap-5 rounded-2xl border border-white/10 bg-white/[0.04] px-7 py-5 text-left hover:bg-white/[0.08] hover:border-white/20 transition-all group"
                   >
                     <div className="flex-1 min-w-0">
-                      <p className="text-white text-xl font-medium group-hover:text-white/90 transition-colors">
-                        {flow.name}
-                      </p>
-                      <div className="flex items-center gap-2 mt-1.5">
+                      <div className="flex items-center gap-3">
+                        <p className="text-white text-xl font-medium group-hover:text-white/90 transition-colors">
+                          {flow.name}
+                        </p>
                         <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${STATUS_STYLES[flow.status].className}`}>
                           {STATUS_STYLES[flow.status].label}
                         </span>
