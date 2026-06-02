@@ -82,7 +82,7 @@ export function HomepageReturningUserV4() {
               </div>
 
               <h1 className="text-5xl font-light tracking-tight text-white mb-10">
-                Pick up where you left off
+                Hi IKEA, pick up where you left off
               </h1>
 
               <div className="flex flex-col gap-3">
