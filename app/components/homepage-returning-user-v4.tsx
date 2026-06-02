@@ -66,8 +66,8 @@ const TYPEWRITER_PROMPTS = [
 
 const FLOWS = [
   { name: "Returns Flow", meta: "Last edited 1 hour ago", status: "active", path: "/flows?flow=Returns" },
-  { name: "Order Tracking", meta: "Draft", status: "draft", path: "/flows?flow=Order%20Tracking" },
-  { name: "Account Set Up", meta: "Published", status: "published", path: "/flows?flow=Account%20Set%20Up" },
+  { name: "Order Tracking", meta: "Last edited 2 days ago", status: "draft", path: "/flows?flow=Order%20Tracking" },
+  { name: "Account Set Up", meta: "Last edited 5 days ago", status: "published", path: "/flows?flow=Account%20Set%20Up" },
 ]
 
 const STATUS_STYLES: Record<string, { label: string; className: string }> = {
@@ -193,13 +193,13 @@ export function HomepageReturningUserV4() {
 
                     {/* Flow info */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-3">
-                        <p className="text-white text-lg font-medium">{flow.name}</p>
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <p className="text-white text-lg font-medium leading-none">{flow.name}</p>
                         <span className={`text-sm font-medium px-3 py-1 rounded-full ${STATUS_STYLES[flow.status].className}`}>
                           {STATUS_STYLES[flow.status].label}
                         </span>
                       </div>
-                      <p className="text-xs text-white/35 mt-0.5">{flow.meta}</p>
+                      <p className="text-xs text-white/35 mt-1.5">{flow.meta}</p>
                     </div>
 
                     {/* Run button */}
