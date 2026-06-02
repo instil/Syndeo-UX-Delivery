@@ -170,9 +170,9 @@ export function HomepageReturningUserV4() {
                     <div className="relative flex-1">
                       {!promptFocused && !prompt && (
                         <div className="pointer-events-none absolute inset-0 flex items-center">
-                          <span className="text-sm text-white/30">{displayText}</span>
+                          <span className="text-base text-white/30">{displayText}</span>
                           <span
-                            className="inline-block w-[1.5px] h-[14px] bg-[#2F8FFF] ml-0.5 align-middle"
+                            className="inline-block w-[1.5px] h-[16px] bg-[#2F8FFF] ml-0.5 align-middle"
                             style={{ opacity: showCursor ? 1 : 0, transition: "opacity 0.1s" }}
                           />
                         </div>
@@ -185,7 +185,7 @@ export function HomepageReturningUserV4() {
                         onBlur={() => setPromptFocused(false)}
                         onKeyDown={(e) => { if (e.key === "Enter" && prompt.trim()) router.push("/flows?new=true") }}
                         placeholder=""
-                        className="w-full bg-transparent text-white text-sm outline-none"
+                        className="w-full bg-transparent text-white text-base outline-none"
                         style={{ caretColor: "#2F8FFF" }}
                       />
                     </div>
