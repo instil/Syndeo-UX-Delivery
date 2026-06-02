@@ -96,7 +96,7 @@ export function HomepageReturningUserV4() {
                         <p className="text-white text-xl font-medium group-hover:text-white/90 transition-colors">
                           {flow.name}
                         </p>
-                        <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${STATUS_STYLES[flow.status].className}`}>
+                        <span className={`text-sm font-medium px-3 py-1 rounded-full ${STATUS_STYLES[flow.status].className}`}>
                           {STATUS_STYLES[flow.status].label}
                         </span>
                       </div>
