@@ -215,51 +215,6 @@ export function HomepageReturningUserV4() {
             </div>
           </div>
 
-          {/* Right — Pick up where you left off */}
-          <div className="relative col-span-7 flex flex-col justify-center">
-            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-              <div className="h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle,rgba(47,143,255,0.2)_0%,transparent_70%)] blur-3xl" />
-            </div>
-
-            <div className="relative z-10 mx-auto w-full max-w-xl">
-              {/* Syndeo Agent label */}
-              <div className="mb-6 inline-flex items-center gap-2">
-                <span
-                  className="block w-4 bg-[#2F8FFF]"
-                  style={{ height: "3px", animation: "spin-pause 2.4s linear infinite" }}
-                />
-                <span className="text-xs font-semibold uppercase tracking-widest text-white/50">
-                  Syndeo Agent
-                </span>
-              </div>
-
-              <h1 className="text-5xl font-light tracking-tight text-white mb-10">
-                Pick up where you left off
-              </h1>
-
-              {/* Flow buttons */}
-              <div className="flex flex-col gap-3">
-                {FLOWS.map((flow) => (
-                  <button
-                    key={flow.name}
-                    type="button"
-                    onClick={() => router.push(flow.path)}
-                    className="w-full flex items-center gap-5 rounded-2xl border border-white/10 bg-white/[0.04] px-7 py-5 text-left hover:bg-white/[0.08] hover:border-white/20 transition-all group"
-                  >
-                    <span className="h-3 w-3 rounded-full bg-[#A64E8D] shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-white text-xl font-medium group-hover:text-white/90 transition-colors">
-                        {flow.name}
-                      </p>
-                      <p className="text-white/35 text-sm mt-0.5">{flow.meta}</p>
-                    </div>
-                    <ArrowRight className="h-5 w-5 text-white/20 group-hover:text-white/50 group-hover:translate-x-0.5 transition-all shrink-0" />
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
         </div>
       </div>
     </div>
