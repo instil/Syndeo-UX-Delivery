@@ -83,7 +83,6 @@ export function HomepageReturningUserV4() {
                     onClick={() => router.push(flow.path)}
                     className="w-full flex items-center gap-5 rounded-2xl border border-white/10 bg-white/[0.04] px-7 py-5 text-left hover:bg-white/[0.08] hover:border-white/20 transition-all group"
                   >
-                    <span className="h-3 w-3 rounded-full bg-[#A64E8D] shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="text-white text-xl font-medium group-hover:text-white/90 transition-colors">
                         {flow.name}
