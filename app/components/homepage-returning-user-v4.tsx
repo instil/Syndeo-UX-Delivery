@@ -71,16 +71,6 @@ export function HomepageReturningUserV4() {
             </div>
 
             <div className="relative z-10 mx-auto w-full max-w-xl text-center">
-              <div className="mb-6 inline-flex items-center gap-2">
-                <span
-                  className="block w-4 bg-[#2F8FFF]"
-                  style={{ height: "3px", animation: "spin-pause 2.4s linear infinite" }}
-                />
-                <span className="text-xs font-semibold uppercase tracking-widest text-white/50">
-                  Syndeo Agent
-                </span>
-              </div>
-
               <h1 className="text-5xl font-light tracking-tight text-white mb-10">
                 Hi IKEA, pick up where you left off
               </h1>
