@@ -108,7 +108,7 @@ export function HomepageReturningUserV4() {
           </div>
 
           {/* Right — IKEA chat widget (V2) */}
-          <div className="col-span-5 flex flex-col items-center justify-center py-4">
+          <div className="col-span-5 h-full flex flex-col items-center justify-center py-4">
             <div className="w-full max-w-[376px]">
               <div
                 className="flex flex-col overflow-hidden h-[580px] rounded-[4px]"
