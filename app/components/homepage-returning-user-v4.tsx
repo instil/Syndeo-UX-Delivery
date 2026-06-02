@@ -160,9 +160,9 @@ export function HomepageReturningUserV4() {
             <div className="h-[400px] w-[700px] rounded-full bg-[radial-gradient(circle,rgba(47,143,255,0.15)_0%,transparent_70%)] blur-3xl" />
           </div>
 
-          <div className="relative z-10 w-full max-w-2xl">
+          <div className="relative z-10 w-full max-w-xl">
             {/* Label */}
-            <div className="flex items-center gap-2 justify-center mb-5">
+            <div className="flex items-center gap-2 justify-center mb-4">
               <span
                 className="block w-4 bg-[#2F8FFF]"
                 style={{ height: "3px", animation: "spin-pause 2.4s linear infinite" }}
@@ -171,14 +171,14 @@ export function HomepageReturningUserV4() {
             </div>
 
             {/* Hero headline */}
-            <h1 className="text-6xl font-light tracking-tight text-white mb-8">
+            <h1 className="text-6xl font-light tracking-tight text-white mb-6">
               Start something new
             </h1>
 
             {/* Gradient prompt box */}
             <div className="rounded-2xl p-[1px]" style={{ background: "linear-gradient(135deg, #A64E8D 0%, rgba(255,255,255,0.2) 45%, #2F8FFF 100%)" }}>
               <div
-                className="flex items-center gap-3 rounded-2xl px-7 py-5 cursor-text"
+                className="flex items-center gap-3 rounded-2xl px-5 py-3.5 cursor-text"
                 style={{ background: "#32374B" }}
                 onClick={() => promptRef.current?.focus()}
               >
@@ -208,18 +208,18 @@ export function HomepageReturningUserV4() {
                 <button
                   type="button"
                   aria-label="Use microphone"
-                  className="h-11 w-11 flex items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white transition-all shrink-0"
+                  className="h-9 w-9 flex items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white transition-all shrink-0"
                 >
-                  <Mic className="h-5 w-5" />
+                  <Mic className="h-4 w-4" />
                 </button>
                 <button
                   type="button"
                   onClick={() => prompt.trim() && router.push("/flows?new=true")}
                   disabled={!prompt.trim()}
                   aria-label="Get started"
-                  className="h-10 w-10 flex items-center justify-center rounded-xl bg-[#A64E8D] text-white hover:bg-[#8f3f78] disabled:opacity-40 disabled:cursor-not-allowed transition-colors shrink-0"
+                  className="h-8 w-8 flex items-center justify-center rounded-xl bg-[#A64E8D] text-white hover:bg-[#8f3f78] disabled:opacity-40 disabled:cursor-not-allowed transition-colors shrink-0"
                 >
-                  <Send className="h-4 w-4" />
+                  <Send className="h-3.5 w-3.5" />
                 </button>
               </div>
             </div>
