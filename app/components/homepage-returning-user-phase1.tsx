@@ -174,14 +174,14 @@ export function HomepageReturningUserPhase1() {
 
   return (
     <div className="min-h-[calc(100vh-64px)] overflow-y-auto bg-[#272C41]" style={{ scrollbarWidth: "none" }}>
-      <div className="pointer-events-none absolute inset-x-0 top-16 flex justify-center">
-        <div className="h-[300px] w-[800px] rounded-full bg-[radial-gradient(circle,rgba(47,143,255,0.10)_0%,transparent_70%)] blur-3xl" />
-      </div>
-
       <div className="relative z-10 container mx-auto px-6 py-8">
 
         {/* Header: greeting centred + metrics row */}
-        <div className="mb-8 flex flex-col items-center text-center gap-4">
+        <div className="relative mb-8 flex flex-col items-center text-center gap-4">
+          {/* Glow */}
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+            <div className="h-[400px] w-[700px] rounded-full bg-[radial-gradient(circle,rgba(47,143,255,0.15)_0%,transparent_70%)] blur-3xl" />
+          </div>
           <div>
             <h1 className="text-4xl font-light tracking-tight text-white">{greeting} IKEA.</h1>
             <p className="text-4xl font-light tracking-tight text-white">Here's how your agent is doing today.</p>
