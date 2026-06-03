@@ -84,11 +84,11 @@ const SIMULATOR_FLOWS: SimulatorFlow[] = [
 type ChatMessage = { role: "user" | "bot"; text: string }
 
 const FLOWS = [
-  { name: "Returns Flow", meta: "Last edited 1 hour ago", status: "active", path: "/flows?flow=Returns" },
-  { name: "Order Tracking", meta: "Last edited 2 days ago", status: "draft", path: "/flows?flow=Order%20Tracking" },
-  { name: "Account Set Up", meta: "Last edited 5 days ago", status: "published", path: "/flows?flow=Account%20Set%20Up" },
-  { name: "Delivery Query", meta: "Last edited 1 week ago", status: "draft", path: "/flows?flow=Delivery%20Query" },
-  { name: "Product Availability", meta: "Last edited 2 weeks ago", status: "published", path: "/flows?flow=Product%20Availability" },
+  { name: "Returns Flow", meta: "Edited 1 hour ago", status: "active", path: "/flows?flow=Returns" },
+  { name: "Order Tracking", meta: "Edited 2 days ago", status: "draft", path: "/flows?flow=Order%20Tracking" },
+  { name: "Account Set Up", meta: "Edited 5 days ago", status: "published", path: "/flows?flow=Account%20Set%20Up" },
+  { name: "Delivery Query", meta: "Edited 1 week ago", status: "draft", path: "/flows?flow=Delivery%20Query" },
+  { name: "Product Availability", meta: "Edited 2 weeks ago", status: "published", path: "/flows?flow=Product%20Availability" },
 ]
 
 const STATUS_STYLES: Record<string, { label: string; className: string }> = {
