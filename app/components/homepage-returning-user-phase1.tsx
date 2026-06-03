@@ -180,7 +180,7 @@ export function HomepageReturningUserPhase1() {
         {/* Header: greeting centred + metrics row */}
         <div className="mb-8 flex flex-col items-center text-center gap-4">
           <div>
-            <h1 className="text-4xl font-light tracking-tight text-white">Welcome back, IKEA 👋</h1>
+            <h1 className="text-4xl font-light tracking-tight text-white">Welcome back, IKEA</h1>
             <p className="mt-1 text-sm text-white/40">Here's how your bot is doing today</p>
           </div>
 
