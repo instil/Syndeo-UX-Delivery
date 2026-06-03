@@ -276,7 +276,7 @@ export function HomepageReturningUserPhase1() {
             {/* IKEA Chat Simulator */}
             <div className="shrink-0 p-4">
               <div
-                className="flex h-[520px] w-[376px] flex-col overflow-hidden rounded-[4px]"
+                className="flex h-[280px] w-[376px] flex-col overflow-hidden rounded-[4px]"
                 style={{
                   fontFamily: '"Noto IKEA","Noto Sans","Roboto","Open Sans",system-ui,sans-serif',
                   boxShadow: "0 2px 16px rgba(0,0,0,0.2)",
