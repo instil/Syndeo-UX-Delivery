@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect, useRef, type KeyboardEvent } from "react"
+import { useState, useEffect, useRef, KeyboardEvent } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowRight, ChevronDown, MessageSquare, Mic, Pencil, Play, Send, Sparkles, X } from "lucide-react"
+import { ChevronDown, MessageSquare, Mic, ArrowRight, Play, Square, Send, Sparkles, X } from "lucide-react"
 
 const DEFAULT_BOT_REPLY = "Thanks for your message! Let me look into that for you. Could you provide a bit more detail so I can help?"
 
@@ -53,6 +53,32 @@ const SIMULATOR_FLOWS: SimulatorFlow[] = [
       "❓ Account help": "I'm here to help! Could you describe the issue you're experiencing with your account?",
     },
   },
+  {
+    label: "Delivery Query",
+    greeting: "Hej! I'm Billie 🤖. I can help with your delivery query. What would you like to know?",
+    chips: ["📦 Where's my order?", "🚚 Delivery delay", "📅 Reschedule delivery", "🏠 Change address", "❓ Delivery cost", "📄 Delivery receipt"],
+    replies: {
+      "📦 Where's my order?": "I can look up your delivery status. Please share your order number and I'll check right away.",
+      "🚚 Delivery delay": "I'm sorry your delivery is delayed. Could you share your order number so I can investigate?",
+      "📅 Reschedule delivery": "I can help reschedule your delivery. Please share your order number and preferred dates.",
+      "🏠 Change address": "I can check if your address can still be updated. Please share your order number.",
+      "❓ Delivery cost": "Delivery costs vary by order size and location. Could you share your postcode for an accurate quote?",
+      "📄 Delivery receipt": "I can resend your delivery confirmation. What email address is linked to your order?",
+    },
+  },
+  {
+    label: "Product Availability",
+    greeting: "Hej! I'm Billie 🤖. I can help you check product availability. What are you looking for?",
+    chips: ["🔍 Check stock", "🏪 Find in store", "📦 Online availability", "🔔 Stock alert", "🔄 Alternative product", "❓ Product query"],
+    replies: {
+      "🔍 Check stock": "I can check stock levels for you. Could you share the product name or article number?",
+      "🏪 Find in store": "I can check which stores have your item. Please share the product and your nearest postcode.",
+      "📦 Online availability": "I can check online availability. Please share the product name or article number.",
+      "🔔 Stock alert": "I can set up a stock alert for you. Please share the product article number and your email.",
+      "🔄 Alternative product": "I can suggest similar alternatives. Could you describe what you're looking for?",
+      "❓ Product query": "Happy to help with your product question. What would you like to know?",
+    },
+  },
 ]
 
 type ChatMessage = { role: "user" | "bot"; text: string }
@@ -68,12 +94,14 @@ const FLOWS = [
   { name: "Returns Flow", meta: "Last edited 1 hour ago", status: "active", path: "/flows?flow=Returns" },
   { name: "Order Tracking", meta: "Last edited 2 days ago", status: "draft", path: "/flows?flow=Order%20Tracking" },
   { name: "Account Set Up", meta: "Last edited 5 days ago", status: "published", path: "/flows?flow=Account%20Set%20Up" },
+  { name: "Delivery Query", meta: "Last edited 1 week ago", status: "draft", path: "/flows?flow=Delivery%20Query" },
+  { name: "Product Availability", meta: "Last edited 2 weeks ago", status: "published", path: "/flows?flow=Product%20Availability" },
 ]
 
 const STATUS_STYLES: Record<string, { label: string; className: string }> = {
-  active:    { label: "Active",     className: "bg-blue-500/15 text-blue-400 border border-blue-500/25" },
-  draft:     { label: "Draft",      className: "bg-amber-500/15 text-amber-400 border border-amber-500/25" },
-  published: { label: "Published",  className: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/25" },
+  active: { label: "ACTIVE", className: "bg-blue-500/15 text-blue-400 border border-blue-500/25" },
+  draft: { label: "DRAFT", className: "bg-amber-500/15 text-amber-400 border border-amber-500/25" },
+  published: { label: "PUBLISHED", className: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/25" },
 }
 
 export function HomepageReturningUserV4() {
@@ -82,43 +110,41 @@ export function HomepageReturningUserV4() {
   const [promptFocused, setPromptFocused] = useState(false)
   const promptRef = useRef<HTMLInputElement>(null)
 
-  // Typewriter state
   const [displayText, setDisplayText] = useState("")
   const [promptIndex, setPromptIndex] = useState(0)
   const [isDeleting, setIsDeleting] = useState(false)
   const [showCursor, setShowCursor] = useState(true)
 
-  // Typewriter effect
   useEffect(() => {
     if (promptFocused || prompt) return
     const current = TYPEWRITER_PROMPTS[promptIndex % TYPEWRITER_PROMPTS.length]
     let t: ReturnType<typeof setTimeout>
+
     if (!isDeleting) {
       if (displayText.length < current.length) {
         t = setTimeout(() => setDisplayText(current.slice(0, displayText.length + 1)), 60)
       } else {
         t = setTimeout(() => setIsDeleting(true), 2500)
       }
+    } else if (displayText.length > 0) {
+      t = setTimeout(() => setDisplayText(displayText.slice(0, -1)), 30)
     } else {
-      if (displayText.length > 0) {
-        t = setTimeout(() => setDisplayText(displayText.slice(0, -1)), 30)
-      } else {
-        setIsDeleting(false)
-        setPromptIndex(i => (i + 1) % TYPEWRITER_PROMPTS.length)
-      }
+      setIsDeleting(false)
+      setPromptIndex((i) => (i + 1) % TYPEWRITER_PROMPTS.length)
     }
+
     return () => clearTimeout(t)
   }, [displayText, isDeleting, promptIndex, promptFocused, prompt])
 
-  // Blinking cursor
   useEffect(() => {
-    const interval = setInterval(() => setShowCursor(s => !s), 530)
+    const interval = setInterval(() => setShowCursor((s) => !s), 530)
     return () => clearInterval(interval)
   }, [])
+
   const [chatInput, setChatInput] = useState("")
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isTyping, setIsTyping] = useState(false)
-  const [activeFlowIndex, setActiveFlowIndex] = useState(0)
+  const [activeFlowIndex, setActiveFlowIndex] = useState<number | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -127,18 +153,26 @@ export function HomepageReturningUserV4() {
 
   const handleChatSend = (text?: string) => {
     const msg = (text ?? chatInput).trim()
-    if (!msg) return
+    if (!msg || activeFlowIndex === null) return
+
     const activeFlow = SIMULATOR_FLOWS[activeFlowIndex]
     setChatInput("")
-    setMessages(prev => [...prev, { role: "user", text: msg }])
+    setMessages((prev) => [...prev, { role: "user", text: msg }])
     setIsTyping(true)
+
     setTimeout(() => {
       setIsTyping(false)
-      setMessages(prev => [...prev, { role: "bot", text: activeFlow.replies[msg] ?? DEFAULT_BOT_REPLY }])
+      setMessages((prev) => [...prev, { role: "bot", text: activeFlow.replies[msg] ?? DEFAULT_BOT_REPLY }])
     }, 1500)
   }
 
-  const handleFlowSwitch = (index: number) => {
+  const [stoppingIndex, setStoppingIndex] = useState<number | null>(null)
+
+  const handleFlowSwitch = (index: number | null) => {
+    if (index === null && activeFlowIndex !== null) {
+      setStoppingIndex(activeFlowIndex)
+      setTimeout(() => setStoppingIndex(null), 700)
+    }
     setActiveFlowIndex(index)
     setMessages([])
     setChatInput("")
@@ -146,49 +180,41 @@ export function HomepageReturningUserV4() {
   }
 
   const handleChatKey = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") { e.preventDefault(); handleChatSend() }
+    if (e.key === "Enter") {
+      e.preventDefault()
+      handleChatSend()
+    }
   }
 
   return (
-    <div className="h-[calc(100vh-64px)] overflow-y-auto bg-[#272C41]" style={{ scrollbarWidth: "none" }}>
-      <div className="container mx-auto px-6 py-10 flex flex-col gap-16">
+    <div className="min-h-[calc(100vh-64px)] overflow-y-auto bg-[#272C41]" style={{ scrollbarWidth: "none" }}>
+      <div className="relative py-12">
+        <div className="pointer-events-none absolute inset-x-0 top-0 flex justify-center">
+          <div className="h-[400px] w-[700px] rounded-full bg-[radial-gradient(circle,rgba(47,143,255,0.15)_0%,transparent_70%)] blur-3xl" />
+        </div>
 
-        {/* Hero — Syndeo Agent */}
-        <div className="relative flex flex-col items-center text-center">
-          {/* Background glow */}
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-            <div className="h-[400px] w-[700px] rounded-full bg-[radial-gradient(circle,rgba(47,143,255,0.15)_0%,transparent_70%)] blur-3xl" />
-          </div>
-
-          <div className="relative z-10 w-full max-w-xl">
-            {/* Label */}
-            <div className="flex items-center gap-2 justify-center mb-4">
-              <span
-                className="block w-4 bg-[#2F8FFF]"
-                style={{ height: "3px", animation: "spin-pause 2.4s linear infinite" }}
-              />
-              <span className="text-xs font-semibold uppercase tracking-widest text-white/45">Syndeo Agent</span>
+        <div className="relative z-10 container mx-auto px-6">
+          <div className="mx-auto flex w-full max-w-xl flex-col items-center text-center">
+            <div className="mb-4 flex items-center justify-center gap-2">
+              <span className="block w-4 bg-[#2F8FFF]" style={{ height: "3px", animation: "spin-pause 2.4s linear infinite" }} />
+              <span className="text-xs font-semibold uppercase tracking-widest text-white">SYNDEO AGENT</span>
             </div>
 
-            {/* Hero headline */}
-            <h1 className="text-4xl font-light tracking-tight text-white mb-6">
-              Start something new
-            </h1>
+            <h1 className="mb-6 text-4xl font-light tracking-tight text-white">What would you like to do?</h1>
 
-            {/* Gradient prompt box */}
-            <div className="rounded-2xl p-[1px]" style={{ background: "linear-gradient(135deg, #A64E8D 0%, rgba(255,255,255,0.2) 45%, #2F8FFF 100%)" }}>
+            <div className="w-full rounded-2xl p-[1px]" style={{ background: "linear-gradient(135deg, #A64E8D 0%, rgba(255,255,255,0.2) 45%, #2F8FFF 100%)" }}>
               <div
-                className="flex items-center gap-3 rounded-2xl px-5 py-3.5 cursor-text"
+                className="flex cursor-text items-center gap-3 rounded-2xl px-5 py-3.5"
                 style={{ background: "#32374B" }}
                 onClick={() => promptRef.current?.focus()}
               >
-                <Sparkles className="h-4 w-4 text-white/25 shrink-0" />
+                <Sparkles className="h-4 w-4 shrink-0 text-white/25" />
                 <div className="relative flex-1">
                   {!promptFocused && !prompt && (
                     <div className="pointer-events-none absolute inset-0 flex items-center">
-                      <span className="text-base text-white/30">{displayText}</span>
+                      <span className="text-lg text-white/30">{displayText}</span>
                       <span
-                        className="inline-block w-[1.5px] h-[16px] bg-[#2F8FFF] ml-0.5 align-middle"
+                        className="ml-0.5 inline-block h-[16px] w-[1.5px] align-middle bg-[#2F8FFF]"
                         style={{ opacity: showCursor ? 1 : 0, transition: "opacity 0.1s" }}
                       />
                     </div>
@@ -199,16 +225,18 @@ export function HomepageReturningUserV4() {
                     onChange={(e) => setPrompt(e.target.value)}
                     onFocus={() => setPromptFocused(true)}
                     onBlur={() => setPromptFocused(false)}
-                    onKeyDown={(e) => { if (e.key === "Enter" && prompt.trim()) router.push("/flows?new=true") }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && prompt.trim()) router.push("/flows?new=true")
+                    }}
                     placeholder=""
-                    className="w-full bg-transparent text-white text-base outline-none"
+                    className="w-full bg-transparent text-lg text-white outline-none"
                     style={{ caretColor: "#2F8FFF" }}
                   />
                 </div>
                 <button
                   type="button"
                   aria-label="Use microphone"
-                  className="h-9 w-9 flex items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white transition-all shrink-0"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/70 transition-all hover:bg-white/10 hover:text-white"
                 >
                   <Mic className="h-4 w-4" />
                 </button>
@@ -217,7 +245,7 @@ export function HomepageReturningUserV4() {
                   onClick={() => prompt.trim() && router.push("/flows?new=true")}
                   disabled={!prompt.trim()}
                   aria-label="Get started"
-                  className="h-8 w-8 flex items-center justify-center rounded-xl bg-[#A64E8D] text-white hover:bg-[#8f3f78] disabled:opacity-40 disabled:cursor-not-allowed transition-colors shrink-0"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#A64E8D] text-white transition-colors hover:bg-[#8f3f78] disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   <Send className="h-3.5 w-3.5" />
                 </button>
@@ -225,148 +253,176 @@ export function HomepageReturningUserV4() {
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Bottom — Recent flows + simulator */}
-        <div className="flex justify-center gap-16 mt-8">
+      <div className="container mx-auto px-6 pb-12">
+        <div className="mx-auto w-fit overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl">
+          <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
+            <div className="flex items-center gap-2">
+              <p className="text-xs font-semibold uppercase tracking-widest text-white">Your recent flows</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => router.push("/flows")}
+              className="flex items-center gap-1.5 rounded-xl border border-white/15 bg-white/[0.08] px-3.5 py-2 text-xs font-semibold text-white/60 transition-all hover:bg-white/[0.15] hover:text-white"
+            >
+              Open Flows
+              <ArrowRight className="h-3 w-3" />
+            </button>
+          </div>
 
-          {/* Left — Your Recent Flows */}
-          <div className="flex flex-col w-full max-w-[480px]">
-            <h2 className="text-2xl font-light text-white mb-5">Test your recent flows</h2>
-            <div className="flex flex-col gap-3">
+          <div className="flex gap-0">
+            <div className="flex w-[480px] shrink-0 flex-col gap-3 border-r border-white/10 p-5">
               {FLOWS.map((flow, i) => (
                 <div
                   key={flow.name}
-                  className={`w-full flex items-center gap-4 rounded-2xl border px-6 py-4 transition-all ${
+                  className={`flex w-full items-center gap-4 rounded-xl border px-4 py-3 transition-all ${
                     activeFlowIndex === i
                       ? "border-[#2F8FFF]/40 bg-[#2F8FFF]/[0.06]"
-                      : "border-white/10 bg-white/[0.04] hover:bg-white/[0.07] hover:border-white/20"
+                      : "border-white/10 bg-white/[0.04] hover:border-white/20 hover:bg-white/[0.07]"
                   }`}
                 >
-                  <div className={`h-2 w-2 rounded-full shrink-0 transition-all ${activeFlowIndex === i ? "bg-[#2F8FFF]" : "bg-white/10"}`} />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-3 flex-wrap">
-                      <p className="text-white text-lg font-medium leading-none">{flow.name}</p>
-                      <span className={`text-sm font-medium px-3 py-1 rounded-full ${STATUS_STYLES[flow.status].className}`}>
+                  <div className={`h-2 w-2 shrink-0 rounded-full transition-all duration-300 ${
+                    activeFlowIndex === i ? "bg-[#2F8FFF]" : stoppingIndex === i ? "bg-red-400" : "bg-white/10"
+                  }`} />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={() => router.push(flow.path)}
+                        className="text-sm font-medium leading-none text-white transition-colors hover:text-white/70"
+                      >
+                        {flow.name}
+                      </button>
+                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wider ${STATUS_STYLES[flow.status].className}`}>
                         {STATUS_STYLES[flow.status].label}
                       </span>
                     </div>
                   </div>
                   <button
                     type="button"
-                    onClick={() => handleFlowSwitch(i)}
-                    className={`shrink-0 flex items-center gap-1.5 rounded-xl text-xs font-semibold px-3.5 py-2 transition-all ${
+                    onClick={() => activeFlowIndex === i ? handleFlowSwitch(null) : handleFlowSwitch(i)}
+                    className={`flex shrink-0 items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold transition-all ${
                       activeFlowIndex === i
                         ? "bg-[#2F8FFF] text-white"
-                        : "bg-white/8 border border-white/15 text-white/60 hover:bg-white/15 hover:text-white"
+                        : "border border-white/15 bg-white/[0.08] text-white/60 hover:bg-white/[0.15] hover:text-white"
                     }`}
                   >
-                    <Play className="h-3 w-3" fill="currentColor" />
-                    {activeFlowIndex === i ? "Running" : "Run"}
+                    {activeFlowIndex === i ? <Square className="h-3 w-3" fill="currentColor" /> : <Play className="h-3 w-3" fill="currentColor" />}
+                    {activeFlowIndex === i ? "Stop" : "Run"}
                   </button>
                   <button
                     type="button"
                     onClick={() => router.push(flow.path)}
-                    aria-label={`Edit ${flow.name}`}
-                    className="shrink-0 h-8 w-8 flex items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/40 hover:bg-white/10 hover:text-white/80 transition-all"
+                    aria-label={`Open ${flow.name}`}
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/40 transition-all hover:bg-white/10 hover:text-white/80"
                   >
-                    <Pencil className="h-3.5 w-3.5" />
+                    <ArrowRight className="h-3.5 w-3.5" />
                   </button>
                 </div>
               ))}
             </div>
-          </div>
 
-          {/* Right — IKEA chat simulator */}
-          <div className="w-[376px] shrink-0 flex flex-col" style={{ minHeight: "420px" }}>
-            <div
-              className="flex-1 flex flex-col overflow-hidden rounded-[4px]"
-              style={{
-                fontFamily: '"Noto IKEA","Noto Sans","Roboto","Open Sans",system-ui,sans-serif',
-                boxShadow: "0 2px 16px rgba(0,0,0,0.2)",
-              }}
-            >
-              <div className="bg-[#FFDA1A] px-4 py-3 flex items-center justify-between shrink-0">
-                <div className="flex items-center gap-2">
-                  <MessageSquare className="w-4 h-4 text-[#111111]" strokeWidth={2} />
-                  <span className="text-[15px] font-bold text-[#111111] tracking-tight">Live IKEA Chat Simulator</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button type="button" aria-label="Minimise" className="hover:opacity-60 transition-opacity">
-                    <ChevronDown className="w-4 h-4 text-[#111111]" strokeWidth={2} />
-                  </button>
-                  <button type="button" aria-label="Close" className="hover:opacity-60 transition-opacity">
-                    <X className="w-4 h-4 text-[#111111]" strokeWidth={2} />
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex-1 overflow-y-auto bg-white px-4 pt-4 pb-3 space-y-3">
-                <p className="text-[12px] text-[#767676]">Billie the bot 🤖 has connected to the chat</p>
-                <div className="border border-[#E0E0E0] bg-white rounded-[12px] px-3 py-2.5 max-w-[90%]">
-                  <p className="text-[14px] text-[#111111] leading-relaxed">{SIMULATOR_FLOWS[activeFlowIndex].greeting}</p>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  {SIMULATOR_FLOWS[activeFlowIndex].chips.map((label) => (
-                    <button
-                      key={label}
-                      type="button"
-                      onClick={() => handleChatSend(label)}
-                      className="bg-[#EBEBEB] rounded-[20px] px-2 py-2.5 text-[13px] font-bold text-[#111111] text-left leading-tight hover:bg-[#DCDCDC] transition-colors"
-                    >
-                      {label}
+            <div className="shrink-0 p-4">
+              <div
+                className="flex h-[520px] w-[376px] flex-col overflow-hidden rounded-[4px]"
+                style={{
+                  fontFamily: '"Noto IKEA","Noto Sans","Roboto","Open Sans",system-ui,sans-serif',
+                  boxShadow: "0 2px 16px rgba(0,0,0,0.2)",
+                }}
+              >
+                <div className="flex shrink-0 items-center justify-between bg-[#FFDA1A] px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <MessageSquare className="h-4 w-4 text-[#111111]" strokeWidth={2} />
+                    <span className="text-[15px] font-bold tracking-tight text-[#111111]">Live IKEA Chat Simulator</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button type="button" aria-label="Minimise" className="transition-opacity hover:opacity-60">
+                      <ChevronDown className="h-4 w-4 text-[#111111]" strokeWidth={2} />
                     </button>
-                  ))}
+                    <button type="button" aria-label="Close" className="transition-opacity hover:opacity-60">
+                      <X className="h-4 w-4 text-[#111111]" strokeWidth={2} />
+                    </button>
+                  </div>
                 </div>
-                {messages.map((msg, i) => (
-                  msg.role === "user" ? (
-                    <div key={i} className="flex justify-end">
-                      <div className="px-3 py-2.5 max-w-[80%] bg-[#FFDA1A] rounded-[12px]">
-                        <p className="text-[14px] text-[#111111] leading-relaxed">{msg.text}</p>
-                      </div>
+
+                <div className="flex-1 overflow-y-auto bg-white px-4 pb-3 pt-4 space-y-3">
+                  {activeFlowIndex === null ? (
+                    <div className="flex h-full flex-col items-center justify-center gap-3 py-12 text-center">
+                      <Play className="h-8 w-8 text-[#CCCCCC]" />
+                      <p className="text-[14px] text-[#767676]">Select a flow to run it here</p>
                     </div>
                   ) : (
-                    <div key={i} className="border border-[#E0E0E0] bg-white rounded-[12px] px-3 py-2.5 max-w-[90%]">
-                      <p className="text-[14px] text-[#111111] leading-relaxed">{msg.text}</p>
-                    </div>
-                  )
-                ))}
-                {isTyping && (
-                  <div className="border border-[#E0E0E0] bg-white rounded-[12px] px-3 py-2.5 max-w-[60px]">
-                    <div className="flex items-center gap-1">
-                      {[0, 1, 2].map((i) => (
-                        <span
-                          key={i}
-                          className="h-2 w-2 rounded-full bg-[#767676]"
-                          style={{ animation: `bounce 1.2s ease-in-out ${i * 0.2}s infinite` }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
-                <div ref={messagesEndRef} />
-              </div>
+                    <>
+                      <p className="text-[12px] text-[#767676]">Billie the bot 🤖 has connected to the chat</p>
+                      <div className="max-w-[90%] rounded-[12px] border border-[#E0E0E0] bg-white px-3 py-2.5">
+                        <p className="text-[14px] leading-relaxed text-[#111111]">{SIMULATOR_FLOWS[activeFlowIndex].greeting}</p>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        {SIMULATOR_FLOWS[activeFlowIndex].chips.map((label) => (
+                          <button
+                            key={label}
+                            type="button"
+                            onClick={() => handleChatSend(label)}
+                            className="rounded-[20px] bg-[#EBEBEB] px-2 py-2.5 text-left text-[13px] font-bold leading-tight text-[#111111] transition-colors hover:bg-[#DCDCDC]"
+                          >
+                            {label}
+                          </button>
+                        ))}
+                      </div>
+                      {messages.map((msg, i) =>
+                        msg.role === "user" ? (
+                          <div key={i} className="flex justify-end">
+                            <div className="max-w-[80%] rounded-[12px] bg-[#FFDA1A] px-3 py-2.5">
+                              <p className="text-[14px] leading-relaxed text-[#111111]">{msg.text}</p>
+                            </div>
+                          </div>
+                        ) : (
+                          <div key={i} className="max-w-[90%] rounded-[12px] border border-[#E0E0E0] bg-white px-3 py-2.5">
+                            <p className="text-[14px] leading-relaxed text-[#111111]">{msg.text}</p>
+                          </div>
+                        ),
+                      )}
+                      {isTyping && (
+                        <div className="max-w-[60px] rounded-[12px] border border-[#E0E0E0] bg-white px-3 py-2.5">
+                          <div className="flex items-center gap-1">
+                            {[0, 1, 2].map((i) => (
+                              <span
+                                key={i}
+                                className="h-2 w-2 rounded-full bg-[#767676]"
+                                style={{ animation: `bounce 1.2s ease-in-out ${i * 0.2}s infinite` }}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      <div ref={messagesEndRef} />
+                    </>
+                  )}
+                </div>
 
-              <div className="shrink-0 bg-white border-t border-[#E0E0E0] px-4 py-3 flex items-center gap-3">
-                <input
-                  value={chatInput}
-                  onChange={(e) => setChatInput(e.target.value)}
-                  onKeyDown={handleChatKey}
-                  placeholder="Test your simulator here"
-                  className="flex-1 text-[14px] text-[#111111] placeholder:text-[#767676] bg-transparent border-none outline-none"
-                  style={{ fontFamily: '"Noto IKEA","Noto Sans","Roboto",system-ui,sans-serif' }}
-                />
-                <button
-                  type="button"
-                  onClick={() => handleChatSend()}
-                  disabled={!chatInput.trim()}
-                  className="text-[#767676] disabled:text-[#CCCCCC] hover:text-[#111111] transition-colors"
-                >
-                  <Send className="w-4 h-4" strokeWidth={1.5} />
-                </button>
+                <div className="flex shrink-0 items-center gap-3 border-t border-[#E0E0E0] bg-white px-4 py-3">
+                  <input
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                    onKeyDown={handleChatKey}
+                    placeholder={activeFlowIndex === null ? "Run a flow to start testing" : "Test your simulator here"}
+                    disabled={activeFlowIndex === null}
+                    className="flex-1 border-none bg-transparent text-[14px] text-[#111111] outline-none placeholder:text-[#767676] disabled:cursor-not-allowed disabled:opacity-40"
+                    style={{ fontFamily: '"Noto IKEA","Noto Sans","Roboto",system-ui,sans-serif' }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleChatSend()}
+                    disabled={!chatInput.trim()}
+                    className="text-[#767676] transition-colors hover:text-[#111111] disabled:text-[#CCCCCC]"
+                  >
+                    <Send className="h-4 w-4" strokeWidth={1.5} />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
