@@ -210,7 +210,7 @@ export function HomepageReturningUserPhase1() {
         </div>
 
         {/* Flows + Simulator panel */}
-        <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl">
+        <div className="mx-auto max-w-5xl overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl">
           <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
             <p className="text-xs font-semibold uppercase tracking-widest text-white">Your recent flows</p>
             <button
@@ -224,7 +224,7 @@ export function HomepageReturningUserPhase1() {
 
           <div className="flex items-stretch">
             {/* Flow list */}
-            <div className="flex flex-1 flex-col gap-3 border-r border-white/10 p-5">
+            <div className="flex w-[540px] shrink-0 flex-col gap-3 border-r border-white/10 p-5">
               {FLOWS.map((flow, i) => (
                 <div
                   key={flow.name}
