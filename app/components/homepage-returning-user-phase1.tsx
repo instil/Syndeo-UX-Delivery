@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, KeyboardEvent } from "react"
 import { useRouter } from "next/navigation"
-import { MessageSquare, ArrowRight, Play, Square, Send, Clock, BarChart3, ChevronDown, X } from "lucide-react"
+import { MessageSquare, ArrowRight, Play, Square, Send, ChevronDown, X } from "lucide-react"
 
 const DEFAULT_BOT_REPLY = "Thanks for your message! Let me look into that for you. Could you provide a bit more detail so I can help?"
 
@@ -97,32 +97,6 @@ const STATUS_STYLES: Record<string, { label: string; className: string }> = {
   published: { label: "PUBLISHED", className: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/25" },
 }
 
-const METRICS = [
-  {
-    label: "Conversations",
-    value: "342",
-    change: "+12%",
-    sub: "vs yesterday",
-    icon: MessageSquare,
-    color: "#2F8FFF",
-  },
-  {
-    label: "Avg Response",
-    value: "1.2s",
-    change: "-8%",
-    sub: "Target <2s",
-    icon: Clock,
-    color: "#A64E8D",
-  },
-  {
-    label: "Resolution Rate",
-    value: "87%",
-    change: "+5%",
-    sub: "297 of 342",
-    icon: BarChart3,
-    color: "#10B981",
-  },
-]
 
 export function HomepageReturningUserPhase1() {
   const router = useRouter()
@@ -187,25 +161,79 @@ export function HomepageReturningUserPhase1() {
             <p className="text-4xl font-light tracking-tight text-white">Here's how your agent is doing today.</p>
           </div>
 
-          <div className="flex items-stretch gap-3">
-            {METRICS.map(({ label, value, change, sub, icon: Icon, color }) => (
-              <div
-                key={label}
-                className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3"
-              >
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/5">
-                  <Icon className="h-4 w-4" style={{ color }} />
+          <div className="flex items-stretch gap-4">
+
+            {/* Conversations — sparkline bars */}
+            <div className="flex w-52 flex-col justify-between rounded-xl border border-white/10 bg-white/5 p-4">
+              <div className="flex items-center justify-between">
+                <p className="text-[11px] font-medium uppercase tracking-wide text-white/40">Conversations</p>
+                <span className="text-xs font-semibold text-emerald-400">+12%</span>
+              </div>
+              <div>
+                <p className="text-3xl font-semibold text-white">342</p>
+                <p className="mt-0.5 text-[11px] text-white/30">vs yesterday (306)</p>
+              </div>
+              {/* Mini bar chart */}
+              <svg viewBox="0 0 80 24" className="mt-3 h-6 w-full" preserveAspectRatio="none">
+                {[10, 14, 11, 18, 15, 20, 24].map((h, i) => (
+                  <rect
+                    key={i}
+                    x={i * 12 + 1}
+                    y={24 - h}
+                    width={8}
+                    height={h}
+                    rx={2}
+                    fill={i === 6 ? "#2F8FFF" : "rgba(47,143,255,0.25)"}
+                  />
+                ))}
+              </svg>
+            </div>
+
+            {/* Avg Response — progress bar */}
+            <div className="flex w-52 flex-col justify-between rounded-xl border border-white/10 bg-white/5 p-4">
+              <div className="flex items-center justify-between">
+                <p className="text-[11px] font-medium uppercase tracking-wide text-white/40">Avg Response</p>
+                <span className="text-xs font-semibold text-emerald-400">-8%</span>
+              </div>
+              <div>
+                <p className="text-3xl font-semibold text-white">1.2s</p>
+                <p className="mt-0.5 text-[11px] text-white/30">Target &lt;2s — Excellent</p>
+              </div>
+              {/* Progress bar: 1.2/2.0 = 60% good */}
+              <div className="mt-3">
+                <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+                  <div className="h-full rounded-full bg-[#A64E8D]" style={{ width: "60%" }} />
                 </div>
-                <div>
-                  <p className="text-[11px] font-medium uppercase tracking-wide text-white/40">{label}</p>
-                  <div className="flex items-baseline gap-1.5">
-                    <p className="text-lg font-semibold leading-tight text-white">{value}</p>
-                    <span className="text-xs font-medium text-emerald-400">{change}</span>
-                  </div>
-                  <p className="text-[11px] text-white/30">{sub}</p>
+                <div className="mt-1 flex justify-between text-[10px] text-white/20">
+                  <span>0s</span><span>2s</span>
                 </div>
               </div>
-            ))}
+            </div>
+
+            {/* Resolution Rate — circular ring */}
+            <div className="flex w-52 flex-col justify-between rounded-xl border border-white/10 bg-white/5 p-4">
+              <div className="flex items-center justify-between">
+                <p className="text-[11px] font-medium uppercase tracking-wide text-white/40">Resolution Rate</p>
+                <span className="text-xs font-semibold text-emerald-400">+5%</span>
+              </div>
+              <div className="flex items-center gap-4">
+                <div>
+                  <p className="text-3xl font-semibold text-white">87%</p>
+                  <p className="mt-0.5 text-[11px] text-white/30">297 of 342</p>
+                </div>
+                {/* Arc ring */}
+                <svg viewBox="0 0 40 40" className="h-12 w-12 shrink-0 -rotate-90">
+                  <circle cx="20" cy="20" r="16" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="4" />
+                  <circle
+                    cx="20" cy="20" r="16" fill="none"
+                    stroke="#10B981" strokeWidth="4"
+                    strokeLinecap="round"
+                    strokeDasharray={`${2 * Math.PI * 16 * 0.87} ${2 * Math.PI * 16}`}
+                  />
+                </svg>
+              </div>
+            </div>
+
           </div>
         </div>
 
