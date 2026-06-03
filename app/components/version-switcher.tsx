@@ -1,6 +1,6 @@
 "use client"
 
-type HomepageVersion = "v1" | "v2" | "v3" | "v4"
+type HomepageVersion = "v1" | "v2" | "v3" | "v4" | "v5"
 
 export function VersionSwitcher({
   version,
@@ -13,7 +13,7 @@ export function VersionSwitcher({
   isNewUser: boolean
   onToggleUser: () => void
 }) {
-  const versions: HomepageVersion[] = ["v1", "v2", "v3", "v4"]
+  const versions: HomepageVersion[] = ["v1", "v2", "v3", "v4", "v5"]
 
   return (
     <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 flex items-center gap-3 rounded-full border border-[#E8F0FB] bg-white/90 px-3 py-1.5 shadow-lg backdrop-blur-sm">

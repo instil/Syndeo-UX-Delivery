@@ -7,14 +7,15 @@ import { HomepageReturningUser } from "@/components/homepage-returning-user"
 import { HomepageReturningUserV2 } from "@/components/homepage-returning-user-v2"
 import { HomepageReturningUserV3 } from "@/components/homepage-returning-user-v3"
 import { HomepageReturningUserV4 } from "@/components/homepage-returning-user-v4"
+import { HomepageReturningUserV5 } from "@/components/homepage-returning-user-v5"
 import { CompactSimulator } from "@/components/compact-simulator"
 import { VersionSwitcher } from "@/components/version-switcher"
 
 export default function DashboardPage() {
   const [isNewUser, setIsNewUser] = useState(true)
-  const [homepageVersion, setHomepageVersion] = useState<"v1" | "v2" | "v3" | "v4">("v4")
+  const [homepageVersion, setHomepageVersion] = useState<"v1" | "v2" | "v3" | "v4" | "v5">("v4")
 
-  const isDark = !isNewUser && (homepageVersion === "v2" || homepageVersion === "v3" || homepageVersion === "v4")
+  const isDark = !isNewUser && (homepageVersion === "v2" || homepageVersion === "v3" || homepageVersion === "v4" || homepageVersion === "v5")
 
   return (
     <div className={`min-h-screen ${isDark ? "bg-[#272C41]" : "bg-[#F6F8FA]"}`}>
@@ -29,6 +30,8 @@ export default function DashboardPage() {
           <HomepageReturningUserV3 />
         ) : homepageVersion === "v4" ? (
           <HomepageReturningUserV4 />
+        ) : homepageVersion === "v5" ? (
+          <HomepageReturningUserV5 />
         ) : (
           <HomepageReturningUser />
         )}
