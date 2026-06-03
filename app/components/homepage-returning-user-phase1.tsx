@@ -219,7 +219,7 @@ export function HomepageReturningUserPhase1() {
             </button>
           </div>
 
-          <div className="flex">
+          <div className="flex items-stretch">
             {/* Flow list */}
             <div className="flex flex-1 flex-col gap-3 border-r border-white/10 p-5">
               {FLOWS.map((flow, i) => (
@@ -274,9 +274,9 @@ export function HomepageReturningUserPhase1() {
             </div>
 
             {/* IKEA Chat Simulator */}
-            <div className="shrink-0 p-4">
+            <div className="flex shrink-0 flex-col p-4">
               <div
-                className="flex h-[280px] w-[376px] flex-col overflow-hidden rounded-[4px]"
+                className="flex h-full w-[376px] flex-col overflow-hidden rounded-[4px]"
                 style={{
                   fontFamily: '"Noto IKEA","Noto Sans","Roboto","Open Sans",system-ui,sans-serif',
                   boxShadow: "0 2px 16px rgba(0,0,0,0.2)",
