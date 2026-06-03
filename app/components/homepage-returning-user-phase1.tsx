@@ -177,11 +177,11 @@ export function HomepageReturningUserPhase1() {
 
       <div className="relative z-10 container mx-auto px-6 py-8">
 
-        {/* Header row: greeting + metrics */}
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+        {/* Header: greeting centred + metrics row */}
+        <div className="mb-8 flex flex-col items-center text-center gap-4">
           <div>
-            <h1 className="text-2xl font-semibold text-white">Welcome back, IKEA 👋</h1>
-            <p className="mt-0.5 text-sm text-white/40">Here's how your bot is doing today</p>
+            <h1 className="text-4xl font-light tracking-tight text-white">Welcome back, IKEA 👋</h1>
+            <p className="mt-1 text-sm text-white/40">Here's how your bot is doing today</p>
           </div>
 
           <div className="flex items-stretch gap-3">
