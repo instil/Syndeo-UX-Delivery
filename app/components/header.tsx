@@ -55,7 +55,7 @@ export function Header({ onShowSplash, showingDashboard, dark }: HeaderProps = {
                   className={cn(
                     "text-sm font-medium transition-colors relative",
                     pathname === "/"
-                      ? "text-[#2F8FFF] after:absolute after:bottom-[-17px] after:left-0 after:right-0 after:h-0.5 after:bg-[#2F8FFF]"
+                      ? "text-white after:absolute after:bottom-[-17px] after:left-0 after:right-0 after:h-0.5 after:bg-[#2F8FFF]"
                       : dark ? "text-white hover:text-white/80" : "text-[#6A738A] hover:text-[#2F8FFF]",
                   )}
                 >
@@ -67,7 +67,7 @@ export function Header({ onShowSplash, showingDashboard, dark }: HeaderProps = {
                   className={cn(
                     "text-sm font-medium transition-colors relative",
                     pathname === "/"
-                      ? "text-[#2F8FFF] after:absolute after:bottom-[-17px] after:left-0 after:right-0 after:h-0.5 after:bg-[#2F8FFF]"
+                      ? "text-white after:absolute after:bottom-[-17px] after:left-0 after:right-0 after:h-0.5 after:bg-[#2F8FFF]"
                       : dark ? "text-white hover:text-white/80" : "text-[#6A738A] hover:text-[#2F8FFF]",
                   )}
                 >
@@ -79,7 +79,7 @@ export function Header({ onShowSplash, showingDashboard, dark }: HeaderProps = {
                 className={cn(
                   "text-sm font-medium transition-colors relative",
                   pathname?.startsWith("/flows")
-                    ? "text-[#2F8FFF] after:absolute after:bottom-[-17px] after:left-0 after:right-0 after:h-0.5 after:bg-[#2F8FFF]"
+                    ? "text-white after:absolute after:bottom-[-17px] after:left-0 after:right-0 after:h-0.5 after:bg-[#2F8FFF]"
                     : dark ? "text-white hover:text-white/80" : "text-[#6A738A] hover:text-[#2F8FFF]",
                 )}
               >
@@ -90,7 +90,7 @@ export function Header({ onShowSplash, showingDashboard, dark }: HeaderProps = {
                 className={cn(
                   "text-sm font-medium transition-colors relative",
                   pathname === "/reports"
-                    ? "text-[#2F8FFF] after:absolute after:bottom-[-17px] after:left-0 after:right-0 after:h-0.5 after:bg-[#2F8FFF]"
+                    ? "text-white after:absolute after:bottom-[-17px] after:left-0 after:right-0 after:h-0.5 after:bg-[#2F8FFF]"
                     : dark ? "text-white hover:text-white/80" : "text-[#6A738A] hover:text-[#2F8FFF]",
                 )}
               >
@@ -101,7 +101,7 @@ export function Header({ onShowSplash, showingDashboard, dark }: HeaderProps = {
                 className={cn(
                   "text-sm font-medium transition-colors relative",
                   pathname === "/ai-agents"
-                    ? "text-[#2F8FFF] after:absolute after:bottom-[-17px] after:left-0 after:right-0 after:h-0.5 after:bg-[#2F8FFF]"
+                    ? "text-white after:absolute after:bottom-[-17px] after:left-0 after:right-0 after:h-0.5 after:bg-[#2F8FFF]"
                     : dark ? "text-white hover:text-white/80" : "text-[#6A738A] hover:text-[#2F8FFF]",
                 )}
               >
@@ -112,7 +112,7 @@ export function Header({ onShowSplash, showingDashboard, dark }: HeaderProps = {
                 className={cn(
                   "text-sm font-medium transition-colors relative",
                   pathname === "/ai-workbench"
-                    ? "text-[#2F8FFF] after:absolute after:bottom-[-17px] after:left-0 after:right-0 after:h-0.5 after:bg-[#2F8FFF]"
+                    ? "text-white after:absolute after:bottom-[-17px] after:left-0 after:right-0 after:h-0.5 after:bg-[#2F8FFF]"
                     : dark ? "text-white hover:text-white/80" : "text-[#6A738A] hover:text-[#2F8FFF]",
                 )}
               >
@@ -127,7 +127,7 @@ export function Header({ onShowSplash, showingDashboard, dark }: HeaderProps = {
                       "gap-1 text-sm font-medium relative",
                       dark ? "hover:bg-white/10" : "hover:bg-[#E8F0FB]",
                       pathname === "/integrations" || pathname?.startsWith("/configuration")
-                        ? "text-[#2F8FFF] after:absolute after:bottom-[-1px] after:left-3 after:right-3 after:h-0.5 after:bg-[#2F8FFF]"
+                        ? "text-white after:absolute after:bottom-[-1px] after:left-3 after:right-3 after:h-0.5 after:bg-[#2F8FFF]"
                         : dark ? "text-white hover:text-white/80" : "text-[#6A738A] hover:text-[#2F8FFF]",
                     )}
                   >
