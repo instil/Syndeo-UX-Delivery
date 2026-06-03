@@ -183,7 +183,8 @@ export function HomepageReturningUserPhase1() {
         {/* Header: greeting centred + metrics row */}
         <div className="mb-8 flex flex-col items-center text-center gap-4">
           <div>
-            <h1 className="text-4xl font-light tracking-tight text-white">{greeting} IKEA. Here's how your agent is doing today.</h1>
+            <h1 className="text-4xl font-light tracking-tight text-white">{greeting} IKEA.</h1>
+            <p className="text-4xl font-light tracking-tight text-white">Here's how your agent is doing today.</p>
           </div>
 
           <div className="flex items-stretch gap-3">
