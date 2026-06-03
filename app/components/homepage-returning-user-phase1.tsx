@@ -181,7 +181,7 @@ export function HomepageReturningUserPhase1() {
         <div className="mb-8 flex flex-col items-center text-center gap-4">
           <div>
             <h1 className="text-4xl font-light tracking-tight text-white">Welcome back, IKEA</h1>
-            <p className="mt-1 text-sm text-white/40">Here's how your bot is doing today</p>
+            <p className="mt-1 text-4xl font-light tracking-tight text-white/40">Here's how your bot is doing today</p>
           </div>
 
           <div className="flex items-stretch gap-3">
