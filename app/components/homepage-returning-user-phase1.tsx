@@ -277,7 +277,7 @@ export function HomepageReturningUserPhase1() {
             </div>
 
             {/* IKEA Chat Simulator */}
-            <div className="flex shrink-0 flex-col p-5">
+            <div className="flex w-fit shrink-0 flex-col p-5">
               <div
                 className="flex h-full w-[376px] flex-col overflow-hidden rounded-[4px]"
                 style={{
