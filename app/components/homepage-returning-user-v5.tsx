@@ -196,7 +196,7 @@ export function HomepageReturningUserV5() {
 
   return (
     <>
-    <div className="min-h-[calc(100vh-64px)] overflow-y-auto bg-[#272C41] pb-28" style={{ scrollbarWidth: "none" }}>
+    <div className="min-h-[calc(100vh-64px)] overflow-y-auto bg-[#272C41] pb-40" style={{ scrollbarWidth: "none" }}>
       {/* Ambient glow */}
       <div className="pointer-events-none fixed inset-x-0 top-0 flex justify-center">
         <div className="h-[500px] w-[900px] rounded-full bg-[radial-gradient(circle,rgba(47,143,255,0.10)_0%,transparent_70%)] blur-3xl" />
@@ -426,7 +426,7 @@ export function HomepageReturningUserV5() {
     </div>
 
       {/* ── Floating Syndeo Agent prompt bar ── */}
-      <div className="fixed bottom-6 left-0 right-0 z-50 flex flex-col items-center gap-2 px-4 pointer-events-none">
+      <div className="fixed bottom-16 left-0 right-0 z-50 flex flex-col items-center gap-2 px-4 pointer-events-none">
         <div className="pointer-events-auto flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1.5 backdrop-blur-sm">
           <span className="block w-3 bg-[#2F8FFF]" style={{ height: "2px", animation: "spin-pause 2.4s linear infinite" }} />
           <span className="text-[10px] font-semibold uppercase tracking-widest text-white">SYNDEO AGENT</span>

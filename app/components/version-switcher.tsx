@@ -17,7 +17,7 @@ export function VersionSwitcher({
   const phase2Versions: ReturningVersion[] = ["v1", "v2", "v3", "v4", "v5"]
 
   return (
-    <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 flex items-center gap-3 rounded-full border border-[#E8F0FB] bg-white/90 px-3 py-1.5 shadow-lg backdrop-blur-sm">
+    <div className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-center gap-3 border-t border-[#E8F0FB] bg-white px-4 py-2 shadow-md">
 
       {/* New User / Returning toggle */}
       <div className="flex items-center gap-1 rounded-full bg-[#F8FAFC] p-0.5">
