@@ -169,6 +169,9 @@ export function HomepageReturningUserPhase1() {
     }
   }
 
+  const hour = new Date().getHours()
+  const greeting = hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening"
+
   return (
     <div className="min-h-[calc(100vh-64px)] overflow-y-auto bg-[#272C41]" style={{ scrollbarWidth: "none" }}>
       <div className="pointer-events-none absolute inset-x-0 top-16 flex justify-center">
@@ -180,8 +183,7 @@ export function HomepageReturningUserPhase1() {
         {/* Header: greeting centred + metrics row */}
         <div className="mb-8 flex flex-col items-center text-center gap-4">
           <div>
-            <h1 className="text-4xl font-light tracking-tight text-white">Welcome back, IKEA</h1>
-            <p className="mt-1 text-4xl font-light tracking-tight text-white/40">Here's how your bot is doing today</p>
+            <h1 className="text-4xl font-light tracking-tight text-white">{greeting} IKEA. Here's how your agent is doing today.</h1>
           </div>
 
           <div className="flex items-stretch gap-3">
