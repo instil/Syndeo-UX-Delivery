@@ -152,6 +152,24 @@ export function HomepageNewUserPhase1() {
           </div>
         </div>
 
+        {/* CTA strip */}
+        <div className="mx-auto mb-4 w-fit">
+          <div className="flex items-center justify-between gap-6 rounded-2xl border border-white/10 bg-white/5 px-6 py-4" style={{ width: "calc(540px + 376px + 40px + 2px)" }}>
+            <div>
+              <p className="text-sm font-medium text-white">Ready to build your first flow?</p>
+              <p className="text-xs text-white/40 mt-0.5">Create a custom agent tailored to your customers.</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => router.push("/flows?new=true")}
+              className="flex shrink-0 items-center gap-2 rounded-xl bg-[#2F8FFF] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#1E7FEF]"
+            >
+              <Plus className="h-4 w-4" />
+              Create your first flow
+            </button>
+          </div>
+        </div>
+
         {/* Trial panel + Simulator */}
         <div className="mx-auto w-fit overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl">
           <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
@@ -309,25 +327,8 @@ export function HomepageNewUserPhase1() {
           </div>
         </div>
 
-        {/* CTA strip */}
-        <div className="mx-auto mt-4 w-fit">
-          <div className="flex items-center justify-between gap-6 rounded-2xl border border-white/10 bg-white/5 px-6 py-4" style={{ width: "calc(540px + 376px + 40px + 2px)" }}>
-            <div>
-              <p className="text-sm font-medium text-white">Ready to build your first flow?</p>
-              <p className="text-xs text-white/40 mt-0.5">Create a custom agent tailored to your customers.</p>
-            </div>
-            <button
-              type="button"
-              onClick={() => router.push("/flows?new=true")}
-              className="flex shrink-0 items-center gap-2 rounded-xl bg-[#2F8FFF] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#1E7FEF]"
-            >
-              <Plus className="h-4 w-4" />
-              Create your first flow
-            </button>
-          </div>
-        </div>
+        {/* CTA strip — moved above panel */}
 
-        {/* Quick action cards */}
         <div className="mx-auto mt-3 w-fit">
           <div className="flex gap-3" style={{ width: "calc(540px + 376px + 40px + 2px)" }}>
             {[
