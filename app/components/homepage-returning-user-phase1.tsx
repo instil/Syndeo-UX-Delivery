@@ -161,7 +161,7 @@ export function HomepageReturningUserPhase1() {
             <p className="text-4xl font-light tracking-tight text-white">Here's how your agent is doing today.</p>
           </div>
 
-          <div className="flex items-stretch gap-4">
+          <div className="flex items-stretch gap-4 text-left">
 
             <div className="flex w-52 flex-col gap-3 rounded-xl border border-white/10 bg-white/5 p-5">
               <p className="text-xs font-medium uppercase tracking-wide text-white/50">Conversations</p>
