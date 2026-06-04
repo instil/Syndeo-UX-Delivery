@@ -142,13 +142,13 @@ export function HomepageNewUserPhase1() {
       <div className="relative z-10 container mx-auto px-6 py-8 flex flex-col flex-1 min-h-0">
 
         {/* Header */}
-        <div className="relative mb-6 flex flex-col items-center text-center gap-4">
+        <div className="relative mb-4 flex flex-col items-center text-center gap-4">
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
             <div className="h-[400px] w-[700px] rounded-full bg-[radial-gradient(circle,rgba(47,143,255,0.15)_0%,transparent_70%)] blur-3xl" />
           </div>
           <div className="relative z-10">
-            <h1 className="text-4xl font-light tracking-tight text-white">{greeting} IKEA.</h1>
-            <p className="text-4xl font-light tracking-tight text-white">Let's explore what your agent can do.</p>
+            <h1 className="text-3xl font-light tracking-tight text-white">{greeting} IKEA.</h1>
+            <p className="text-3xl font-light tracking-tight text-white">Let's explore what your agent can do.</p>
           </div>
         </div>
 
@@ -157,7 +157,7 @@ export function HomepageNewUserPhase1() {
           <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
             <p className="text-xs font-semibold uppercase tracking-widest text-white">Your Flows</p>
           </div>
-          <div className="flex flex-col items-center gap-4 px-6 py-6 text-center">
+          <div className="flex flex-col items-center gap-3 px-6 py-4 text-center">
             <div>
               <p className="text-xl font-medium text-white">Ready to build your first flow?</p>
               <p className="text-xl text-white/40 mt-1">Create a custom agent tailored to your customers.</p>
