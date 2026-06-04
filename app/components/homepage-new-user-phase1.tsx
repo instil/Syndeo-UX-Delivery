@@ -157,7 +157,7 @@ export function HomepageNewUserPhase1() {
           <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
             <p className="text-xs font-semibold uppercase tracking-widest text-white">Your Flows</p>
           </div>
-          <div className="flex items-center justify-between gap-6 px-6 py-5">
+          <div className="flex flex-col items-center gap-4 px-6 py-6 text-center">
             <div>
               <p className="text-base font-medium text-white">Ready to build your first flow?</p>
               <p className="text-sm text-white/40 mt-0.5">Create a custom agent tailored to your customers.</p>
@@ -165,7 +165,7 @@ export function HomepageNewUserPhase1() {
             <button
               type="button"
               onClick={() => router.push("/flows?new=true")}
-              className="flex shrink-0 items-center gap-2 rounded-xl bg-[#2F8FFF] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#1E7FEF]"
+              className="flex items-center gap-2 rounded-xl bg-[#2F8FFF] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#1E7FEF]"
             >
               <Plus className="h-4 w-4" />
               Create your first flow
