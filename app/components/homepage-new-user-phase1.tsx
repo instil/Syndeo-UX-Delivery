@@ -212,7 +212,7 @@ export function HomepageNewUserPhase1() {
                 <div className="flex shrink-0 items-center justify-between bg-[#2F8FFF] px-4 py-3">
                   <div className="flex items-center gap-2">
                     <MessageSquare className="h-4 w-4 text-white" strokeWidth={2} />
-                    <span className="text-[15px] font-bold tracking-tight text-white">Syndeo Assistant</span>
+                    <span className="text-[15px] font-bold tracking-tight text-white">Simulator</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <button type="button" aria-label="Minimise" className="transition-opacity hover:opacity-60">
