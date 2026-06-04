@@ -483,10 +483,10 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
           {!editingNodeId && simulatorCollapsed && (
             <button
               onClick={() => setSimulatorCollapsed(false)}
-              className="absolute bottom-6 right-6 z-10 w-14 h-14 rounded-full bg-[#2F8FFF] shadow-lg flex items-center justify-center hover:bg-[#1a7ae8] hover:scale-105 transition-all"
+              className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-[#2F8FFF] shadow-lg flex items-center justify-center hover:bg-[#1a7ae8] hover:scale-105 transition-all"
               title="Open Simulator"
             >
-              <MessageSquare className="w-6 h-6 text-white" />
+              <MessageSquare className="w-5 h-5 text-white" />
             </button>
           )}
 
