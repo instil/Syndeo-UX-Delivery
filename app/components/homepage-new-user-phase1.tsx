@@ -159,8 +159,8 @@ export function HomepageNewUserPhase1() {
           </div>
           <div className="flex items-center justify-between gap-6 px-6 py-5">
             <div>
-              <p className="text-sm font-medium text-white">Ready to build your first flow?</p>
-              <p className="text-xs text-white/40 mt-0.5">Create a custom agent tailored to your customers.</p>
+              <p className="text-base font-medium text-white">Ready to build your first flow?</p>
+              <p className="text-sm text-white/40 mt-0.5">Create a custom agent tailored to your customers.</p>
             </div>
             <button
               type="button"
