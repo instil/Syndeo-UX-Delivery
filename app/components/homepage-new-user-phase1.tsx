@@ -165,10 +165,10 @@ export function HomepageNewUserPhase1() {
             <button
               type="button"
               onClick={() => router.push("/flows?new=true")}
-              className="flex items-center gap-2 rounded-xl bg-[#2F8FFF] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#1E7FEF]"
+              className="flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.08] px-4 py-2.5 text-sm font-semibold text-white/60 transition-all hover:bg-white/[0.15] hover:text-white"
             >
               <Plus className="h-4 w-4" />
-              Create your first flow
+              Create
             </button>
           </div>
         </div>
