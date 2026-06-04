@@ -264,7 +264,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
 
       {/* Tab Content */}
       {activeTab === "flow" && (
-        <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex overflow-hidden relative">
 
           {/* CENTRE: Canvas (full remaining width) */}
           <div className="flex-1 relative overflow-hidden">
@@ -479,18 +479,14 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
           </div>
 
           {/* RIGHT: Simulator panel OR Node Edit panel */}
-          {/* Collapsed simulator tab */}
+          {/* Collapsed simulator FAB */}
           {!editingNodeId && simulatorCollapsed && (
             <button
               onClick={() => setSimulatorCollapsed(false)}
-              className="flex-shrink-0 w-8 bg-[#2F8FFF] border-l border-[#2F8FFF] flex flex-col items-center justify-center gap-2 hover:bg-[#1a7ae8] transition-colors"
+              className="absolute bottom-6 right-6 z-10 w-14 h-14 rounded-full bg-[#2F8FFF] shadow-lg flex items-center justify-center hover:bg-[#1a7ae8] hover:scale-105 transition-all"
               title="Open Simulator"
             >
-              <MessageSquare className="w-4 h-4 text-white" />
-              <span className="text-white text-[10px] font-semibold tracking-widest uppercase" style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}>
-                Simulator
-              </span>
-              <ChevronRight className="w-4 h-4 text-white/70" />
+              <MessageSquare className="w-6 h-6 text-white" />
             </button>
           )}
 
