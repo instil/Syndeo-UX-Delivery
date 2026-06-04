@@ -231,10 +231,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
             <Button variant="ghost" size="icon" onClick={onBack} className="hover:bg-[#F6F8FA]">
               <ArrowLeft className="w-4 h-4" />
             </Button>
-            <div>
-              <h1 className="text-xl font-light tracking-tight text-[#1E2535]">{outcomeName}</h1>
-              <p className="text-sm text-[#6A738A]">OUTCOME</p>
-            </div>
+            <h1 className="text-xl font-light tracking-tight text-[#1E2535]">{outcomeName}</h1>
           </div>
           <div className="flex gap-2">
             <Button className="bg-[#2F8FFF] hover:bg-[#2680E8] text-white gap-2">
