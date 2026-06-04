@@ -178,9 +178,9 @@ export function HomepageNewUserPhase1() {
                     }`}
                   >
                     <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-all ${
-                      isActive ? "bg-[#2F8FFF]/20" : "bg-white/[0.06]"
+                      isActive ? "bg-[#A64E8D]/20" : "bg-[#A64E8D]/10"
                     }`}>
-                      <Icon className={`h-4 w-4 transition-colors ${isActive ? "text-[#2F8FFF]" : "text-white/40"}`} />
+                      <Icon className="h-4 w-4 text-[#A64E8D]" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium leading-none text-white">{flow.label}</p>
@@ -191,12 +191,12 @@ export function HomepageNewUserPhase1() {
                       onClick={() => handleFlowSelect(i)}
                       className={`flex shrink-0 items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold transition-all ${
                         isActive
-                          ? "bg-[#2F8FFF] text-white"
-                          : "border border-white/15 bg-white/[0.08] text-white/60 hover:bg-[#2F8FFF]/20 hover:border-[#2F8FFF]/30 hover:text-white"
+                          ? "bg-[#A64E8D]/70 text-white"
+                          : "bg-[#A64E8D] text-white hover:bg-[#95437D]"
                       }`}
                     >
-                      <Play className="h-3 w-3" fill="currentColor" />
-                      {isActive ? "Trying" : "Try it"}
+                      <Sparkles className="h-3 w-3" />
+                      {isActive ? "Trying" : "Try"}
                     </button>
                   </div>
                 )
