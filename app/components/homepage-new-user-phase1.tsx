@@ -91,21 +91,6 @@ const SIMULATOR_FLOWS: SimulatorFlow[] = [
       "❓ Product query": "Happy to help with your product question. What would you like to know?",
     },
   },
-  {
-    label: "Store Finder",
-    description: "Help customers locate stores, opening times and services",
-    icon: MapPin,
-    greeting: "Hej! I'm Billie 🤖. I can help you find your nearest IKEA store. What do you need?",
-    chips: ["🏪 Find nearest store", "🕐 Opening hours", "🅿️ Parking info", "♿ Accessibility", "📞 Contact store", "🛍️ In-store services"],
-    replies: {
-      "🏪 Find nearest store": "I can find your nearest IKEA store. Could you share your postcode or town?",
-      "🕐 Opening hours": "I can check store opening hours. Which store are you interested in, or shall I find your nearest?",
-      "🅿️ Parking info": "Most IKEA stores have free car parking on-site. Would you like me to check a specific store?",
-      "♿ Accessibility": "All IKEA stores are fully accessible with ramps, lifts and accessible parking. Would you like details for a specific store?",
-      "📞 Contact store": "I can get you the contact details for your local store. Could you share your postcode?",
-      "🛍️ In-store services": "IKEA stores offer planning studios, restaurants, click & collect and more. Which store would you like to know about?",
-    },
-  },
 ]
 
 type ChatMessage = { role: "user" | "bot"; text: string }
