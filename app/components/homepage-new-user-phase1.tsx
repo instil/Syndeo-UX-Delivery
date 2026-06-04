@@ -168,11 +168,11 @@ export function HomepageNewUserPhase1() {
         </div>
 
         {/* Your Flows panel */}
-        <div className="mx-auto mb-4 shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl" style={{ width: "calc(540px + 376px + 40px + 2px)" }}>
+        <div className="mx-auto mb-4 shrink-0 w-fit overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl">
           <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
             <p className="text-xs font-semibold uppercase tracking-widest text-white">Your Flows</p>
           </div>
-          <div className="flex flex-col items-center gap-3 px-6 py-4 text-center">
+          <div className="flex flex-col items-center gap-3 px-6 py-4 text-center" style={{ width: "calc(540px + 376px + 40px)" }}>
             <div>
               <p className="text-xl font-medium text-white">Ready to build your first flow?</p>
               <p className="text-xl text-white/40 mt-1">Create a custom agent tailored to your customers.</p>
