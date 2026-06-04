@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, KeyboardEvent } from "react"
-import { MessageSquare, Play, Send, ChevronDown, X, Sparkles, Package, RefreshCw, User, Truck, Search } from "lucide-react"
+import { MessageSquare, ArrowRight, Send, ChevronDown, X, Sparkles, Package, RefreshCw, User, Truck, Search } from "lucide-react"
 
 const DEFAULT_BOT_REPLY = "Thanks for your message! Let me look into that for you. Could you provide a bit more detail so I can help?"
 
@@ -155,7 +155,9 @@ export function HomepageNewUserPhase1() {
         <div className="mx-auto w-fit overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl flex flex-col flex-1 min-h-0">
           <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
             <p className="text-xs font-semibold uppercase tracking-widest text-white">Try an AI Agent</p>
-            <span className="text-xs text-white/40">{SIMULATOR_FLOWS.length} agents available</span>
+            <button className="flex items-center gap-1 text-xs text-white/60 transition-colors hover:text-white">
+              View All <ArrowRight className="h-3 w-3" />
+            </button>
           </div>
 
           <div className="flex items-stretch flex-1 min-h-0">
