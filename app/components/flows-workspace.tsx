@@ -80,9 +80,9 @@ export function FlowsWorkspace() {
   return (
     <div className="flex h-[calc(100vh-64px)]">
       {/* Left Navigation Panel */}
-      <div className="w-64 bg-white border-r border-[#E8F0FB] overflow-y-auto">
+      <div className="w-64 bg-[#272C41] border-r border-white/10 overflow-y-auto">
         <div className="p-4">
-          <h2 className="text-lg font-semibold text-[#3B4760] mb-4">Your Flows</h2>
+          <h2 className="text-lg font-semibold text-white mb-4">Your Flows</h2>
           <nav className="space-y-1">
             {navigationItems.map((item) => {
               const Icon = item.icon
@@ -96,8 +96,8 @@ export function FlowsWorkspace() {
                   }}
                   className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                     isActive
-                      ? "bg-[#E8F0FB] text-[#2F8FFF] border-l-4 border-[#2F8FFF]"
-                      : "text-[#6A738A] hover:bg-[#F6F8FA] hover:text-[#3B4760]"
+                      ? "bg-[#2F8FFF]/15 text-[#2F8FFF] border-l-4 border-[#2F8FFF]"
+                      : "text-white/50 hover:bg-white/[0.06] hover:text-white"
                   }`}
                 >
                   <Icon className="w-4 h-4" />

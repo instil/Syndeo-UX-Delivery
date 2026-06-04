@@ -3,8 +3,8 @@ import { Header } from "@/components/header"
 
 export default function FlowsPage() {
   return (
-    <div className="min-h-screen bg-[#F6F8FA]">
-      <Header />
+    <div className="min-h-screen bg-[#272C41]">
+      <Header dark={true} />
       <FlowsWorkspace />
     </div>
   )
