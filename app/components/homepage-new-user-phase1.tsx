@@ -199,7 +199,7 @@ export function HomepageNewUserPhase1() {
 
           <div className="flex items-stretch flex-1 min-h-0">
             {/* Agent list */}
-            <div className="flex w-[540px] shrink-0 flex-col gap-3 border-r border-white/10 p-5 overflow-y-auto">
+            <div className="flex w-[540px] shrink-0 flex-col gap-3 border-r border-white/10 p-5">
               {SIMULATOR_FLOWS.map((flow, i) => {
                 const Icon = flow.icon
                 const isActive = activeFlowIndex === i
