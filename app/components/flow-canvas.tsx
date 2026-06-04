@@ -225,7 +225,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
   return (
     <div className="h-full flex flex-col bg-[#F6F8FA]">
       {/* Header with Breadcrumb/Tabs */}
-      <div className="bg-[#F6F8FA] border-b border-[#DDE5EF] px-6 py-4">
+      <div className="bg-[#F6F8FA] border-b border-[#DDE5EF] px-6 py-3">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="icon" onClick={onBack} className="hover:bg-[#F6F8FA]">
@@ -241,38 +241,24 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="flex gap-4 border-b border-[#DDE5EF] -mb-4">
-          <button
-            onClick={() => setActiveTab("flow")}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === "flow"
-                ? "border-[#2F8FFF] text-[#2F8FFF]"
-                : "border-transparent text-[#6A738A] hover:text-[#1E2535]"
-            }`}
-          >
-            Outcome Flow
-          </button>
-          <button
-            onClick={() => setActiveTab("statements")}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === "statements"
-                ? "border-[#2F8FFF] text-[#2F8FFF]"
-                : "border-transparent text-[#6A738A] hover:text-[#1E2535]"
-            }`}
-          >
-            Customer Statements
-          </button>
-          <button
-            onClick={() => setActiveTab("details")}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-              activeTab === "details"
-                ? "border-[#2F8FFF] text-[#2F8FFF]"
-                : "border-transparent text-[#6A738A] hover:text-[#1E2535]"
-            }`}
-          >
-            Outcome Details
-          </button>
+        {/* Tabs — Figma-style bordered pill for active */}
+        <div className="flex items-center gap-1">
+          {(["flow", "statements", "details"] as const).map((tab) => {
+            const labels = { flow: "Outcome Flow", statements: "Customer Statements", details: "Outcome Details" }
+            return (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${
+                  activeTab === tab
+                    ? "border border-[#2F8FFF] text-[#2F8FFF] bg-white shadow-sm"
+                    : "border border-transparent text-[#6A738A] hover:text-[#1E2535]"
+                }`}
+              >
+                {labels[tab]}
+              </button>
+            )
+          })}
         </div>
       </div>
 
