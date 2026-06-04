@@ -225,7 +225,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
   return (
     <div className="h-full flex flex-col bg-[#F6F8FA]">
       {/* Header with Breadcrumb/Tabs */}
-      <div className="bg-[#F6F8FA] border-b border-[#DDE5EF] px-6 py-3">
+      <div className="bg-[#F6F8FA] px-6 py-3">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="icon" onClick={onBack} className="hover:bg-[#F6F8FA]">
