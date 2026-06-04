@@ -147,8 +147,8 @@ export function HomepageNewUserPhase1() {
             <div className="h-[400px] w-[700px] rounded-full bg-[radial-gradient(circle,rgba(47,143,255,0.15)_0%,transparent_70%)] blur-3xl" />
           </div>
           <div className="relative z-10">
-            <h1 className="text-3xl font-light tracking-tight text-white">Welcome to Syndeo.</h1>
-            <p className="text-3xl font-light tracking-tight text-white">Let's explore what you can do.</p>
+            <h1 className="text-4xl font-light tracking-tight text-white">Welcome to Syndeo.</h1>
+            <p className="text-4xl font-light tracking-tight text-white">Let's explore what you can do.</p>
           </div>
         </div>
 
