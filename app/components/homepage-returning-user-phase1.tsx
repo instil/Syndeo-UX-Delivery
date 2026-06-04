@@ -244,7 +244,7 @@ export function HomepageReturningUserPhase1() {
             <button
               type="button"
               onClick={() => router.push("/flows")}
-              className="flex items-center gap-1 text-xs text-white/40 transition-colors hover:text-white"
+              className="flex items-center gap-1 text-xs text-white/60 transition-colors hover:text-white"
             >
               View All <ArrowRight className="h-3 w-3" />
             </button>
