@@ -2,18 +2,11 @@
 
 import { useState, useCallback } from "react"
 import {
-  Home,
-  Target,
-  Globe,
-  Layers,
+  Workflow,
   Languages,
-  MessageSquare,
-  Mail,
-  Settings,
-  Boxes,
-  Calendar,
+  Code,
   ClipboardList,
-  ListChecks,
+  Settings,
   ChevronDown,
   ChevronRight,
 } from "lucide-react"
@@ -44,12 +37,12 @@ type ViewType = NavViewType | "outcome-detail"
 interface NavItem {
   id: NavViewType
   label: string
-  icon: React.ElementType
 }
 
 interface NavGroup {
   id: string
   label: string
+  icon: React.ElementType
   defaultOpen: boolean
   items: NavItem[]
 }
@@ -58,48 +51,53 @@ const navigationGroups: NavGroup[] = [
   {
     id: "flows",
     label: "Flows",
+    icon: Workflow,
     defaultOpen: true,
     items: [
-      { id: "welcome", label: "Welcome", icon: Home },
-      { id: "outcomes", label: "Outcomes", icon: Target },
-      { id: "steps", label: "Steps", icon: Layers },
-      { id: "web-events", label: "Web Events", icon: Globe },
+      { id: "welcome", label: "Welcome" },
+      { id: "outcomes", label: "Outcomes" },
+      { id: "steps", label: "Steps" },
+      { id: "web-events", label: "Web Events" },
     ],
   },
   {
     id: "multilingual",
     label: "Multi-Lingual",
+    icon: Languages,
     defaultOpen: false,
     items: [
-      { id: "languages", label: "Languages", icon: Languages },
-      { id: "responses", label: "Responses", icon: MessageSquare },
+      { id: "languages", label: "Languages" },
+      { id: "responses", label: "Responses" },
     ],
   },
   {
     id: "scripting",
     label: "Scripting",
+    icon: Code,
     defaultOpen: false,
     items: [
-      { id: "properties", label: "Properties", icon: Boxes },
-      { id: "events", label: "Events", icon: Calendar },
+      { id: "properties", label: "Properties" },
+      { id: "events", label: "Events" },
     ],
   },
   {
     id: "surveys",
     label: "Surveys",
+    icon: ClipboardList,
     defaultOpen: false,
     items: [
-      { id: "surveys", label: "Surveys", icon: ClipboardList },
-      { id: "survey-selector", label: "Survey Selector", icon: ListChecks },
+      { id: "surveys", label: "Surveys" },
+      { id: "survey-selector", label: "Survey Selector" },
     ],
   },
   {
     id: "defaults",
     label: "Defaults / Settings",
+    icon: Settings,
     defaultOpen: false,
     items: [
-      { id: "default-messages", label: "Default Messages", icon: Mail },
-      { id: "configuration", label: "Settings", icon: Settings },
+      { id: "default-messages", label: "Default Messages" },
+      { id: "configuration", label: "Settings" },
     ],
   },
 ]
@@ -157,11 +155,12 @@ export function FlowsWorkspace() {
     <div className={`flex h-[calc(100vh-64px)] ${pageBg} transition-colors duration-200`}>
       {/* Left Navigation Panel — floating */}
       <div className="p-3 flex-shrink-0">
-        <div className="w-56 bg-[#313750] rounded-xl shadow-lg overflow-y-auto h-full">
+        <div className="w-64 bg-[#313750] rounded-xl shadow-lg overflow-y-auto h-full">
         <div className="p-4">
           <nav className="space-y-1">
             {navigationGroups.map((group) => {
               const isOpen = openGroups[group.id]
+              const GroupIcon = group.icon
               return (
                 <div key={group.id}>
                   {/* Group header */}
@@ -171,7 +170,10 @@ export function FlowsWorkspace() {
                     aria-controls={`group-${group.id}`}
                     className="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold uppercase tracking-wider text-white hover:text-white transition-colors"
                   >
-                    {group.label}
+                    <div className="flex items-center gap-2">
+                      <GroupIcon className="w-3.5 h-3.5 text-white/70" />
+                      {group.label}
+                    </div>
                     {isOpen ? (
                       <ChevronDown className="w-3.5 h-3.5" />
                     ) : (
@@ -183,7 +185,6 @@ export function FlowsWorkspace() {
                   {isOpen && (
                     <div id={`group-${group.id}`} className="space-y-0.5 mb-2">
                       {group.items.map((item) => {
-                        const Icon = item.icon
                         const isActive =
                           activeView === item.id ||
                           (activeView === "outcome-detail" && item.id === "outcomes")
@@ -191,13 +192,12 @@ export function FlowsWorkspace() {
                           <button
                             key={item.id}
                             onClick={() => handleNavClick(item.id)}
-                            className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                            className={`w-full flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                               isActive
                                 ? "bg-[#2F8FFF]/20 text-white border border-[#2F8FFF] rounded-lg"
                                 : "text-white/50 hover:bg-white/[0.06] hover:text-white/80"
                             }`}
                           >
-                            <Icon className="w-4 h-4 flex-shrink-0" />
                             {item.label}
                           </button>
                         )
