@@ -1,71 +1,90 @@
-import { Card } from "@/components/ui/card"
+"use client"
+
 import { Sparkles, Workflow, Target } from "lucide-react"
+
+const STEPS = [
+  {
+    title: "Create your first Outcome",
+    description: "Navigate to Outcomes and define a business goal your conversation flow should achieve.",
+  },
+  {
+    title: "Build your Flow",
+    description: "Use the visual canvas to connect nodes, add branching logic, and wire up integrations.",
+  },
+  {
+    title: "Test with the Simulator",
+    description: "Run your flow end-to-end in the simulator before going live — catch issues early.",
+  },
+  {
+    title: "Deploy to your Channels",
+    description: "Publish your flow to connected channels and monitor performance in Reports.",
+  },
+]
 
 export function WelcomeView() {
   return (
     <div className="h-full overflow-y-auto p-8">
       <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[#3B4760] mb-2">Welcome to Flows</h1>
-          <p className="text-lg text-[#6A738A]">
-            Build intelligent conversation flows with our visual editor. Design, test, and deploy conversational
-            experiences across all your channels.
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl font-light tracking-tight text-white mb-2">Welcome to Flows</h1>
+          <p className="text-lg text-white/60">
+            Build intelligent conversation flows with our visual editor.
+            <br />
+            Design, test, and deploy conversational experiences across all your channels.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="p-6 border-2 border-[#E8F0FB] hover:border-[#2F8FFF] transition-all">
-            <div className="w-12 h-12 rounded-lg bg-[#E8F0FB] flex items-center justify-center mb-4">
+          <div className="p-6 rounded-xl border border-white/10 bg-white/5 hover:border-[#2F8FFF]/50 transition-all">
+            <div className="w-12 h-12 rounded-lg bg-[#2F8FFF]/15 flex items-center justify-center mb-4">
               <Workflow className="w-6 h-6 text-[#2F8FFF]" />
             </div>
-            <h3 className="text-lg font-semibold text-[#3B4760] mb-2">Visual Flow Builder</h3>
-            <p className="text-sm text-[#6A738A]">
+            <h3 className="text-lg font-semibold text-white mb-2">Visual Flow Builder</h3>
+            <p className="text-sm text-white/60">
               Drag and drop nodes to create complex conversation flows with branching logic, integrations, and more.
             </p>
-          </Card>
+          </div>
 
-          <Card className="p-6 border-2 border-[#E8F0FB] hover:border-[#2F8FFF] transition-all">
-            <div className="w-12 h-12 rounded-lg bg-[#E8F0FB] flex items-center justify-center mb-4">
-              <Target className="w-6 h-6 text-[#2F8FFF]" />
+          <div className="p-6 rounded-xl border border-white/10 bg-white/5 hover:border-[#A64E8D]/50 transition-all">
+            <div className="w-12 h-12 rounded-lg bg-[#A64E8D]/15 flex items-center justify-center mb-4">
+              <Target className="w-6 h-6 text-[#A64E8D]" />
             </div>
-            <h3 className="text-lg font-semibold text-[#3B4760] mb-2">Outcomes & Goals</h3>
-            <p className="text-sm text-[#6A738A]">
+            <h3 className="text-lg font-semibold text-white mb-2">Outcomes & Goals</h3>
+            <p className="text-sm text-white/60">
               Define business outcomes and track how your conversations drive results across all customer touchpoints.
             </p>
-          </Card>
+          </div>
 
-          <Card className="p-6 border-2 border-[#E8F0FB] hover:border-[#2F8FFF] transition-all">
-            <div className="w-12 h-12 rounded-lg bg-[#E8F0FB] flex items-center justify-center mb-4">
-              <Sparkles className="w-6 h-6 text-[#2F8FFF]" />
+          <div className="p-6 rounded-xl border border-white/10 bg-white/5 hover:border-emerald-500/50 transition-all">
+            <div className="w-12 h-12 rounded-lg bg-emerald-500/15 flex items-center justify-center mb-4">
+              <Sparkles className="w-6 h-6 text-emerald-400" />
             </div>
-            <h3 className="text-lg font-semibold text-[#3B4760] mb-2">Test & Simulate</h3>
-            <p className="text-sm text-[#6A738A]">
+            <h3 className="text-lg font-semibold text-white mb-2">Test & Simulate</h3>
+            <p className="text-sm text-white/60">
               Use the built-in simulator to test your flows in real-time before deploying to production channels.
             </p>
-          </Card>
+          </div>
         </div>
 
-        <Card className="mt-8 p-6 bg-[#E8F0FB] border-2 border-[#2F8FFF]">
-          <h3 className="text-lg font-semibold text-[#3B4760] mb-2">Getting Started</h3>
-          <ul className="space-y-2 text-sm text-[#6A738A]">
-            <li className="flex items-start gap-2">
-              <span className="text-[#2F8FFF] font-bold">1.</span>
-              <span>Navigate to Outcomes to create your first conversation goal</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-[#2F8FFF] font-bold">2.</span>
-              <span>Use the visual canvas to build your conversation flow</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-[#2F8FFF] font-bold">3.</span>
-              <span>Test your flow using the simulator widget</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-[#2F8FFF] font-bold">4.</span>
-              <span>Deploy to your connected channels and monitor performance</span>
-            </li>
-          </ul>
-        </Card>
+        <div className="mt-8 p-6 rounded-xl border border-white/10 bg-white/5">
+          <h3 className="text-lg font-semibold text-white mb-6">Getting Started</h3>
+          <div className="grid grid-cols-4 gap-3">
+            {STEPS.map((step, index) => (
+              <div key={index} className="relative flex flex-col gap-3 p-4 rounded-lg border border-white/10 bg-white/5">
+                <div className="flex items-center justify-between">
+                  <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold bg-[#2F8FFF]/15 text-[#2F8FFF]">
+                    {index + 1}
+                  </div>
+                  {index < STEPS.length - 1 && (
+                    <span className="text-white/20 text-sm">→</span>
+                  )}
+                </div>
+                <p className="text-sm font-semibold text-white leading-snug">{step.title}</p>
+                <p className="text-xs text-white/50 leading-relaxed">{step.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   )

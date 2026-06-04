@@ -20,8 +20,8 @@ export function Header({ onShowSplash, showingDashboard, dark }: HeaderProps = {
   const pathname = usePathname()
 
   return (
-    <header className={dark ? "bg-[#272C41]" : "border-b border-[#E8F0FB] bg-white"}>
-      <div className="container mx-auto px-6">
+    <header className={dark ? "bg-[#272C41]" : "border-b border-[#DDE5EF] bg-white"}>
+      <div className="w-full px-6">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-8">
             {onShowSplash ? (
@@ -48,15 +48,15 @@ export function Header({ onShowSplash, showingDashboard, dark }: HeaderProps = {
               </Link>
             )}
 
-            <nav className="flex items-center gap-6">
+            <nav className="flex items-center h-16">
               {onShowSplash && showingDashboard ? (
                 <button
                   onClick={() => {}}
                   className={cn(
-                    "text-sm font-medium transition-colors relative",
+                    "h-16 flex items-center px-3 text-sm font-medium transition-colors border-b-4",
                     pathname === "/"
-                      ? "text-white after:absolute after:bottom-[-17px] after:left-0 after:right-0 after:h-0.5 after:bg-[#2F8FFF]"
-                      : dark ? "text-white hover:text-white/80" : "text-[#6A738A] hover:text-[#2F8FFF]",
+                      ? dark ? "border-[#2F8FFF] text-white" : "border-[#2F8FFF] text-[#2F8FFF]"
+                      : dark ? "border-transparent text-white/70 hover:text-white" : "border-transparent text-[#6A738A] hover:text-[#1E2535]",
                   )}
                 >
                   Home
@@ -65,10 +65,10 @@ export function Header({ onShowSplash, showingDashboard, dark }: HeaderProps = {
                 <Link
                   href="/"
                   className={cn(
-                    "text-sm font-medium transition-colors relative",
+                    "h-16 flex items-center px-3 text-sm font-medium transition-colors border-b-4",
                     pathname === "/"
-                      ? "text-white after:absolute after:bottom-[-17px] after:left-0 after:right-0 after:h-0.5 after:bg-[#2F8FFF]"
-                      : dark ? "text-white hover:text-white/80" : "text-[#6A738A] hover:text-[#2F8FFF]",
+                      ? dark ? "border-[#2F8FFF] text-white" : "border-[#2F8FFF] text-[#2F8FFF]"
+                      : dark ? "border-transparent text-white/70 hover:text-white" : "border-transparent text-[#6A738A] hover:text-[#1E2535]",
                   )}
                 >
                   Home
@@ -77,10 +77,10 @@ export function Header({ onShowSplash, showingDashboard, dark }: HeaderProps = {
               <Link
                 href="/flows"
                 className={cn(
-                  "text-sm font-medium transition-colors relative",
+                  "h-16 flex items-center px-3 text-sm font-medium transition-colors border-b-4",
                   pathname?.startsWith("/flows")
-                    ? "text-white after:absolute after:bottom-[-17px] after:left-0 after:right-0 after:h-0.5 after:bg-[#2F8FFF]"
-                    : dark ? "text-white hover:text-white/80" : "text-[#6A738A] hover:text-[#2F8FFF]",
+                    ? dark ? "border-[#2F8FFF] text-white" : "border-[#2F8FFF] text-[#2F8FFF]"
+                    : dark ? "border-transparent text-white/70 hover:text-white" : "border-transparent text-[#6A738A] hover:text-[#1E2535]",
                 )}
               >
                 Flows
@@ -88,10 +88,10 @@ export function Header({ onShowSplash, showingDashboard, dark }: HeaderProps = {
               <Link
                 href="/reports"
                 className={cn(
-                  "text-sm font-medium transition-colors relative",
+                  "h-16 flex items-center px-3 text-sm font-medium transition-colors border-b-4",
                   pathname === "/reports"
-                    ? "text-white after:absolute after:bottom-[-17px] after:left-0 after:right-0 after:h-0.5 after:bg-[#2F8FFF]"
-                    : dark ? "text-white hover:text-white/80" : "text-[#6A738A] hover:text-[#2F8FFF]",
+                    ? dark ? "border-[#2F8FFF] text-white" : "border-[#2F8FFF] text-[#2F8FFF]"
+                    : dark ? "border-transparent text-white/70 hover:text-white" : "border-transparent text-[#6A738A] hover:text-[#1E2535]",
                 )}
               >
                 Reports
@@ -99,10 +99,10 @@ export function Header({ onShowSplash, showingDashboard, dark }: HeaderProps = {
               <Link
                 href="/ai-agents"
                 className={cn(
-                  "text-sm font-medium transition-colors relative",
+                  "h-16 flex items-center px-3 text-sm font-medium transition-colors border-b-4",
                   pathname === "/ai-agents"
-                    ? "text-white after:absolute after:bottom-[-17px] after:left-0 after:right-0 after:h-0.5 after:bg-[#2F8FFF]"
-                    : dark ? "text-white hover:text-white/80" : "text-[#6A738A] hover:text-[#2F8FFF]",
+                    ? dark ? "border-[#2F8FFF] text-white" : "border-[#2F8FFF] text-[#2F8FFF]"
+                    : dark ? "border-transparent text-white/70 hover:text-white" : "border-transparent text-[#6A738A] hover:text-[#1E2535]",
                 )}
               >
                 AI Agents
@@ -110,10 +110,10 @@ export function Header({ onShowSplash, showingDashboard, dark }: HeaderProps = {
               <Link
                 href="/ai-workbench"
                 className={cn(
-                  "text-sm font-medium transition-colors relative",
+                  "h-16 flex items-center px-3 text-sm font-medium transition-colors border-b-4",
                   pathname === "/ai-workbench"
-                    ? "text-white after:absolute after:bottom-[-17px] after:left-0 after:right-0 after:h-0.5 after:bg-[#2F8FFF]"
-                    : dark ? "text-white hover:text-white/80" : "text-[#6A738A] hover:text-[#2F8FFF]",
+                    ? dark ? "border-[#2F8FFF] text-white" : "border-[#2F8FFF] text-[#2F8FFF]"
+                    : dark ? "border-transparent text-white/70 hover:text-white" : "border-transparent text-[#6A738A] hover:text-[#1E2535]",
                 )}
               >
                 AI Workbench
@@ -124,11 +124,10 @@ export function Header({ onShowSplash, showingDashboard, dark }: HeaderProps = {
                   <Button
                     variant="ghost"
                     className={cn(
-                      "gap-1 text-sm font-medium relative",
-                      dark ? "hover:bg-white/10" : "hover:bg-[#E8F0FB]",
+                      "h-16 gap-1 text-sm font-medium rounded-none border-b-4 hover:bg-transparent",
                       pathname === "/integrations" || pathname?.startsWith("/configuration")
-                        ? "text-white after:absolute after:bottom-[-1px] after:left-3 after:right-3 after:h-0.5 after:bg-[#2F8FFF]"
-                        : dark ? "text-white hover:text-white/80" : "text-[#6A738A] hover:text-[#2F8FFF]",
+                        ? dark ? "border-[#2F8FFF] text-white" : "border-[#2F8FFF] text-[#2F8FFF]"
+                        : dark ? "border-transparent text-white/70 hover:text-white" : "border-transparent text-[#6A738A] hover:text-[#1E2535]",
                     )}
                   >
                     Configuration
@@ -136,17 +135,17 @@ export function Header({ onShowSplash, showingDashboard, dark }: HeaderProps = {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="w-56">
-                  <DropdownMenuItem className="text-[#3B4760] hover:bg-[#E8F0FB] cursor-pointer">Web</DropdownMenuItem>
-                  <DropdownMenuItem asChild className="text-[#3B4760] hover:bg-[#E8F0FB] cursor-pointer">
+                  <DropdownMenuItem className="text-[#1E2535] hover:bg-[#F0F6FF] cursor-pointer">Web</DropdownMenuItem>
+                  <DropdownMenuItem asChild className="text-[#1E2535] hover:bg-[#F0F6FF] cursor-pointer">
                     <Link href="/integrations">Integrations</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="text-[#3B4760] hover:bg-[#E8F0FB] cursor-pointer">
+                  <DropdownMenuItem className="text-[#1E2535] hover:bg-[#F0F6FF] cursor-pointer">
                     Deployments
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="text-[#3B4760] hover:bg-[#E8F0FB] cursor-pointer">
+                  <DropdownMenuItem className="text-[#1E2535] hover:bg-[#F0F6FF] cursor-pointer">
                     Transfer
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="text-[#3B4760] hover:bg-[#E8F0FB] cursor-pointer">
+                  <DropdownMenuItem className="text-[#1E2535] hover:bg-[#F0F6FF] cursor-pointer">
                     Business Configuration
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -157,7 +156,7 @@ export function Header({ onShowSplash, showingDashboard, dark }: HeaderProps = {
           <div className="flex items-center gap-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className={cn("gap-2", dark ? "text-white hover:bg-white/10" : "text-[#3B4760] hover:bg-[#E8F0FB]")}>
+                <Button variant="ghost" className={cn("gap-2", dark ? "text-white hover:bg-white/10" : "text-[#1E2535] hover:bg-[#F0F6FF]")}>
                   <span className="text-sm font-medium">Bohdan Testing Co...</span>
                   <ChevronDown className="h-4 w-4" />
                 </Button>
@@ -168,14 +167,14 @@ export function Header({ onShowSplash, showingDashboard, dark }: HeaderProps = {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Button variant="ghost" size="icon" className={cn("relative", dark ? "text-white/60 hover:bg-white/10 hover:text-white" : "text-[#6A738A] hover:bg-[#E8F0FB]")}>
+            <Button variant="ghost" size="icon" className={cn("relative", dark ? "text-white/60 hover:bg-white/10 hover:text-white" : "text-[#6A738A] hover:bg-[#F0F6FF]")}>
               <Bell className="h-5 w-5" />
               <span className="absolute top-1 right-1 h-2 w-2 bg-[#10B981] rounded-full" />
             </Button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className={cn("rounded-full", dark ? "text-white/60 hover:bg-white/10 hover:text-white" : "text-[#6A738A] hover:bg-[#E8F0FB]")}>
+                <Button variant="ghost" size="icon" className={cn("rounded-full", dark ? "text-white/60 hover:bg-white/10 hover:text-white" : "text-[#6A738A] hover:bg-[#F0F6FF]")}>
                   <User className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>

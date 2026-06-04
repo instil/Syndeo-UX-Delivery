@@ -37,6 +37,9 @@ import {
   ZoomIn,
   Pen,
   Users,
+  Send,
+  Bot,
+  RotateCcw,
 } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -118,6 +121,13 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
   const [newStatement, setNewStatement] = useState("")
   const [showStatementsInfo, setShowStatementsInfo] = useState(false)
   const [showDetailsInfo, setShowDetailsInfo] = useState(false)
+  const [editingNodeId, setEditingNodeId] = useState<string | null>(null)
+  const [nodeEditTab, setNodeEditTab] = useState<"skip" | "message" | "llm" | "exception">("message")
+  const [nodeEditContent, setNodeEditContent] = useState("")
+  const [simulatorInput, setSimulatorInput] = useState("")
+  const [simulatorMessages, setSimulatorMessages] = useState<{ role: "bot" | "user"; text: string }[]>([
+    { role: "bot", text: "Hi! I'm ready to simulate this outcome. Press ▶ to start." },
+  ])
 
   const getNodeColor = (type: NodeType) => {
     return nodeTypes.find((nt) => nt.type === type)?.color || "#6A738A"
@@ -185,8 +195,23 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
   }
 
   const handleEditNode = (nodeId: string) => {
-    console.log("[v0] Edit node:", nodeId)
-    // TODO: Implement edit functionality
+    const node = nodes.find((n) => n.id === nodeId)
+    setNodeEditContent(node?.label || "")
+    setNodeEditTab("message")
+    setEditingNodeId(nodeId)
+  }
+
+  const handleCloseEdit = () => setEditingNodeId(null)
+
+  const handleSimulatorSend = () => {
+    if (!simulatorInput.trim()) return
+    const userMsg = simulatorInput.trim()
+    setSimulatorMessages((prev) => [
+      ...prev,
+      { role: "user", text: userMsg },
+      { role: "bot", text: "Got it! Processing your request..." },
+    ])
+    setSimulatorInput("")
   }
 
   const handleDeleteNode = (nodeId: string) => {
@@ -197,14 +222,14 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
   return (
     <div className="h-full flex flex-col bg-[#F6F8FA]">
       {/* Header with Breadcrumb/Tabs */}
-      <div className="bg-white border-b border-[#E8F0FB] px-6 py-4">
+      <div className="bg-white border-b border-[#DDE5EF] px-6 py-4">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="icon" onClick={onBack} className="hover:bg-[#F6F8FA]">
               <ArrowLeft className="w-4 h-4" />
             </Button>
             <div>
-              <h1 className="text-xl font-bold text-[#3B4760]">{outcomeName}</h1>
+              <h1 className="text-xl font-light tracking-tight text-[#1E2535]">{outcomeName}</h1>
               <p className="text-sm text-[#6A738A]">OUTCOME</p>
             </div>
           </div>
@@ -217,13 +242,13 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-4 border-b border-[#E8F0FB] -mb-4">
+        <div className="flex gap-4 border-b border-[#DDE5EF] -mb-4">
           <button
             onClick={() => setActiveTab("flow")}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
               activeTab === "flow"
                 ? "border-[#2F8FFF] text-[#2F8FFF]"
-                : "border-transparent text-[#6A738A] hover:text-[#3B4760]"
+                : "border-transparent text-[#6A738A] hover:text-[#1E2535]"
             }`}
           >
             Outcome Flow
@@ -233,7 +258,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
               activeTab === "statements"
                 ? "border-[#2F8FFF] text-[#2F8FFF]"
-                : "border-transparent text-[#6A738A] hover:text-[#3B4760]"
+                : "border-transparent text-[#6A738A] hover:text-[#1E2535]"
             }`}
           >
             Customer Statements
@@ -243,7 +268,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
               activeTab === "details"
                 ? "border-[#2F8FFF] text-[#2F8FFF]"
-                : "border-transparent text-[#6A738A] hover:text-[#3B4760]"
+                : "border-transparent text-[#6A738A] hover:text-[#1E2535]"
             }`}
           >
             Outcome Details
@@ -254,8 +279,67 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
       {/* Tab Content */}
       {activeTab === "flow" && (
         <div className="flex-1 flex overflow-hidden">
-          {/* Canvas */}
-          <div className="flex-1 relative">
+
+          {/* LEFT: Simulator Panel */}
+          <div className="w-64 bg-white border-r border-[#DDE5EF] flex flex-col flex-shrink-0">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[#DDE5EF]">
+              <div className="flex items-center gap-2">
+                <Bot className="w-4 h-4 text-[#2F8FFF]" />
+                <span className="text-sm font-semibold text-[#1E2535]">Simulator</span>
+              </div>
+              <button
+                className="w-7 h-7 rounded-lg bg-[#2F8FFF] flex items-center justify-center hover:bg-[#2680E8] transition-colors"
+                title="Restart"
+                onClick={() => setSimulatorMessages([{ role: "bot", text: "Hi! I'm ready to simulate this outcome. Press ▶ to start." }])}
+              >
+                <RotateCcw className="w-3.5 h-3.5 text-white" />
+              </button>
+            </div>
+
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto p-3 space-y-3">
+              {simulatorMessages.map((msg, i) => (
+                <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                  {msg.role === "bot" && (
+                    <div className="w-6 h-6 rounded-full bg-[#2F8FFF]/10 flex items-center justify-center mr-2 flex-shrink-0 mt-0.5">
+                      <Bot className="w-3 h-3 text-[#2F8FFF]" />
+                    </div>
+                  )}
+                  <div
+                    className={`max-w-[80%] px-3 py-2 rounded-2xl text-xs leading-relaxed ${
+                      msg.role === "bot"
+                        ? "bg-[#F6F8FA] text-[#1E2535] rounded-tl-sm"
+                        : "bg-[#2F8FFF] text-white rounded-tr-sm"
+                    }`}
+                  >
+                    {msg.text}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Input */}
+            <div className="p-3 border-t border-[#DDE5EF]">
+              <div className="flex items-center gap-2 bg-[#F6F8FA] rounded-xl px-3 py-2 border border-[#DDE5EF]">
+                <input
+                  className="flex-1 bg-transparent text-xs text-[#1E2535] placeholder:text-[#9AA3B0] outline-none"
+                  placeholder="Type a message..."
+                  value={simulatorInput}
+                  onChange={(e) => setSimulatorInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSimulatorSend()}
+                />
+                <button
+                  onClick={handleSimulatorSend}
+                  className="w-6 h-6 rounded-lg bg-[#2F8FFF] flex items-center justify-center hover:bg-[#2680E8] transition-colors flex-shrink-0"
+                >
+                  <Send className="w-3 h-3 text-white" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* CENTRE: Canvas */}
+          <div className="flex-1 relative overflow-hidden">
             <div
               ref={canvasRef}
               className="h-full overflow-hidden bg-[#F6F8FA] cursor-move"
@@ -264,8 +348,8 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
               onMouseDown={handleCanvasMouseDown}
               style={{
                 backgroundImage: `
-                  linear-gradient(to right, #E8F0FB 1px, transparent 1px),
-                  linear-gradient(to bottom, #E8F0FB 1px, transparent 1px)
+                  linear-gradient(to right, #EBF0F7 1px, transparent 1px),
+                  linear-gradient(to bottom, #EBF0F7 1px, transparent 1px)
                 `,
                 backgroundSize: `${20 * (zoom / 100)}px ${20 * (zoom / 100)}px`,
                 backgroundPosition: `${panOffset.x}px ${panOffset.y}px`,
@@ -343,10 +427,11 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
                 {nodes.map((node) => {
                   const Icon = nodeTypes.find((nt) => nt.type === node.type)?.icon || MessageSquare
                   const nodeColor = getNodeColor(node.type)
+                  const isEditing = editingNodeId === node.id
                   return (
                     <Card
                       key={node.id}
-                      className="absolute cursor-move transition-all duration-200 hover:shadow-xl border-none shadow-lg"
+                      className={`absolute cursor-move transition-all duration-200 hover:shadow-xl border-none shadow-lg ${isEditing ? "ring-2 ring-white ring-offset-2" : ""}`}
                       style={{
                         left: node.x,
                         top: node.y,
@@ -414,11 +499,11 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
               </div>
             </div>
 
+            {/* Minimap + controls overlay */}
             <div className="absolute top-4 left-4 z-20">
-              {/* Minimap */}
-              <Card className="w-36 bg-white border border-[#E8F0FB] shadow-xl overflow-hidden">
+              <Card className="w-36 bg-white border border-[#DDE5EF] rounded-xl shadow-xl overflow-hidden">
                 <div className="p-3">
-                  <div className="w-full h-24 bg-[#F6F8FA] rounded relative overflow-hidden mb-3 border border-[#E8F0FB]">
+                  <div className="w-full h-24 bg-[#F6F8FA] rounded relative overflow-hidden mb-3 border border-[#DDE5EF]">
                     {nodes.map((node) => (
                       <div
                         key={`mini-${node.id}`}
@@ -432,90 +517,28 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
                         }}
                       />
                     ))}
-                    {/* Viewport indicator */}
                     <div
                       className="absolute border-2 border-[#2F8FFF] bg-[#2F8FFF]/10 rounded"
                       style={{ width: "35%", height: "25%", left: "10%", top: "10%" }}
                     />
                   </div>
-
-                  {/* Zoom controls */}
                   <div className="flex items-center justify-between mb-3 bg-[#F6F8FA] rounded px-2 py-1.5">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setZoom(Math.max(50, zoom - 10))}
-                      className="h-6 w-6 hover:bg-white text-[#2F8FFF] font-bold text-base"
-                    >
-                      −
-                    </Button>
-                    <span className="font-semibold text-sm text-[#3B4760]">{zoom}%</span>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setZoom(Math.min(200, zoom + 10))}
-                      className="h-6 w-6 hover:bg-white text-[#2F8FFF] font-bold text-base"
-                    >
-                      +
-                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => setZoom(Math.max(50, zoom - 10))} className="h-6 w-6 hover:bg-white text-[#2F8FFF] font-bold text-base">−</Button>
+                    <span className="font-semibold text-sm text-[#1E2535]">{zoom}%</span>
+                    <Button variant="ghost" size="icon" onClick={() => setZoom(Math.min(200, zoom + 10))} className="h-6 w-6 hover:bg-white text-[#2F8FFF] font-bold text-base">+</Button>
                   </div>
-
-                  {/* Toolbar icons below zoom controls */}
                   <div className="flex items-center justify-center gap-1.5 pb-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-7 w-7 hover:bg-[#E8F0FB] text-[#6A738A] hover:text-[#3B4760]"
-                      title="Home"
-                    >
-                      <Home className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-7 w-7 hover:bg-[#E8F0FB] text-[#6A738A] hover:text-[#3B4760]"
-                      title="Undo"
-                    >
-                      <Undo className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-7 w-7 hover:bg-[#E8F0FB] text-[#6A738A] hover:text-[#3B4760]"
-                      title="Zoom"
-                    >
-                      <ZoomIn className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-7 w-7 hover:bg-[#E8F0FB] text-[#6A738A] hover:text-[#3B4760]"
-                      title="Edit"
-                    >
-                      <Pen className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-7 w-7 hover:bg-[#E8F0FB] text-[#6A738A] hover:text-[#3B4760]"
-                      title="Settings"
-                    >
-                      <Settings className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-7 w-7 hover:bg-[#E8F0FB] text-[#6A738A] hover:text-[#3B4760]"
-                      title="Users"
-                    >
-                      <Users className="w-4 h-4" />
-                    </Button>
+                    {[Home, Undo, ZoomIn, Pen, Settings, Users].map((Icon, i) => (
+                      <Button key={i} variant="ghost" size="icon" className="h-7 w-7 hover:bg-[#F0F6FF] text-[#6A738A] hover:text-[#1E2535]">
+                        <Icon className="w-4 h-4" />
+                      </Button>
+                    ))}
                   </div>
                 </div>
               </Card>
 
-              <Card className="mt-2 bg-white border border-[#E8F0FB] shadow-lg overflow-hidden">
-                <button className="flex items-center gap-2 px-3 py-2.5 text-sm text-[#6A738A] hover:bg-[#F6F8FA] w-full border-b border-[#E8F0FB] transition-colors">
+              <Card className="mt-2 bg-white border border-[#DDE5EF] rounded-xl shadow-lg overflow-hidden">
+                <button className="flex items-center gap-2 px-3 py-2.5 text-sm text-[#6A738A] hover:bg-[#F6F8FA] w-full border-b border-[#DDE5EF] transition-colors">
                   <Maximize2 className="w-4 h-4" />
                   <span className="font-medium">Edit Return Types</span>
                 </button>
@@ -525,32 +548,135 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
                 </button>
               </Card>
             </div>
-
-            <div className="fixed top-52 right-6 z-50 w-44">
-              <Card className="bg-white border border-[#E8F0FB] shadow-xl overflow-hidden">
-                <div className="p-1.5 space-y-0.5">
-                  {/* Node types list */}
-                  {nodeTypes.map((nodeType) => {
-                    const Icon = nodeType.icon
-                    return (
-                      <button
-                        key={nodeType.type}
-                        className="w-full flex items-center gap-2.5 px-2 py-1.5 rounded hover:bg-[#F6F8FA] transition-colors text-left"
-                      >
-                        <div
-                          className="w-8 h-8 flex items-center justify-center rounded shadow-sm flex-shrink-0"
-                          style={{ backgroundColor: nodeType.color }}
-                        >
-                          <Icon className="w-4 h-4 text-white" />
-                        </div>
-                        <span className="text-xs font-medium text-[#6A738A]">{nodeType.label}</span>
-                      </button>
-                    )
-                  })}
-                </div>
-              </Card>
-            </div>
           </div>
+
+          {/* RIGHT: Node Edit Panel OR Node Types Palette */}
+          {editingNodeId ? (() => {
+            const node = nodes.find((n) => n.id === editingNodeId)
+            const Icon = nodeTypes.find((nt) => nt.type === node?.type)?.icon || MessageSquare
+            const nodeColor = getNodeColor(node?.type || "message")
+            return (
+              <div className="w-80 bg-white border-l border-[#DDE5EF] flex flex-col flex-shrink-0">
+                {/* Panel header */}
+                <div className="flex items-center justify-between px-4 py-3 border-b border-[#DDE5EF]">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: nodeColor }}>
+                      <Icon className="w-3.5 h-3.5 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-[#6A738A] uppercase tracking-wider font-medium">{node?.type}</p>
+                      <p className="text-sm font-semibold text-[#1E2535] leading-tight">{node?.label}</p>
+                    </div>
+                  </div>
+                  <button onClick={handleCloseEdit} className="w-7 h-7 rounded-lg hover:bg-[#F0F6FF] flex items-center justify-center text-[#6A738A] hover:text-[#1E2535] transition-colors">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                {/* Tabs */}
+                <div className="flex border-b border-[#DDE5EF]">
+                  {(["skip", "message", "llm", "exception"] as const).map((tab) => (
+                    <button
+                      key={tab}
+                      onClick={() => setNodeEditTab(tab)}
+                      className={`flex-1 py-2.5 text-xs font-medium transition-colors border-b-2 ${
+                        nodeEditTab === tab
+                          ? "border-[#2F8FFF] text-[#2F8FFF]"
+                          : "border-transparent text-[#6A738A] hover:text-[#1E2535]"
+                      }`}
+                    >
+                      {tab === "llm" ? "LLM" : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                  {nodeEditTab === "message" && (
+                    <>
+                      <div>
+                        <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider block mb-2">Task Name</label>
+                        <input
+                          className="w-full px-3 py-2 rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535] focus:outline-none focus:ring-2 focus:ring-[#2F8FFF]/30 focus:border-[#2F8FFF]"
+                          defaultValue={node?.label}
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider block mb-2">Message</label>
+                        <div className="border border-[#DDE5EF] rounded-xl overflow-hidden">
+                          <div className="flex gap-1 p-2 border-b border-[#DDE5EF] bg-[#F6F8FA]">
+                            {[Bold, Italic, Underline, Strikethrough, List, Code, Link, Smile].map((Icon, i) => (
+                              <Button key={i} variant="ghost" size="icon" className="h-7 w-7 hover:bg-white text-[#6A738A]">
+                                <Icon className="w-3.5 h-3.5" />
+                              </Button>
+                            ))}
+                          </div>
+                          <Textarea
+                            rows={5}
+                            value={nodeEditContent}
+                            onChange={(e) => setNodeEditContent(e.target.value)}
+                            className="border-none bg-white focus:ring-0 resize-none text-sm rounded-none"
+                            placeholder="Enter message..."
+                          />
+                          <div className="px-3 py-1.5 text-xs text-[#9AA3B0] text-right border-t border-[#DDE5EF] bg-[#F6F8FA]">
+                            {nodeEditContent.length} of 2000 characters
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                  {nodeEditTab === "skip" && (
+                    <p className="text-sm text-[#6A738A]">Configure skip conditions for this node.</p>
+                  )}
+                  {nodeEditTab === "llm" && (
+                    <div>
+                      <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider block mb-2">LLM Instructions</label>
+                      <Textarea rows={6} className="border border-[#DDE5EF] rounded-xl text-sm resize-none" placeholder="Add instructions for the LLM..." />
+                    </div>
+                  )}
+                  {nodeEditTab === "exception" && (
+                    <p className="text-sm text-[#6A738A]">Configure exception handling for this node.</p>
+                  )}
+                </div>
+
+                {/* Footer */}
+                <div className="px-4 py-3 border-t border-[#DDE5EF] flex items-center justify-between">
+                  <button className="text-sm text-red-500 hover:text-red-600 flex items-center gap-1.5 transition-colors">
+                    <Trash2 className="w-3.5 h-3.5" />
+                    Delete Task
+                  </button>
+                  <Button
+                    className="bg-[#2F8FFF] hover:bg-[#2680E8] text-white px-5 h-8 text-sm rounded-lg"
+                    onClick={handleCloseEdit}
+                  >
+                    Done
+                  </Button>
+                </div>
+              </div>
+            )
+          })() : (
+            <div className="w-44 bg-white border-l border-[#DDE5EF] flex-shrink-0 overflow-y-auto">
+              <div className="p-1.5 space-y-0.5">
+                {nodeTypes.map((nodeType) => {
+                  const Icon = nodeType.icon
+                  return (
+                    <button
+                      key={nodeType.type}
+                      className="w-full flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-[#F0F6FF] transition-colors text-left"
+                    >
+                      <div
+                        className="w-8 h-8 flex items-center justify-center rounded-lg shadow-sm flex-shrink-0"
+                        style={{ backgroundColor: nodeType.color }}
+                      >
+                        <Icon className="w-4 h-4 text-white" />
+                      </div>
+                      <span className="text-xs font-medium text-[#6A738A]">{nodeType.label}</span>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -558,7 +684,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
         <div className="flex-1 overflow-auto p-8 bg-white">
           <div className="max-w-3xl">
             <div className="relative flex items-center gap-2 mb-6">
-              <h2 className="text-2xl font-bold text-[#3B4760]">Customer Statements</h2>
+              <h2 className="text-2xl font-light tracking-tight text-[#1E2535]">Customer Statements</h2>
               <button
                 className="w-5 h-5 rounded-full bg-[#6A738A] text-white flex items-center justify-center text-xs hover:bg-[#3B4760] transition-colors"
                 onMouseEnter={() => setShowStatementsInfo(true)}
@@ -588,7 +714,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
                     placeholder="Enter a customer statement..."
                     value={newStatement}
                     onChange={(e) => setNewStatement(e.target.value)}
-                    className="flex-1 border-[#E8F0FB] focus:border-[#2F8FFF]"
+                    className="flex-1 border-[#DDE5EF] focus:border-[#2F8FFF]"
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && newStatement.trim()) {
                         setStatements([...statements, newStatement.trim()])
@@ -597,7 +723,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
                     }}
                   />
                   <Button
-                    className="bg-[#E8F0FB] hover:bg-[#2F8FFF] text-[#6A738A] hover:text-white px-6"
+                    className="bg-[#F0F6FF] hover:bg-[#2F8FFF] text-[#6A738A] hover:text-white px-6"
                     onClick={() => {
                       if (newStatement.trim()) {
                         setStatements([...statements, newStatement.trim()])
@@ -613,7 +739,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
                   {statements.map((statement, index) => (
                     <div
                       key={index}
-                      className="inline-flex items-center gap-2 bg-white border border-[#E8F0FB] rounded-full px-4 py-2 text-sm text-[#3B4760]"
+                      className="inline-flex items-center gap-2 bg-white border border-[#DDE5EF] rounded-full px-4 py-2 text-sm text-[#1E2535]"
                     >
                       {statement}
                       <button
@@ -629,13 +755,13 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
 
               {/* Pagination */}
               <div className="flex justify-end items-center gap-2 pt-4">
-                <Button variant="outline" size="icon" className="h-8 w-8 border-[#E8F0FB] bg-transparent">
+                <Button variant="outline" size="icon" className="h-8 w-8 border-[#DDE5EF] bg-transparent">
                   «
                 </Button>
                 <div className="w-8 h-8 rounded bg-[#2F8FFF] text-white flex items-center justify-center text-sm font-medium">
                   1
                 </div>
-                <Button variant="outline" size="icon" className="h-8 w-8 border-[#E8F0FB] bg-transparent">
+                <Button variant="outline" size="icon" className="h-8 w-8 border-[#DDE5EF] bg-transparent">
                   »
                 </Button>
               </div>
@@ -648,7 +774,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
         <div className="flex-1 overflow-auto p-8 bg-white">
           <div className="max-w-3xl">
             <div className="relative flex items-center gap-2 mb-6">
-              <h2 className="text-2xl font-bold text-[#3B4760]">Outcome Details</h2>
+              <h2 className="text-2xl font-light tracking-tight text-[#1E2535]">Outcome Details</h2>
               <button
                 className="w-5 h-5 rounded-full bg-[#6A738A] text-white flex items-center justify-center text-xs hover:bg-[#3B4760] transition-colors"
                 onMouseEnter={() => setShowDetailsInfo(true)}
@@ -674,7 +800,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
                 <Label className="text-[#6A738A] text-xs uppercase tracking-wider mb-3 block">NAME</Label>
                 <Input
                   defaultValue={outcomeName}
-                  className="border-[#E8F0FB] bg-[#F6F8FA] focus:border-[#2F8FFF] focus:bg-white"
+                  className="border-[#DDE5EF] bg-[#F6F8FA] focus:border-[#2F8FFF] focus:bg-white"
                 />
               </div>
 
@@ -687,7 +813,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
                 </div>
                 <Input
                   defaultValue="1 a"
-                  className="border-[#E8F0FB] bg-[#F6F8FA] focus:border-[#2F8FFF] focus:bg-white"
+                  className="border-[#DDE5EF] bg-[#F6F8FA] focus:border-[#2F8FFF] focus:bg-white"
                 />
               </div>
 
@@ -698,34 +824,34 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
                     i
                   </button>
                 </div>
-                <div className="border border-[#E8F0FB] rounded-lg bg-[#F6F8FA]">
-                  <div className="flex gap-2 p-2 border-b border-[#E8F0FB] bg-white rounded-t-lg">
-                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-[#E8F0FB]">
+                <div className="border border-[#DDE5EF] rounded-xl bg-[#F6F8FA]">
+                  <div className="flex gap-2 p-2 border-b border-[#DDE5EF] bg-white rounded-t-lg">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-[#F0F6FF]">
                       <Bold className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-[#E8F0FB]">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-[#F0F6FF]">
                       <Italic className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-[#E8F0FB]">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-[#F0F6FF]">
                       <Underline className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-[#E8F0FB]">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-[#F0F6FF]">
                       <Strikethrough className="w-4 h-4" />
                     </Button>
-                    <div className="w-px h-8 bg-[#E8F0FB]" />
-                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-[#E8F0FB]">
+                    <div className="w-px h-8 bg-[#F0F6FF]" />
+                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-[#F0F6FF]">
                       <List className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-[#E8F0FB]">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-[#F0F6FF]">
                       <Code className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-[#E8F0FB]">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-[#F0F6FF]">
                       <Link className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-[#E8F0FB]">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-[#F0F6FF]">
                       <Smile className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-[#E8F0FB]">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-[#F0F6FF]">
                       <FileText className="w-4 h-4" />
                     </Button>
                   </div>
@@ -734,7 +860,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
                     className="border-none bg-transparent focus:ring-0 resize-none"
                     placeholder="Enter confirmation question..."
                   />
-                  <div className="px-3 py-2 text-xs text-[#6A738A] text-right border-t border-[#E8F0FB] bg-white rounded-b-lg">
+                  <div className="px-3 py-2 text-xs text-[#6A738A] text-right border-t border-[#DDE5EF] bg-white rounded-b-lg">
                     0 of 2000 characters
                   </div>
                 </div>
@@ -742,7 +868,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
 
               <div>
                 <Label className="text-[#6A738A] text-xs uppercase tracking-wider mb-3 block">DESCRIPTION</Label>
-                <Textarea rows={6} className="border-[#E8F0FB] bg-[#F6F8FA] focus:border-[#2F8FFF] focus:bg-white" />
+                <Textarea rows={6} className="border-[#DDE5EF] bg-[#F6F8FA] focus:border-[#2F8FFF] focus:bg-white" />
               </div>
 
               <div>
@@ -762,7 +888,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
                   </div>
                   <Input
                     placeholder="Add an intent"
-                    className="flex-1 border-[#E8F0FB] bg-[#F6F8FA] focus:border-[#2F8FFF]"
+                    className="flex-1 border-[#DDE5EF] bg-[#F6F8FA] focus:border-[#2F8FFF]"
                   />
                   <Button size="icon" className="h-10 w-10 rounded bg-[#2F8FFF] hover:bg-[#2680E8] text-white">
                     <Plus className="w-5 h-5" />
@@ -770,7 +896,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
                 </div>
               </div>
 
-              <div className="flex items-center justify-center gap-6 pt-6 border-t border-[#E8F0FB]">
+              <div className="flex items-center justify-center gap-6 pt-6 border-t border-[#DDE5EF]">
                 <Button className="bg-[#2F8FFF] hover:bg-[#2680E8] text-white px-8">Save</Button>
                 <Button variant="link" className="text-red-600 hover:text-red-700">
                   Delete Outcome
