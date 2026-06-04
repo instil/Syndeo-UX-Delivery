@@ -136,8 +136,8 @@ export function HomepageNewUserPhase1() {
   const greeting = hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening"
 
   return (
-    <div className="min-h-[calc(100vh-64px)] overflow-y-auto bg-[#272C41]" style={{ scrollbarWidth: "none" }}>
-      <div className="relative z-10 container mx-auto px-6 py-8">
+    <div className="h-[calc(100vh-64px)] overflow-hidden bg-[#272C41] flex flex-col pb-16" style={{ scrollbarWidth: "none" }}>
+      <div className="relative z-10 container mx-auto px-6 py-8 flex flex-col flex-1 min-h-0">
 
         {/* Header */}
         <div className="relative mb-8 flex flex-col items-center text-center gap-4">
@@ -156,15 +156,15 @@ export function HomepageNewUserPhase1() {
         </div>
 
         {/* Trial panel + Simulator */}
-        <div className="mx-auto w-fit overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl">
+        <div className="mx-auto w-fit overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl flex flex-col flex-1 min-h-0">
           <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
             <p className="text-xs font-semibold uppercase tracking-widest text-white">Try an AI Agent</p>
             <span className="text-xs text-white/40">{SIMULATOR_FLOWS.length} agents available</span>
           </div>
 
-          <div className="flex items-stretch">
+          <div className="flex items-stretch flex-1 min-h-0">
             {/* Agent list */}
-            <div className="flex w-[540px] shrink-0 flex-col gap-3 border-r border-white/10 p-5">
+            <div className="flex w-[540px] shrink-0 flex-col gap-3 border-r border-white/10 p-5 overflow-y-auto">
               {SIMULATOR_FLOWS.map((flow, i) => {
                 const Icon = flow.icon
                 const isActive = activeFlowIndex === i
