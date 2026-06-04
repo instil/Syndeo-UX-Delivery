@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, KeyboardEvent } from "react"
 import { useRouter } from "next/navigation"
-import { MessageSquare, ArrowRight, Play, Square, Send, ChevronDown, X } from "lucide-react"
+import { MessageSquare, ArrowRight, Play, Square, Send, ChevronDown, X, Clock, BarChart3 } from "lucide-react"
 
 const DEFAULT_BOT_REPLY = "Thanks for your message! Let me look into that for you. Could you provide a bit more detail so I can help?"
 
@@ -164,7 +164,12 @@ export function HomepageReturningUserPhase1() {
           <div className="flex items-stretch gap-4 text-left">
 
             <div className="flex w-52 flex-col gap-3 rounded-xl border border-white/10 bg-white/5 p-5">
-              <p className="text-xs font-medium uppercase tracking-wide text-white/50">Conversations</p>
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-medium uppercase tracking-wide text-white/50">Conversations</p>
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#2F8FFF]/15">
+                  <MessageSquare className="h-3.5 w-3.5 text-[#2F8FFF]" />
+                </div>
+              </div>
               <p className="text-4xl font-light text-white">342</p>
               <div className="flex items-center gap-2 text-xs text-white/50">
                 <span className="font-semibold text-emerald-400">+12%</span>
@@ -173,7 +178,12 @@ export function HomepageReturningUserPhase1() {
             </div>
 
             <div className="flex w-52 flex-col gap-3 rounded-xl border border-white/10 bg-white/5 p-5">
-              <p className="text-xs font-medium uppercase tracking-wide text-white/50">Avg Response</p>
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-medium uppercase tracking-wide text-white/50">Avg Response</p>
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#A64E8D]/15">
+                  <Clock className="h-3.5 w-3.5 text-[#A64E8D]" />
+                </div>
+              </div>
               <p className="text-4xl font-light text-white">1.2s</p>
               <div className="flex items-center gap-2 text-xs text-white/50">
                 <span className="font-semibold text-emerald-400">-8%</span>
@@ -182,7 +192,12 @@ export function HomepageReturningUserPhase1() {
             </div>
 
             <div className="flex w-52 flex-col gap-3 rounded-xl border border-white/10 bg-white/5 p-5">
-              <p className="text-xs font-medium uppercase tracking-wide text-white/50">Resolution Rate</p>
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-medium uppercase tracking-wide text-white/50">Resolution Rate</p>
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/15">
+                  <BarChart3 className="h-3.5 w-3.5 text-emerald-400" />
+                </div>
+              </div>
               <p className="text-4xl font-light text-white">87%</p>
               <div className="flex items-center gap-2 text-xs text-white/50">
                 <span className="font-semibold text-emerald-400">+5%</span>
