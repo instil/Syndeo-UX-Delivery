@@ -251,8 +251,8 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
                 onClick={() => setActiveTab(tab)}
                 className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${
                   activeTab === tab
-                    ? "border border-[#2F8FFF] text-[#2F8FFF] bg-white shadow-sm"
-                    : "border border-transparent text-[#6A738A] hover:text-[#1E2535]"
+                    ? "bg-[#E2E8F0] text-[#1E2535] font-semibold"
+                    : "border border-transparent text-[#6A738A] hover:text-[#1E2535] hover:bg-[#EAECF0]"
                 }`}
               >
                 {labels[tab]}
