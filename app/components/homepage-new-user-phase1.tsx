@@ -152,9 +152,12 @@ export function HomepageNewUserPhase1() {
           </div>
         </div>
 
-        {/* CTA strip */}
-        <div className="mx-auto mb-4 w-fit">
-          <div className="flex items-center justify-between gap-6 rounded-2xl border border-white/10 bg-white/5 px-6 py-4" style={{ width: "calc(540px + 376px + 40px + 2px)" }}>
+        {/* Your Flows panel */}
+        <div className="mx-auto mb-4 w-fit overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl" style={{ width: "calc(540px + 376px + 40px + 2px)" }}>
+          <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
+            <p className="text-xs font-semibold uppercase tracking-widest text-white">Your Flows</p>
+          </div>
+          <div className="flex items-center justify-between gap-6 px-6 py-5">
             <div>
               <p className="text-sm font-medium text-white">Ready to build your first flow?</p>
               <p className="text-xs text-white/40 mt-0.5">Create a custom agent tailored to your customers.</p>
