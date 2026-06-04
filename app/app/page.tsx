@@ -9,6 +9,7 @@ import { HomepageReturningUserV3 } from "@/components/homepage-returning-user-v3
 import { HomepageReturningUserV4 } from "@/components/homepage-returning-user-v4"
 import { HomepageReturningUserV5 } from "@/components/homepage-returning-user-v5"
 import { HomepageReturningUserPhase1 } from "@/components/homepage-returning-user-phase1"
+import { HomepageNewUserPhase1 } from "@/components/homepage-new-user-phase1"
 import { CompactSimulator } from "@/components/compact-simulator"
 import { VersionSwitcher } from "@/components/version-switcher"
 
@@ -18,7 +19,7 @@ export default function DashboardPage() {
   const [isNewUser, setIsNewUser] = useState(false)
   const [homepageVersion, setHomepageVersion] = useState<ReturningVersion>("phase1")
 
-  const isDark = !isNewUser && homepageVersion !== "v1"
+  const isDark = homepageVersion === "phase1" || (!isNewUser && homepageVersion !== "v1")
 
   return (
     <div className={`min-h-screen ${isDark ? "bg-[#272C41]" : "bg-[#F6F8FA]"}`}>
@@ -30,7 +31,9 @@ export default function DashboardPage() {
         onToggleUser={() => setIsNewUser(!isNewUser)}
       />
       <main>
-        {isNewUser ? (
+        {isNewUser && homepageVersion === "phase1" ? (
+          <HomepageNewUserPhase1 />
+        ) : isNewUser ? (
           <HomepageNewUser />
         ) : homepageVersion === "phase1" ? (
           <HomepageReturningUserPhase1 />
@@ -47,7 +50,7 @@ export default function DashboardPage() {
         )}
       </main>
       {(!isNewUser && homepageVersion === "v1") && <CompactSimulator theme="ikea" />}
-      {isNewUser && <CompactSimulator theme="default" />}
+      {(isNewUser && homepageVersion !== "phase1") && <CompactSimulator theme="default" />}
     </div>
   )
 }
