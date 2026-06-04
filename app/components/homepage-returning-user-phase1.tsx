@@ -278,7 +278,7 @@ export function HomepageReturningUserPhase1() {
                         {STATUS_STYLES[flow.status].label}
                       </span>
                     </div>
-                    <p className="mt-1 text-xs text-white/30">{flow.meta}</p>
+                    <p className="mt-1 text-xs text-white/50">{flow.meta}</p>
                   </div>
                   <button
                     type="button"
