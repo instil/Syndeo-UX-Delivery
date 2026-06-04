@@ -151,7 +151,7 @@ export function HomepageReturningUserPhase1() {
       <div className="relative z-10 container mx-auto px-6 py-8">
 
         {/* Header: greeting centred + metrics row */}
-        <div className="relative mb-8 flex flex-col items-center text-center gap-4">
+        <div className="relative mb-8 flex flex-col items-start gap-4">
           {/* Glow */}
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
             <div className="h-[400px] w-[700px] rounded-full bg-[radial-gradient(circle,rgba(47,143,255,0.15)_0%,transparent_70%)] blur-3xl" />
