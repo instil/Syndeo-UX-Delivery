@@ -146,10 +146,6 @@ export function HomepageNewUserPhase1() {
           </div>
 
           <div className="relative z-10">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#2F8FFF]/15 border border-[#2F8FFF]/25 rounded-full mb-4">
-              <Sparkles className="h-4 w-4 text-[#2F8FFF]" />
-              <span className="text-sm font-medium text-[#2F8FFF]">Getting started</span>
-            </div>
             <h1 className="text-4xl font-light tracking-tight text-white">{greeting} IKEA.</h1>
             <p className="text-4xl font-light tracking-tight text-white">Let's explore what your agent can do.</p>
           </div>
