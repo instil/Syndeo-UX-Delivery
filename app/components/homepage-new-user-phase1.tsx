@@ -152,32 +152,6 @@ export function HomepageNewUserPhase1() {
           </div>
         </div>
 
-        {/* Onboarding progress steps */}
-        <div className="mx-auto mb-6 flex w-fit items-center gap-2">
-          {[
-            { label: "Try an agent", done: activeFlowIndex !== null },
-            { label: "Install", done: false },
-            { label: "Build your first flow", done: false },
-            { label: "Go live", done: false },
-          ].map((step, i, arr) => (
-            <div key={step.label} className="flex items-center gap-2">
-              <div className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium transition-all ${
-                step.done
-                  ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/25"
-                  : i === (activeFlowIndex !== null ? 1 : 0)
-                  ? "bg-[#2F8FFF]/15 text-[#2F8FFF] border border-[#2F8FFF]/25"
-                  : "bg-white/5 text-white/30 border border-white/10"
-              }`}>
-                {step.done && <CheckCircle2 className="h-3 w-3" />}
-                {step.label}
-              </div>
-              {i < arr.length - 1 && (
-                <ArrowRight className="h-3 w-3 text-white/20 shrink-0" />
-              )}
-            </div>
-          ))}
-        </div>
-
         {/* Trial panel + Simulator */}
         <div className="mx-auto w-fit overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl">
           <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
