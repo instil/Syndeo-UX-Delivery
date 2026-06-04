@@ -165,7 +165,7 @@ export function HomepageReturningUserPhase1() {
 
             <div className="flex w-52 flex-col gap-3 rounded-xl border border-white/10 bg-white/5 p-5">
               <div className="flex items-center justify-between">
-                <p className="text-xs font-medium uppercase tracking-wide text-white/50">Conversations</p>
+                <p className="text-xs font-medium uppercase tracking-wide text-white">Conversations</p>
                 <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#2F8FFF]/15">
                   <MessageSquare className="h-3.5 w-3.5 text-[#2F8FFF]" />
                 </div>
@@ -179,7 +179,7 @@ export function HomepageReturningUserPhase1() {
 
             <div className="flex w-52 flex-col gap-3 rounded-xl border border-white/10 bg-white/5 p-5">
               <div className="flex items-center justify-between">
-                <p className="text-xs font-medium uppercase tracking-wide text-white/50">Avg Response</p>
+                <p className="text-xs font-medium uppercase tracking-wide text-white">Avg Response</p>
                 <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#A64E8D]/15">
                   <Clock className="h-3.5 w-3.5 text-[#A64E8D]" />
                 </div>
@@ -193,7 +193,7 @@ export function HomepageReturningUserPhase1() {
 
             <div className="flex w-52 flex-col gap-3 rounded-xl border border-white/10 bg-white/5 p-5">
               <div className="flex items-center justify-between">
-                <p className="text-xs font-medium uppercase tracking-wide text-white/50">Resolution Rate</p>
+                <p className="text-xs font-medium uppercase tracking-wide text-white">Resolution Rate</p>
                 <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/15">
                   <BarChart3 className="h-3.5 w-3.5 text-emerald-400" />
                 </div>
