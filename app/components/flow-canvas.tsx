@@ -40,6 +40,8 @@ import {
   Send,
   Bot,
   RotateCcw,
+  ChevronDown,
+  ChevronRight,
 } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -128,6 +130,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
   const [simulatorMessages, setSimulatorMessages] = useState<{ role: "bot" | "user"; text: string }[]>([
     { role: "bot", text: "Hi! I'm ready to simulate this outcome. Press ▶ to start." },
   ])
+  const [simulatorCollapsed, setSimulatorCollapsed] = useState(false)
 
   const getNodeColor = (type: NodeType) => {
     return nodeTypes.find((nt) => nt.type === type)?.color || "#6A738A"
@@ -280,65 +283,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
       {activeTab === "flow" && (
         <div className="flex-1 flex overflow-hidden">
 
-          {/* LEFT: Simulator Panel */}
-          <div className="w-64 bg-white border-r border-[#DDE5EF] flex flex-col flex-shrink-0">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-[#DDE5EF]">
-              <div className="flex items-center gap-2">
-                <Bot className="w-4 h-4 text-[#2F8FFF]" />
-                <span className="text-sm font-semibold text-[#1E2535]">Simulator</span>
-              </div>
-              <button
-                className="w-7 h-7 rounded-lg bg-[#2F8FFF] flex items-center justify-center hover:bg-[#2680E8] transition-colors"
-                title="Restart"
-                onClick={() => setSimulatorMessages([{ role: "bot", text: "Hi! I'm ready to simulate this outcome. Press ▶ to start." }])}
-              >
-                <RotateCcw className="w-3.5 h-3.5 text-white" />
-              </button>
-            </div>
-
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-3 space-y-3">
-              {simulatorMessages.map((msg, i) => (
-                <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                  {msg.role === "bot" && (
-                    <div className="w-6 h-6 rounded-full bg-[#2F8FFF]/10 flex items-center justify-center mr-2 flex-shrink-0 mt-0.5">
-                      <Bot className="w-3 h-3 text-[#2F8FFF]" />
-                    </div>
-                  )}
-                  <div
-                    className={`max-w-[80%] px-3 py-2 rounded-2xl text-xs leading-relaxed ${
-                      msg.role === "bot"
-                        ? "bg-[#F6F8FA] text-[#1E2535] rounded-tl-sm"
-                        : "bg-[#2F8FFF] text-white rounded-tr-sm"
-                    }`}
-                  >
-                    {msg.text}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Input */}
-            <div className="p-3 border-t border-[#DDE5EF]">
-              <div className="flex items-center gap-2 bg-[#F6F8FA] rounded-xl px-3 py-2 border border-[#DDE5EF]">
-                <input
-                  className="flex-1 bg-transparent text-xs text-[#1E2535] placeholder:text-[#9AA3B0] outline-none"
-                  placeholder="Type a message..."
-                  value={simulatorInput}
-                  onChange={(e) => setSimulatorInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSimulatorSend()}
-                />
-                <button
-                  onClick={handleSimulatorSend}
-                  className="w-6 h-6 rounded-lg bg-[#2F8FFF] flex items-center justify-center hover:bg-[#2680E8] transition-colors flex-shrink-0"
-                >
-                  <Send className="w-3 h-3 text-white" />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* CENTRE: Canvas */}
+          {/* CENTRE: Canvas (full remaining width) */}
           <div className="flex-1 relative overflow-hidden">
             <div
               ref={canvasRef}
@@ -550,7 +495,22 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
             </div>
           </div>
 
-          {/* RIGHT: Node Edit Panel OR Node Types Palette */}
+          {/* RIGHT: Simulator panel OR Node Edit panel */}
+          {/* Collapsed simulator tab */}
+          {!editingNodeId && simulatorCollapsed && (
+            <button
+              onClick={() => setSimulatorCollapsed(false)}
+              className="flex-shrink-0 w-8 bg-[#2F8FFF] border-l border-[#2F8FFF] flex flex-col items-center justify-center gap-2 hover:bg-[#1a7ae8] transition-colors"
+              title="Open Simulator"
+            >
+              <MessageSquare className="w-4 h-4 text-white" />
+              <span className="text-white text-[10px] font-semibold tracking-widest uppercase" style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}>
+                Simulator
+              </span>
+              <ChevronRight className="w-4 h-4 text-white/70" />
+            </button>
+          )}
+
           {editingNodeId ? (() => {
             const node = nodes.find((n) => n.id === editingNodeId)
             const Icon = nodeTypes.find((nt) => nt.type === node?.type)?.icon || MessageSquare
@@ -655,25 +615,99 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
               </div>
             )
           })() : (
-            <div className="w-44 bg-white border-l border-[#DDE5EF] flex-shrink-0 overflow-y-auto">
-              <div className="p-1.5 space-y-0.5">
-                {nodeTypes.map((nodeType) => {
-                  const Icon = nodeType.icon
-                  return (
-                    <button
-                      key={nodeType.type}
-                      className="w-full flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-[#F0F6FF] transition-colors text-left"
+            /* Simulator panel */
+            <div className={`${simulatorCollapsed ? "hidden" : "flex"} w-80 flex-col flex-shrink-0 bg-white border-l border-[#DDE5EF]`}>
+              {/* Blue header */}
+              <div className="bg-[#2F8FFF] px-4 py-3 flex items-center justify-between flex-shrink-0">
+                <div className="flex items-center gap-2">
+                  <MessageSquare className="w-4 h-4 text-white" />
+                  <span className="text-sm font-bold text-white">Simulator</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    className="text-white/70 hover:text-white transition-colors"
+                    title="Restart"
+                    onClick={() => setSimulatorMessages([{ role: "bot", text: "Hi! I'm ready to simulate this outcome. Press \u25b6 to start." }])}
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                  </button>
+                  <button
+                    className="text-white/70 hover:text-white transition-colors"
+                    title="Collapse"
+                    onClick={() => setSimulatorCollapsed(true)}
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Connection notice */}
+              <div className="px-4 pt-3 pb-1 text-center">
+                <p className="text-xs text-[#9AA3B0]">Billie the bot 🎂 has connected to the chat</p>
+              </div>
+
+              {/* Messages */}
+              <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
+                {simulatorMessages.map((msg, i) => (
+                  <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                    <div
+                      className={`max-w-[85%] px-4 py-3 text-sm leading-relaxed ${
+                        msg.role === "bot"
+                          ? "bg-white border border-[#E2E8F0] rounded-2xl rounded-tl-sm text-[#1E2535] shadow-sm"
+                          : "bg-[#2F8FFF] text-white rounded-2xl rounded-tr-sm"
+                      }`}
                     >
-                      <div
-                        className="w-8 h-8 flex items-center justify-center rounded-lg shadow-sm flex-shrink-0"
-                        style={{ backgroundColor: nodeType.color }}
+                      {msg.text}
+                    </div>
+                  </div>
+                ))}
+
+                {/* Quick reply suggestions */}
+                {simulatorMessages.length <= 1 && (
+                  <div className="grid grid-cols-2 gap-2 pt-2">
+                    {[
+                      { emoji: "🧑", label: "Create account" },
+                      { emoji: "🔑", label: "Forgot password" },
+                      { emoji: "✉️", label: "Verify email" },
+                      { emoji: "🔗", label: "Link Family card" },
+                      { emoji: "✏️", label: "Update details" },
+                      { emoji: "❓", label: "Account help" },
+                    ].map(({ emoji, label }) => (
+                      <button
+                        key={label}
+                        onClick={() => {
+                          setSimulatorMessages((prev) => [
+                            ...prev,
+                            { role: "user", text: label },
+                            { role: "bot", text: "Got it! Let me help you with that..." },
+                          ])
+                        }}
+                        className="bg-[#EEF5FF] hover:bg-[#DCE8FF] text-[#2F8FFF] text-xs font-medium rounded-full px-3 py-2.5 text-left transition-colors leading-snug"
                       >
-                        <Icon className="w-4 h-4 text-white" />
-                      </div>
-                      <span className="text-xs font-medium text-[#6A738A]">{nodeType.label}</span>
-                    </button>
-                  )
-                })}
+                        {emoji} {label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Input bar */}
+              <div className="px-4 py-3 border-t border-[#DDE5EF]">
+                <div className="flex items-center gap-3">
+                  <input
+                    className="flex-1 text-sm text-[#1E2535] placeholder:text-[#9AA3B0] outline-none bg-transparent"
+                    placeholder="Type a message..."
+                    value={simulatorInput}
+                    onChange={(e) => setSimulatorInput(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleSimulatorSend()}
+                  />
+                  <button
+                    onClick={handleSimulatorSend}
+                    className="text-[#9AA3B0] hover:text-[#2F8FFF] transition-colors flex-shrink-0"
+                  >
+                    <Send className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </div>
           )}
