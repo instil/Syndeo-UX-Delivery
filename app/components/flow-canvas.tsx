@@ -479,11 +479,11 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
           </div>
 
           {/* RIGHT: Simulator panel OR Node Edit panel */}
-          {/* Collapsed simulator FAB */}
+          {/* Collapsed simulator FAB — square */}
           {!editingNodeId && simulatorCollapsed && (
             <button
               onClick={() => setSimulatorCollapsed(false)}
-              className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-[#2F8FFF] shadow-lg flex items-center justify-center hover:bg-[#1a7ae8] hover:scale-105 transition-all"
+              className="absolute top-3 right-3 z-10 w-10 h-10 rounded-lg bg-[#2F8FFF] shadow-lg flex items-center justify-center hover:bg-[#1a7ae8] transition-all"
               title="Open Simulator"
             >
               <MessageSquare className="w-5 h-5 text-white" />
@@ -594,8 +594,8 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
               </div>
             )
           })() : (
-            /* Simulator panel */
-            <div className={`${simulatorCollapsed ? "hidden" : "flex"} w-80 flex-col flex-shrink-0 bg-white border-l border-[#DDE5EF]`}>
+            /* Simulator floating panel */
+            <div className={`${simulatorCollapsed ? "hidden" : "flex"} absolute top-3 right-3 z-10 w-80 flex-col bg-white rounded-xl shadow-2xl border border-[#DDE5EF] overflow-hidden`} style={{maxHeight: "calc(100% - 24px)"}}>
               {/* Blue header */}
               <div className="bg-[#2F8FFF] px-4 py-3 flex items-center justify-between flex-shrink-0">
                 <div className="flex items-center gap-2">
