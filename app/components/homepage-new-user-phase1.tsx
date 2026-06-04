@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, KeyboardEvent } from "react"
-import { MessageSquare, ArrowRight, Send, ChevronDown, X, Sparkles, Package, RefreshCw, User, Truck, Search } from "lucide-react"
+import { MessageSquare, ArrowRight, Send, ChevronDown, X, Sparkles, Package, RefreshCw, User, Truck, Search, CloudUpload } from "lucide-react"
 
 const DEFAULT_BOT_REPLY = "Thanks for your message! Let me look into that for you. Could you provide a bit more detail so I can help?"
 
@@ -189,12 +189,12 @@ export function HomepageNewUserPhase1() {
                       onClick={() => handleFlowSelect(i)}
                       className={`flex shrink-0 items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold transition-all ${
                         isActive
-                          ? "bg-[#A64E8D]/70 text-white"
+                          ? "border border-white/15 bg-white/[0.08] text-white/60 hover:bg-white/[0.15] hover:text-white"
                           : "bg-[#A64E8D] text-white hover:bg-[#95437D]"
                       }`}
                     >
-                      <Sparkles className="h-3 w-3" />
-                      {isActive ? "Trying" : "Try"}
+                      {isActive ? <CloudUpload className="h-3 w-3" /> : <Sparkles className="h-3 w-3" />}
+                      {isActive ? "Install" : "Try"}
                     </button>
                   </div>
                 )
