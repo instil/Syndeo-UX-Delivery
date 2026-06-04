@@ -329,32 +329,6 @@ export function HomepageNewUserPhase1() {
 
         {/* CTA strip — moved above panel */}
 
-        <div className="mx-auto mt-3 w-fit">
-          <div className="flex gap-3" style={{ width: "calc(540px + 376px + 40px + 2px)" }}>
-            {[
-              { icon: Plus, label: "Build a flow", desc: "Design a custom conversation flow", action: () => router.push("/flows?new=true") },
-              { icon: Globe, label: "Connect a channel", desc: "Deploy your agent to web, chat or SMS", action: () => router.push("/channels") },
-              { icon: Sparkles, label: "Invite your team", desc: "Collaborate with colleagues on Syndeo", action: () => {} },
-            ].map(({ icon: Icon, label, desc, action }) => (
-              <button
-                key={label}
-                type="button"
-                onClick={action}
-                className="flex flex-1 items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-left transition-all hover:border-white/20 hover:bg-white/[0.07]"
-              >
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/[0.06]">
-                  <Icon className="h-4 w-4 text-white/50" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-white">{label}</p>
-                  <p className="text-xs text-white/40">{desc}</p>
-                </div>
-                <ArrowRight className="ml-auto h-3.5 w-3.5 shrink-0 text-white/20" />
-              </button>
-            ))}
-          </div>
-        </div>
-
       </div>
     </div>
   )
