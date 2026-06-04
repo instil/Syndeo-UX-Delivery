@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useEffect, useRef, KeyboardEvent } from "react"
-import { MessageSquare, ArrowRight, Send, ChevronDown, X, Sparkles, Package, RefreshCw, User, Truck, Search, CloudUpload } from "lucide-react"
+import { MessageSquare, ArrowRight, Send, ChevronDown, X, Sparkles, Package, RefreshCw, User, Truck, Search, CloudUpload, Plus, Globe, CheckCircle2 } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 const DEFAULT_BOT_REPLY = "Thanks for your message! Let me look into that for you. Could you provide a bit more detail so I can help?"
 
@@ -95,6 +96,7 @@ const SIMULATOR_FLOWS: SimulatorFlow[] = [
 type ChatMessage = { role: "user" | "bot"; text: string }
 
 export function HomepageNewUserPhase1() {
+  const router = useRouter()
   const [chatInput, setChatInput] = useState("")
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isTyping, setIsTyping] = useState(false)
@@ -136,23 +138,48 @@ export function HomepageNewUserPhase1() {
   const greeting = hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening"
 
   return (
-    <div className="h-[calc(100vh-64px)] overflow-hidden bg-[#272C41] flex flex-col pb-16" style={{ scrollbarWidth: "none" }}>
-      <div className="relative z-10 container mx-auto px-6 py-8 flex flex-col flex-1 min-h-0">
+    <div className="min-h-[calc(100vh-64px)] overflow-y-auto bg-[#272C41] pb-16" style={{ scrollbarWidth: "none" }}>
+      <div className="relative z-10 container mx-auto px-6 py-8">
 
         {/* Header */}
-        <div className="relative mb-8 flex flex-col items-center text-center gap-4">
+        <div className="relative mb-6 flex flex-col items-center text-center gap-4">
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
             <div className="h-[400px] w-[700px] rounded-full bg-[radial-gradient(circle,rgba(47,143,255,0.15)_0%,transparent_70%)] blur-3xl" />
           </div>
-
           <div className="relative z-10">
             <h1 className="text-4xl font-light tracking-tight text-white">{greeting} IKEA.</h1>
             <p className="text-4xl font-light tracking-tight text-white">Let's explore what your agent can do.</p>
           </div>
         </div>
 
+        {/* Onboarding progress steps */}
+        <div className="mx-auto mb-6 flex w-fit items-center gap-2">
+          {[
+            { label: "Try an agent", done: activeFlowIndex !== null },
+            { label: "Install", done: false },
+            { label: "Build your first flow", done: false },
+            { label: "Go live", done: false },
+          ].map((step, i, arr) => (
+            <div key={step.label} className="flex items-center gap-2">
+              <div className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium transition-all ${
+                step.done
+                  ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/25"
+                  : i === (activeFlowIndex !== null ? 1 : 0)
+                  ? "bg-[#2F8FFF]/15 text-[#2F8FFF] border border-[#2F8FFF]/25"
+                  : "bg-white/5 text-white/30 border border-white/10"
+              }`}>
+                {step.done && <CheckCircle2 className="h-3 w-3" />}
+                {step.label}
+              </div>
+              {i < arr.length - 1 && (
+                <ArrowRight className="h-3 w-3 text-white/20 shrink-0" />
+              )}
+            </div>
+          ))}
+        </div>
+
         {/* Trial panel + Simulator */}
-        <div className="mx-auto w-fit overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl flex flex-col flex-1 min-h-0">
+        <div className="mx-auto w-fit overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl">
           <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
             <p className="text-xs font-semibold uppercase tracking-widest text-white">Try an AI Agent</p>
             <button className="flex items-center gap-1 text-xs text-white/60 transition-colors hover:text-white">
@@ -160,9 +187,9 @@ export function HomepageNewUserPhase1() {
             </button>
           </div>
 
-          <div className="flex items-stretch flex-1 min-h-0">
+          <div className="flex items-stretch">
             {/* Agent list */}
-            <div className="flex w-[540px] shrink-0 flex-col gap-3 border-r border-white/10 p-5 overflow-y-auto">
+            <div className="flex w-[540px] shrink-0 flex-col gap-3 border-r border-white/10 p-5">
               {SIMULATOR_FLOWS.map((flow, i) => {
                 const Icon = flow.icon
                 const isActive = activeFlowIndex === i
@@ -307,6 +334,52 @@ export function HomepageNewUserPhase1() {
             </div>
           </div>
         </div>
+
+        {/* CTA strip */}
+        <div className="mx-auto mt-4 w-fit">
+          <div className="flex items-center justify-between gap-6 rounded-2xl border border-white/10 bg-white/5 px-6 py-4" style={{ width: "calc(540px + 376px + 40px + 2px)" }}>
+            <div>
+              <p className="text-sm font-medium text-white">Ready to build your first flow?</p>
+              <p className="text-xs text-white/40 mt-0.5">Create a custom agent tailored to your customers.</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => router.push("/flows?new=true")}
+              className="flex shrink-0 items-center gap-2 rounded-xl bg-[#2F8FFF] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#1E7FEF]"
+            >
+              <Plus className="h-4 w-4" />
+              Create your first flow
+            </button>
+          </div>
+        </div>
+
+        {/* Quick action cards */}
+        <div className="mx-auto mt-3 w-fit">
+          <div className="flex gap-3" style={{ width: "calc(540px + 376px + 40px + 2px)" }}>
+            {[
+              { icon: Plus, label: "Build a flow", desc: "Design a custom conversation flow", action: () => router.push("/flows?new=true") },
+              { icon: Globe, label: "Connect a channel", desc: "Deploy your agent to web, chat or SMS", action: () => router.push("/channels") },
+              { icon: Sparkles, label: "Invite your team", desc: "Collaborate with colleagues on Syndeo", action: () => {} },
+            ].map(({ icon: Icon, label, desc, action }) => (
+              <button
+                key={label}
+                type="button"
+                onClick={action}
+                className="flex flex-1 items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-left transition-all hover:border-white/20 hover:bg-white/[0.07]"
+              >
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/[0.06]">
+                  <Icon className="h-4 w-4 text-white/50" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-white">{label}</p>
+                  <p className="text-xs text-white/40">{desc}</p>
+                </div>
+                <ArrowRight className="ml-auto h-3.5 w-3.5 shrink-0 text-white/20" />
+              </button>
+            ))}
+          </div>
+        </div>
+
       </div>
     </div>
   )
