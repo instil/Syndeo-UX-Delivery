@@ -36,12 +36,12 @@ export function GlobalSeguesView() {
   ]
 
   return (
-    <div className="h-full overflow-y-auto bg-[#F6F8FA] p-8">
-      <div className="bg-white rounded-t-lg border border-[#E8F0FB] p-6 mb-0">
+    <div className="h-full overflow-y-auto bg-[#272C41] p-8">
+      <div className="bg-[#313750] rounded-t-lg border border-white/10 p-6 mb-0">
         <div className="flex items-start justify-between mb-4">
           <div>
-            <h1 className="text-2xl font-semibold text-[#3B4760] mb-1">Global Segues</h1>
-            <p className="text-sm text-[#6A738A]">Reusable conversation flows across all outcomes</p>
+            <h1 className="text-2xl font-semibold text-white mb-1">Global Segues</h1>
+            <p className="text-sm text-white/60">Reusable conversation flows across all outcomes</p>
           </div>
           <Button className="px-4 py-2 bg-[#2F8FFF] text-white text-sm font-medium rounded-lg hover:bg-[#1a7ae0]">
             Create New Global Segue
@@ -49,7 +49,7 @@ export function GlobalSeguesView() {
         </div>
         <div className="relative">
           <svg
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6A738A]"
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -59,24 +59,24 @@ export function GlobalSeguesView() {
           </svg>
           <Input
             placeholder="Search segues..."
-            className="pl-10 border-[#E8F0FB] focus:border-[#2F8FFF] bg-[#F6F8FA]"
+            className="pl-10 bg-white/10 border-white/10 text-white placeholder:text-white/40 focus:border-[#2F8FFF] focus-visible:ring-[#2F8FFF]"
           />
         </div>
       </div>
 
-      <div className="bg-white rounded-b-lg border border-t-0 border-[#E8F0FB] overflow-hidden">
-        <div className="grid grid-cols-[1fr,2fr] gap-4 p-4 bg-[#F6F8FA] border-b border-[#E8F0FB]">
-          <div className="text-xs font-semibold text-[#6A738A] uppercase tracking-wide">Name</div>
-          <div className="text-xs font-semibold text-[#6A738A] uppercase tracking-wide">Description</div>
+      <div className="bg-[#313750] rounded-b-lg border border-t-0 border-white/10 overflow-hidden">
+        <div className="grid grid-cols-[1fr,2fr] gap-4 p-4 bg-white/[0.06] border-b border-white/10">
+          <div className="text-xs font-semibold text-white/60 uppercase tracking-wide">Name</div>
+          <div className="text-xs font-semibold text-white/60 uppercase tracking-wide">Description</div>
         </div>
 
         {segues.map((segue, idx) => (
           <div
             key={idx}
-            className="grid grid-cols-[1fr,2fr] gap-4 p-4 border-b border-[#E8F0FB] hover:bg-[#F6F8FA] transition-colors"
+            className="grid grid-cols-[1fr,2fr] gap-4 p-4 border-b border-white/10 hover:bg-white/[0.04] transition-colors"
           >
             <div className="flex items-center justify-between">
-              <span className="text-sm text-[#3B4760]">{segue.name}</span>
+              <span className="text-sm text-white">{segue.name}</span>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setSelectedSegue(segue.name)}
@@ -84,15 +84,15 @@ export function GlobalSeguesView() {
                 >
                   View
                 </button>
-                <button className="p-1.5 text-[#6A738A] hover:text-[#3B4760] hover:bg-[#E8F0FB] rounded">
+                <button className="p-1.5 text-white/60 hover:text-white hover:bg-white/10 rounded">
                   <Copy className="w-4 h-4" />
                 </button>
-                <button className="p-1.5 text-[#6A738A] hover:text-red-500 hover:bg-red-50 rounded">
+                <button className="p-1.5 text-white/60 hover:text-red-400 hover:bg-red-500/10 rounded">
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
             </div>
-            <div className="text-sm text-[#6A738A]">{segue.description}</div>
+            <div className="text-sm text-white/60">{segue.description}</div>
           </div>
         ))}
       </div>

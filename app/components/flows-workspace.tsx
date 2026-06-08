@@ -149,7 +149,7 @@ export function FlowsWorkspace() {
     setActiveView("outcomes")
   }
 
-  const pageBg = activeView === "welcome" ? "bg-[#272C41]" : "bg-[#F6F8FA]"
+  const pageBg = "bg-[#272C41]"
 
   return (
     <div className={`flex h-[calc(100vh-64px)] ${pageBg} transition-colors duration-200`}>

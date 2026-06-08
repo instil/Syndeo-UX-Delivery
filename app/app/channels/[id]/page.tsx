@@ -57,8 +57,8 @@ export default async function ChannelDetailPage({
   const channelName = id === "dialogflow-cx" ? "DialogFlow CX" : id.charAt(0).toUpperCase() + id.slice(1)
 
   return (
-    <div className="min-h-screen bg-[#F6F8FA]">
-      <Header />
+    <div className="min-h-screen bg-[#272C41]">
+      <Header dark={true} />
 
       <main className="container mx-auto px-6 py-6">
         <div className="flex items-center gap-3 mb-6">
@@ -66,21 +66,21 @@ export default async function ChannelDetailPage({
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-transparent"
+              className="h-8 w-8 text-white/60 hover:text-white hover:bg-transparent"
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
           </Link>
-          <h1 className="text-2xl font-semibold text-foreground">Your {channelName} Channel</h1>
+          <h1 className="text-2xl font-semibold text-white">Your {channelName} Channel</h1>
         </div>
 
         {/* Configuration Card */}
-        <Card className="bg-card border-border">
+        <Card className="bg-[#313750] border-white/10">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-base font-semibold text-foreground flex items-center gap-2">
+              <CardTitle className="text-base font-semibold text-white flex items-center gap-2">
                 Configuration
-                <button className="w-4 h-4 rounded-full bg-muted flex items-center justify-center text-[10px] text-muted-foreground hover:bg-muted/80">
+                <button className="w-4 h-4 rounded-full bg-white/10 flex items-center justify-center text-[10px] text-white/60 hover:bg-white/20">
                   ?
                 </button>
               </CardTitle>
@@ -89,23 +89,23 @@ export default async function ChannelDetailPage({
           <CardContent className="space-y-6">
             {/* Bot Token */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Bot Token</label>
+              <label className="text-sm font-medium text-white">Bot Token</label>
               <Input
                 defaultValue={id === "dialogflow-cx" ? "d4358055-259b-4224-d11a-fd927c133710" : ""}
-                className="bg-muted/50 border-border"
+                className="bg-white/10 border-white/10 text-white placeholder:text-white/40 focus-visible:ring-[#2F8FFF]"
                 placeholder="Enter bot token"
               />
             </div>
 
             {/* Variables */}
             <div className="space-y-3">
-              <label className="text-sm font-medium text-foreground uppercase tracking-wide">Variables</label>
+              <label className="text-sm font-medium text-white uppercase tracking-wide">Variables</label>
               <div className="flex flex-wrap gap-2">
                 {variables.map((variable) => (
                   <Badge
                     key={variable}
                     variant="secondary"
-                    className="bg-primary text-primary-foreground hover:bg-primary/90 px-3 py-1 text-sm cursor-pointer"
+                    className="bg-[#2F8FFF] text-white hover:bg-[#2680E8] px-3 py-1 text-sm cursor-pointer"
                   >
                     {variable}
                   </Badge>
@@ -115,7 +115,7 @@ export default async function ChannelDetailPage({
 
             {/* Save Button */}
             <div className="pt-4">
-              <Button className="bg-primary text-primary-foreground hover:bg-primary/90">Save</Button>
+              <Button className="bg-[#2F8FFF] text-white hover:bg-[#2680E8]">Save</Button>
             </div>
           </CardContent>
         </Card>

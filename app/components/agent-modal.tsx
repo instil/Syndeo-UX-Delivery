@@ -155,31 +155,31 @@ export function AgentModal({ agentId, onClose, onInstall }: AgentModalProps) {
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl bg-white border-[#E8F0FB] rounded-xl shadow-xl">
+      <DialogContent className="max-w-2xl bg-[#313750] border-white/10 rounded-xl shadow-xl">
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 text-[#6A738A] hover:text-[#3B4760] transition-colors z-10"
+          className="absolute right-4 top-4 text-white/60 hover:text-white transition-colors z-10"
         >
           <X className="h-5 w-5" />
         </button>
 
-        <DialogHeader className="relative pb-4 border-b border-[#E8F0FB]">
+        <DialogHeader className="relative pb-4 border-b border-white/10">
           <div className="flex items-center gap-3">
             <div
               className="w-10 h-10 rounded-lg flex items-center justify-center"
-              style={{ backgroundColor: `${config.iconColor}15` }}
+              style={{ backgroundColor: `${config.iconColor}20` }}
             >
               <Icon className="h-5 w-5" style={{ color: config.iconColor }} />
             </div>
-            <DialogTitle className="text-xl font-semibold text-[#3B4760]">{config.title}</DialogTitle>
+            <DialogTitle className="text-xl font-semibold text-white">{config.title}</DialogTitle>
           </div>
         </DialogHeader>
 
         <div className="py-4">
-          <p className="text-sm text-[#6A738A] mb-6">{config.description}</p>
+          <p className="text-sm text-white/60 mb-6">{config.description}</p>
 
           {config.additionalInfo && (
-            <div className="text-sm text-[#6A738A] mb-6 space-y-3">
+            <div className="text-sm text-white/60 mb-6 space-y-3">
               {config.additionalInfo.map((info, idx) => (
                 <p key={idx}>{info}</p>
               ))}
@@ -192,12 +192,12 @@ export function AgentModal({ agentId, onClose, onInstall }: AgentModalProps) {
             {config.variants.map((variant) => (
               <div
                 key={variant.id}
-                className="border border-[#E8F0FB] rounded-lg p-4 hover:border-[#2F8FFF] transition-colors"
+                className="border border-white/10 rounded-lg p-4 hover:border-[#2F8FFF] transition-colors"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
-                    <h5 className="font-medium text-[#3B4760] mb-2">{variant.title}</h5>
-                    <p className="text-sm text-[#6A738A]">{variant.description}</p>
+                    <h5 className="font-medium text-white mb-2">{variant.title}</h5>
+                    <p className="text-sm text-white/60">{variant.description}</p>
                   </div>
                   <Button
                     variant="outline"
@@ -215,7 +215,7 @@ export function AgentModal({ agentId, onClose, onInstall }: AgentModalProps) {
             ))}
           </div>
 
-          <p className="text-xs text-[#6A738A] mt-6 text-center">Published by Syndeo</p>
+          <p className="text-xs text-white/40 mt-6 text-center">Published by Syndeo</p>
         </div>
       </DialogContent>
     </Dialog>

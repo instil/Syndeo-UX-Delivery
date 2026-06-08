@@ -105,14 +105,14 @@ export default function AIAgentsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F6F8FA]">
-      <Header />
+    <div className="min-h-screen bg-[#272C41]">
+      <Header dark={true} />
 
       <main className="flex">
         {/* Left Sidebar */}
-        <aside className="w-64 bg-white border-r border-[#E8F0FB] min-h-[calc(100vh-64px)]">
+        <aside className="w-64 bg-[#313750] border-r border-white/10 min-h-[calc(100vh-64px)]">
           <div className="p-6">
-            <h2 className="text-base font-semibold text-[#3B4760] mb-4">Your Verticals</h2>
+            <h2 className="text-base font-semibold text-white mb-4">Your Verticals</h2>
             <nav className="space-y-1">
               {verticals.map((vertical) => (
                 <button
@@ -120,13 +120,10 @@ export default function AIAgentsPage() {
                   onClick={() => setActiveVertical(vertical)}
                   className={`w-full text-left px-4 py-2 text-sm rounded-md transition-colors relative ${
                     activeVertical === vertical
-                      ? "text-[#3B4760] font-medium bg-[#E8F0FB]"
-                      : "text-[#6A738A] hover:bg-[#F6F8FA]"
+                      ? "text-white font-medium bg-[#2F8FFF]/20 border border-[#2F8FFF]"
+                      : "text-white/60 hover:bg-white/[0.06] hover:text-white/80"
                   }`}
                 >
-                  {activeVertical === vertical && (
-                    <span className="absolute left-0 top-0 bottom-0 w-1 bg-[#2F8FFF] rounded-r" />
-                  )}
                   {vertical}
                 </button>
               ))}

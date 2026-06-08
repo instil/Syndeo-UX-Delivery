@@ -23,12 +23,12 @@ export function StepsView() {
 
   return (
     <>
-      <div className="h-full overflow-y-auto bg-[#F6F8FA] p-8">
-        <div className="bg-white rounded-t-lg border border-[#E8F0FB] p-6 mb-0">
+      <div className="h-full overflow-y-auto bg-[#272C41] p-8">
+        <div className="bg-[#313750] rounded-t-lg border border-white/10 p-6 mb-0">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-bold text-[#3B4760]">Steps</h1>
-              <p className="text-sm text-[#6A738A] mt-1">Manage conversation steps and interactions</p>
+              <h1 className="text-2xl font-bold text-white">Steps</h1>
+              <p className="text-sm text-white/60 mt-1">Manage conversation steps and interactions</p>
             </div>
             <Button className="bg-[#2F8FFF] hover:bg-[#2680E8] text-white gap-2">
               <Plus className="w-4 h-4" />
@@ -37,36 +37,36 @@ export function StepsView() {
           </div>
 
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6A738A]" />
-            <Input placeholder="Search steps..." className="pl-10 border-[#E8F0FB] focus:border-[#2F8FFF] bg-white" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+            <Input placeholder="Search steps..." className="pl-10 bg-white/10 border-white/10 text-white placeholder:text-white/40 focus:border-[#2F8FFF] focus-visible:ring-[#2F8FFF]" />
           </div>
         </div>
 
-        <div className="bg-white rounded-b-lg border border-t-0 border-[#E8F0FB] overflow-hidden">
-          <div className="p-4 bg-[#F6F8FA] border-b border-[#E8F0FB]">
-            <div className="text-xs font-semibold text-[#6A738A] uppercase tracking-wide">Name</div>
+        <div className="bg-[#313750] rounded-b-lg border border-t-0 border-white/10 overflow-hidden">
+          <div className="p-4 bg-white/[0.06] border-b border-white/10">
+            <div className="text-xs font-semibold text-white/60 uppercase tracking-wide">Name</div>
           </div>
 
           {steps.map((step, idx) => (
             <div
               key={idx}
-              className="flex items-center justify-between p-4 border-b border-[#E8F0FB] hover:bg-[#F6F8FA] transition-colors"
+              className="flex items-center justify-between p-4 border-b border-white/10 hover:bg-white/[0.04] transition-colors"
             >
-              <div className="text-sm text-[#3B4760]">{step}</div>
+              <div className="text-sm text-white">{step}</div>
               <div className="flex items-center gap-2">
                 <Button
                   onClick={() => setSelectedStep(step)}
-                  className="px-4 py-1.5 text-sm font-medium text-[#2F8FFF] bg-white border border-[#2F8FFF] rounded hover:bg-[#2F8FFF] hover:text-white transition-colors"
+                  className="px-4 py-1.5 text-sm font-medium text-[#2F8FFF] bg-transparent border border-[#2F8FFF] rounded hover:bg-[#2F8FFF] hover:text-white transition-colors"
                 >
                   View
                 </Button>
-                <Button className="p-1.5 text-[#6A738A] hover:text-[#3B4760] bg-transparent hover:bg-[#E8F0FB]">
+                <Button className="p-1.5 text-white/60 hover:text-white bg-transparent hover:bg-white/10">
                   <Copy className="w-4 h-4" />
                 </Button>
-                <Button className="p-1.5 rounded-full border border-[#E8F0FB] bg-white hover:bg-[#E8F0FB]">
+                <Button className="p-1.5 rounded-full border border-white/10 bg-transparent hover:bg-white/10">
                   <GitBranch className="w-4 h-4 text-[#2F8FFF]" />
                 </Button>
-                <Button className="p-1.5 text-[#6A738A] hover:text-red-500 bg-transparent hover:bg-red-50">
+                <Button className="p-1.5 text-white/60 hover:text-red-400 bg-transparent hover:bg-red-500/10">
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>

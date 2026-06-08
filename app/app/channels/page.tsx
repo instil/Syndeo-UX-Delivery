@@ -164,36 +164,36 @@ export default function ChannelsPage() {
   const router = useRouter()
 
   return (
-    <div className="min-h-screen bg-[#F6F8FA]">
-      <Header />
+    <div className="min-h-screen bg-[#272C41]">
+      <Header dark={true} />
 
       <main className="container mx-auto px-6 py-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
             <button
               onClick={() => router.push("/")}
-              className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-muted transition-colors"
+              className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-white/10 transition-colors"
               aria-label="Back to home"
             >
-              <ArrowLeft className="h-5 w-5 text-foreground" />
+              <ArrowLeft className="h-5 w-5 text-white" />
             </button>
-            <h1 className="text-2xl font-semibold text-foreground flex items-center gap-2">
+            <h1 className="text-2xl font-semibold text-white flex items-center gap-2">
               Your Channels
-              <button className="w-4 h-4 rounded-full bg-muted flex items-center justify-center text-[10px] text-muted-foreground hover:bg-muted/80">
+              <button className="w-4 h-4 rounded-full bg-white/10 flex items-center justify-center text-[10px] text-white/60 hover:bg-white/20">
                 ?
               </button>
             </h1>
           </div>
           <div className="flex items-center gap-3">
-            <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+            <Button className="bg-[#2F8FFF] text-white hover:bg-[#2680E8]">
               <Zap className="h-4 w-4 mr-2" />
               Add Test Channel
             </Button>
-            <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+            <Button className="bg-[#2F8FFF] text-white hover:bg-[#2680E8]">
               <Zap className="h-4 w-4 mr-2" />
               Add Production Channel
             </Button>
-            <Button variant="outline" className="border-border bg-transparent">
+            <Button variant="outline" className="border-white/20 bg-transparent text-white hover:bg-white/10">
               Widgets
             </Button>
           </div>
@@ -204,39 +204,39 @@ export default function ChannelsPage() {
             const Icon = channel.icon
             return (
               <Link key={channel.id} href={`/channels/${channel.id}`}>
-                <Card className="relative bg-card border-border hover:border-primary/50 transition-all cursor-pointer group">
+                <Card className="relative bg-[#313750] border-white/10 hover:border-[#2F8FFF]/50 transition-all cursor-pointer group">
                   <div className="absolute top-3 right-3">
-                    <Zap className="h-4 w-4 text-muted-foreground" />
+                    <Zap className="h-4 w-4 text-white/40" />
                   </div>
 
                   <CardContent className="p-6 space-y-4">
                     <div className="flex justify-center">
-                      <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
+                      <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center">
                         <Icon className="h-8 w-8" style={{ color: channel.color }} />
                       </div>
                     </div>
 
                     <div className="space-y-2 text-center">
-                      <h3 className="font-semibold text-foreground">{channel.type}</h3>
+                      <h3 className="font-semibold text-white">{channel.type}</h3>
                       <div className="space-y-1 text-sm">
                         <div>
-                          <span className="text-muted-foreground">Name:</span>
+                          <span className="text-white/60">Name:</span>
                         </div>
-                        <div className="text-foreground">{channel.displayName}</div>
+                        <div className="text-white">{channel.displayName}</div>
                         <div className="mt-2">
-                          <span className="text-muted-foreground">
+                          <span className="text-white/60">
                             {channel.phoneNumber ? "Phone Number:" : "Bot Id:"}
                           </span>
                         </div>
-                        <div className="text-foreground">{channel.phoneNumber || channel.botId}</div>
+                        <div className="text-white">{channel.phoneNumber || channel.botId}</div>
                       </div>
                     </div>
 
-                    <div className="pt-4 border-t border-border">
+                    <div className="pt-4 border-t border-white/10">
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                        className="w-full text-white/60 hover:text-red-400 hover:bg-red-500/10"
                         onClick={(e) => {
                           e.preventDefault()
                         }}

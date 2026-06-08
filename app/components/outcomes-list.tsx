@@ -66,13 +66,13 @@ export function OutcomesList({ onOutcomeClick }: OutcomesListProps) {
   )
 
   return (
-    <div className="h-full flex flex-col bg-[#F6F8FA]">
+    <div className="h-full flex flex-col bg-[#272C41]">
       {/* Header */}
       <div className="p-6 pb-4">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h1 className="text-2xl font-light tracking-tight text-[#1E2535]">Outcomes</h1>
-            <p className="text-sm text-[#6A738A] mt-0.5">Manage conversation outcomes and goals</p>
+            <h1 className="text-2xl font-light tracking-tight text-white">Outcomes</h1>
+            <p className="text-sm text-white/60 mt-0.5">Manage conversation outcomes and goals</p>
           </div>
           <Button className="bg-[#2F8FFF] hover:bg-[#2680E8] text-white gap-2 rounded-lg">
             <Plus className="w-4 h-4" />
@@ -82,37 +82,37 @@ export function OutcomesList({ onOutcomeClick }: OutcomesListProps) {
 
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6A738A]" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
           <input
             placeholder="Search outcomes..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-lg border border-[#DDE5EF] bg-white text-sm text-[#1E2535] placeholder:text-[#9AA3B0] focus:outline-none focus:ring-2 focus:ring-[#2F8FFF]/30 focus:border-[#2F8FFF]"
+            className="w-full pl-10 pr-4 py-2 rounded-lg border border-white/10 bg-white/10 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#2F8FFF]/30 focus:border-[#2F8FFF]"
           />
         </div>
       </div>
 
       {/* Table */}
       <div className="flex-1 overflow-auto px-6 pb-6">
-        <div className="rounded-xl border border-[#DDE5EF] bg-white overflow-hidden">
+        <div className="rounded-xl border border-white/10 bg-[#313750] overflow-hidden">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-[#DDE5EF]">
-                <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-[#6A738A]">
+              <tr className="border-b border-white/10">
+                <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-white/60">
                   <div className="flex items-center gap-1.5">Name <ArrowUpDown className="w-3 h-3" /></div>
                 </th>
-                <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-[#6A738A]">
+                <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-white/60">
                   <div className="flex items-center gap-1.5">Description <ArrowUpDown className="w-3 h-3" /></div>
                 </th>
-                <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-[#6A738A]">
+                <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-white/60">
                   <div className="flex items-center gap-1.5">Updated <ArrowUpDown className="w-3 h-3" /></div>
                 </th>
-                <th className="text-right px-4 py-3 text-xs font-semibold uppercase tracking-wide text-[#6A738A]">Actions</th>
+                <th className="text-right px-4 py-3 text-xs font-semibold uppercase tracking-wide text-white/60">Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredOutcomes.map((outcome) => (
-                <tr key={outcome.id} className="border-b border-[#DDE5EF] last:border-0 hover:bg-[#F0F6FF] transition-colors">
+                <tr key={outcome.id} className="border-b border-white/10 last:border-0 hover:bg-white/[0.04] transition-colors">
                   <td className="px-4 py-3">
                     <button
                       onClick={() => onOutcomeClick(outcome.id, outcome.name)}
@@ -121,8 +121,8 @@ export function OutcomesList({ onOutcomeClick }: OutcomesListProps) {
                       {outcome.name}
                     </button>
                   </td>
-                  <td className="px-4 py-3 text-sm text-[#6A738A] max-w-xs truncate">{outcome.description}</td>
-                  <td className="px-4 py-3 text-sm text-[#6A738A]">{outcome.updated}</td>
+                  <td className="px-4 py-3 text-sm text-white/60 max-w-xs truncate">{outcome.description}</td>
+                  <td className="px-4 py-3 text-sm text-white/60">{outcome.updated}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-2">
                       <Button
@@ -134,7 +134,7 @@ export function OutcomesList({ onOutcomeClick }: OutcomesListProps) {
                       </Button>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-7 w-7 text-[#6A738A] hover:text-[#1E2535]">
+                          <Button variant="ghost" size="icon" className="h-7 w-7 text-white/60 hover:text-white hover:bg-white/10">
                             <MoreVertical className="w-4 h-4" />
                           </Button>
                         </DropdownMenuTrigger>
