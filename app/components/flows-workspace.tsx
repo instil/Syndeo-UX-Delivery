@@ -153,9 +153,8 @@ export function FlowsWorkspace() {
 
   return (
     <div className={`flex h-[calc(100vh-64px)] ${pageBg} transition-colors duration-200`}>
-      {/* Left Navigation Panel — floating */}
-      <div className="p-3 flex-shrink-0">
-        <div className="w-64 bg-[#313750] rounded-xl shadow-lg overflow-y-auto h-full">
+      {/* Left Navigation Panel */}
+      <aside className="w-64 bg-[#313750] border-r border-white/10 flex-shrink-0 overflow-y-auto">
         <div className="p-4">
           <nav className="space-y-1">
             {navigationGroups.map((group) => {
@@ -209,8 +208,7 @@ export function FlowsWorkspace() {
             })}
           </nav>
         </div>
-        </div>
-      </div>
+      </aside>
 
       {/* Main Content Area */}
       <div className="flex-1 overflow-hidden">
