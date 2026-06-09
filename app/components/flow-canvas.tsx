@@ -42,6 +42,7 @@ import {
   RotateCcw,
   ChevronDown,
   ChevronRight,
+  Box,
 } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -102,14 +103,14 @@ const initialNodes: Node[] = [
 
 interface FlowCanvasProps {
   outcomeId: string
-  outcomeName: string // Add outcome name prop
+  outcomeName: string
   onBack: () => void
+  onOutcomeChange: (outcomeId: string, outcomeName: string) => void
 }
 
 type TabType = "flow" | "statements" | "details"
 
-export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) {
-  // Accept outcome name
+export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: FlowCanvasProps) {
   const [nodes, setNodes] = useState<Node[]>(initialNodes)
   const [draggedNode, setDraggedNode] = useState<string | null>(null)
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
@@ -119,32 +120,132 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
   const [isPanning, setIsPanning] = useState(false)
   const [panStart, setPanStart] = useState({ x: 0, y: 0 })
   const canvasRef = useRef<HTMLDivElement>(null)
+  const minimapRef = useRef<HTMLDivElement>(null)
   const [statements, setStatements] = useState<string[]>(["test"])
   const [newStatement, setNewStatement] = useState("")
   const [showStatementsInfo, setShowStatementsInfo] = useState(false)
   const [showDetailsInfo, setShowDetailsInfo] = useState(false)
   const [editingNodeId, setEditingNodeId] = useState<string | null>(null)
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null)
   const [nodeEditTab, setNodeEditTab] = useState<"skip" | "message" | "llm" | "exception">("message")
   const [nodeEditContent, setNodeEditContent] = useState("")
+  const mouseDownPos = useRef<{ x: number; y: number } | null>(null)
   const [simulatorInput, setSimulatorInput] = useState("")
   const [simulatorMessages, setSimulatorMessages] = useState<{ role: "bot" | "user"; text: string }[]>([
     { role: "bot", text: "Hi! I'm ready to simulate this outcome. Press ▶ to start." },
   ])
   const [simulatorCollapsed, setSimulatorCollapsed] = useState(false)
+  const [blocksCollapsed, setBlocksCollapsed] = useState(false)
+  const [isDragOverCanvas, setIsDragOverCanvas] = useState(false)
+  const dragBlockType = useRef<NodeType | null>(null)
+  const [dragGhost, setDragGhost] = useState<{ x: number; y: number; type: NodeType } | null>(null)
+  const [snapTarget, setSnapTarget] = useState<string | null>(null)
+  const [replaceTarget, setReplaceTarget] = useState<string | null>(null)
+  const isMinimapDragging = useRef(false)
 
+  const WORLD = 2000
+  const SNAP_THRESHOLD = 160 // canvas px
+  const NODE_W = 200
+  const NODE_H = 80
+
+  const getNodeAtPoint = (canvasX: number, canvasY: number): string | null => {
+    for (const node of nodes) {
+      if (canvasX >= node.x && canvasX <= node.x + NODE_W &&
+          canvasY >= node.y && canvasY <= node.y + NODE_H) {
+        return node.id
+      }
+    }
+    return null
+  }
+
+  const panToWorldPoint = useCallback((worldX: number, worldY: number) => {
+    const canvasW = canvasRef.current?.clientWidth ?? 800
+    const canvasH = canvasRef.current?.clientHeight ?? 600
+    const scale = zoom / 100
+    setPanOffset({
+      x: -(worldX * scale - canvasW / 2),
+      y: -(worldY * scale - canvasH / 2),
+    })
+  }, [zoom])
+
+  const minimapEventToWorld = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = minimapRef.current?.getBoundingClientRect()
+    if (!rect) return null
+    const px = (e.clientX - rect.left) / rect.width
+    const py = (e.clientY - rect.top) / rect.height
+    return { x: px * WORLD, y: py * WORLD }
+  }
+
+  const handleMinimapMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+    isMinimapDragging.current = true
+    const pt = minimapEventToWorld(e)
+    if (pt) panToWorldPoint(pt.x, pt.y)
+  }
+
+  const handleMinimapMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isMinimapDragging.current) return
+    const pt = minimapEventToWorld(e)
+    if (pt) panToWorldPoint(pt.x, pt.y)
+  }, [panToWorldPoint])
+
+  const handleMinimapMouseUp = () => {
+    isMinimapDragging.current = false
+  }
+
+
+  const getNearestNode = (canvasX: number, canvasY: number): { id: string; dist: number } | null => {
+    let nearest: { id: string; dist: number } | null = null
+    for (const node of nodes) {
+      const cx = node.x + 100 // centre of 200px-wide card
+      const cy = node.y + 40
+      const dist = Math.hypot(canvasX - cx, canvasY - cy)
+      if (!nearest || dist < nearest.dist) nearest = { id: node.id, dist }
+    }
+    return nearest
+  }
+
+  const screenToCanvas = (screenX: number, screenY: number) => {
+    const rect = canvasRef.current?.getBoundingClientRect()
+    if (!rect) return { x: 0, y: 0 }
+    return {
+      x: (screenX - rect.left - panOffset.x) / (zoom / 100),
+      y: (screenY - rect.top - panOffset.y) / (zoom / 100),
+    }
+  }
   const getNodeColor = (type: NodeType) => {
     return nodeTypes.find((nt) => nt.type === type)?.color || "#6A738A"
   }
 
+  const pendingNodeDrag = useRef<{ nodeId: string; offsetX: number; offsetY: number } | null>(null)
+
   const handleNodeMouseDown = (nodeId: string, e: React.MouseEvent) => {
+    e.stopPropagation()
     const node = nodes.find((n) => n.id === nodeId)
     if (!node) return
+    mouseDownPos.current = { x: e.clientX, y: e.clientY }
+    // Store drag info but don't activate drag yet — wait for movement threshold
+    pendingNodeDrag.current = {
+      nodeId,
+      offsetX: (e.clientX - (canvasRef.current?.getBoundingClientRect().left ?? 0) - panOffset.x) / (zoom / 100) - node.x,
+      offsetY: (e.clientY - (canvasRef.current?.getBoundingClientRect().top ?? 0) - panOffset.y) / (zoom / 100) - node.y,
+    }
+  }
 
-    setDraggedNode(nodeId)
-    setDragOffset({
-      x: e.clientX - node.x,
-      y: e.clientY - node.y,
-    })
+  const handleNodeMouseUp = (nodeId: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!mouseDownPos.current) return
+    const dist = Math.hypot(e.clientX - mouseDownPos.current.x, e.clientY - mouseDownPos.current.y)
+    mouseDownPos.current = null
+    pendingNodeDrag.current = null
+    setDraggedNode(null)
+    if (dist < 5) {
+      // It's a click, not a drag — select the node
+      setSelectedNodeId((prev) => prev === nodeId ? null : nodeId)
+      setNodeEditContent(nodes.find((n) => n.id === nodeId)?.label ?? "")
+      setNodeEditTab("message")
+    }
   }
 
   const handleMouseMove = useCallback(
@@ -152,33 +253,145 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
       if (isPanning) {
         const dx = e.clientX - panStart.x
         const dy = e.clientY - panStart.y
-        setPanOffset({ x: panOffset.x + dx, y: panOffset.y + dy })
+        setPanOffset((prev) => ({ x: prev.x + dx, y: prev.y + dy }))
         setPanStart({ x: e.clientX, y: e.clientY })
         return
       }
 
-      if (!draggedNode) return
+      // Activate node drag only after moving 5px threshold
+      let activeDraggedNode = draggedNode
+      if (!activeDraggedNode && pendingNodeDrag.current && mouseDownPos.current) {
+        const dist = Math.hypot(e.clientX - mouseDownPos.current.x, e.clientY - mouseDownPos.current.y)
+        if (dist >= 5) {
+          activeDraggedNode = pendingNodeDrag.current.nodeId
+          setDraggedNode(activeDraggedNode)
+          setDragOffset({ x: pendingNodeDrag.current.offsetX, y: pendingNodeDrag.current.offsetY })
+        }
+      }
+
+      if (!activeDraggedNode) return
 
       const canvasRect = canvasRef.current?.getBoundingClientRect()
       if (!canvasRect) return
 
-      const x = Math.round((e.clientX - canvasRect.left - dragOffset.x) / 20) * 20
-      const y = Math.round((e.clientY - canvasRect.top - dragOffset.y) / 20) * 20
+      const x = Math.round(((e.clientX - canvasRect.left - panOffset.x) / (zoom / 100) - dragOffset.x) / 20) * 20
+      const y = Math.round(((e.clientY - canvasRect.top - panOffset.y) / (zoom / 100) - dragOffset.y) / 20) * 20
 
-      setNodes((prevNodes) => prevNodes.map((node) => (node.id === draggedNode ? { ...node, x, y } : node)))
+      setNodes((prevNodes) => prevNodes.map((node) => (node.id === activeDraggedNode ? { ...node, x, y } : node)))
     },
-    [draggedNode, dragOffset, isPanning, panStart, panOffset],
+    [draggedNode, dragOffset, isPanning, panStart, panOffset, zoom],
   )
+
+  const handleWheel = useCallback((e: React.WheelEvent) => {
+    e.preventDefault()
+    if (e.ctrlKey || e.metaKey) {
+      // Pinch-to-zoom or ctrl+scroll = zoom
+      const delta = e.deltaY > 0 ? -10 : 10
+      setZoom((prev) => Math.min(200, Math.max(50, prev + delta)))
+    } else {
+      // Regular scroll = pan
+      setPanOffset((prev) => ({ x: prev.x - e.deltaX, y: prev.y - e.deltaY }))
+    }
+  }, [])
 
   const handleMouseUp = () => {
     setDraggedNode(null)
+    pendingNodeDrag.current = null
     setIsPanning(false)
   }
 
+  const handleCanvasDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = "copy"
+    setIsDragOverCanvas(true)
+    const { x, y } = screenToCanvas(e.clientX, e.clientY)
+    const replace = getNodeAtPoint(x, y)
+    if (replace) {
+      setReplaceTarget(replace)
+      setSnapTarget(null)
+    } else {
+      setReplaceTarget(null)
+      const nearest = getNearestNode(x, y)
+      setSnapTarget(nearest && nearest.dist < SNAP_THRESHOLD ? nearest.id : null)
+    }
+  }
+
+  const handleCanvasDragLeave = () => {
+    setIsDragOverCanvas(false)
+    setSnapTarget(null)
+    setReplaceTarget(null)
+  }
+
+  const handleCanvasDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragOverCanvas(false)
+    const type = dragBlockType.current
+    if (!type) return
+
+    const label = nodeTypes.find((nt) => nt.type === type)?.label ?? type
+
+    if (replaceTarget) {
+      // Replace existing node — keep position, id and connections; swap type/label
+      setNodes((prev) => prev.map((n) =>
+        n.id === replaceTarget ? { ...n, type, label } : n
+      ))
+    } else {
+      const { x, y } = screenToCanvas(e.clientX, e.clientY)
+      const snappedX = Math.round(x / 20) * 20
+      const snappedY = Math.round(y / 20) * 20
+      const newId = `node-${Date.now()}`
+      const newNode: Node = { id: newId, type, label, x: snappedX, y: snappedY, connections: [] }
+
+      setNodes((prev) => {
+        const updated = [...prev, newNode]
+        if (snapTarget) {
+          return updated.map((n) =>
+            n.id === snapTarget && !n.connections.includes(newId)
+              ? { ...n, connections: [...n.connections, newId] }
+              : n
+          )
+        }
+        return updated
+      })
+    }
+
+    dragBlockType.current = null
+    setDragGhost(null)
+    setSnapTarget(null)
+    setReplaceTarget(null)
+  }
+
+  const handleBlockDragStart = (e: React.DragEvent, type: NodeType) => {
+    dragBlockType.current = type
+    e.dataTransfer.effectAllowed = "copy"
+    // Suppress default browser ghost
+    const ghost = document.createElement("div")
+    ghost.style.cssText = "position:fixed;top:-100px;left:-100px;width:1px;height:1px;"
+    document.body.appendChild(ghost)
+    e.dataTransfer.setDragImage(ghost, 0, 0)
+    setTimeout(() => document.body.removeChild(ghost), 0)
+
+    setDragGhost({ x: e.clientX, y: e.clientY, type })
+
+    const onMove = (ev: DragEvent) => {
+      if (ev.clientX === 0 && ev.clientY === 0) return // ignore end-of-drag ghost flicker
+      setDragGhost({ x: ev.clientX, y: ev.clientY, type })
+    }
+    const onEnd = () => {
+      setDragGhost(null)
+      document.removeEventListener("dragover", onMove)
+      document.removeEventListener("dragend", onEnd)
+    }
+    document.addEventListener("dragover", onMove)
+    document.addEventListener("dragend", onEnd)
+  }
+
   const handleCanvasMouseDown = (e: React.MouseEvent) => {
-    if (e.target === canvasRef.current || (e.target as HTMLElement).tagName === "svg") {
+    const target = e.target as HTMLElement
+    if (!target.closest('[data-node]') && !target.closest('button') && !target.closest('[role="menuitem"]')) {
       setIsPanning(true)
       setPanStart({ x: e.clientX, y: e.clientY })
+      setSelectedNodeId(null)
     }
   }
 
@@ -228,10 +441,36 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
       <div className="bg-[#F6F8FA] px-6 py-3">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={onBack} className="hover:bg-[#F6F8FA]">
+            <Button variant="ghost" size="icon" onClick={onBack} className="hover:bg-[#E2E8F0] text-[#1E2535] hover:text-[#1E2535]">
               <ArrowLeft className="w-4 h-4" />
             </Button>
-            <h1 className="text-xl font-light tracking-tight text-[#1E2535]">{outcomeName}</h1>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center gap-1.5 group hover:bg-[#EAECF0] rounded-lg px-2 py-1 transition-colors">
+                  <h1 className="text-xl font-light tracking-tight text-[#1E2535]">{outcomeName}</h1>
+                  <ChevronDown className="w-4 h-4 text-[#6A738A] group-hover:text-[#1E2535] transition-colors" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56">
+                {[
+                  "Account Setup",
+                  "Support Ticket",
+                  "FS_BranchLocator_V1",
+                  "Re-Mortgage",
+                  "Product Information",
+                  "Booking Appointment",
+                ].map((name) => (
+                  <DropdownMenuItem
+                    key={name}
+                    onClick={() => onOutcomeChange(name, name)}
+                    className={`gap-2 cursor-pointer ${name === outcomeName ? "font-semibold text-[#2F8FFF]" : ""}`}
+                  >
+                    <Workflow className="w-4 h-4 text-[#6A738A] flex-shrink-0" />
+                    {name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <div className="flex gap-2">
             <Button className="bg-[#2F8FFF] hover:bg-[#2680E8] text-white gap-2">
@@ -270,10 +509,14 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
           <div className="flex-1 relative overflow-hidden">
             <div
               ref={canvasRef}
-              className="h-full overflow-hidden bg-[#F6F8FA] cursor-move"
+              className={`h-full overflow-hidden bg-[#F6F8FA] select-none ${isPanning ? "cursor-grabbing" : "cursor-grab"} ${isDragOverCanvas ? "ring-2 ring-inset ring-[#2F8FFF]/40" : ""}`}
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}
               onMouseDown={handleCanvasMouseDown}
+              onWheel={handleWheel}
+              onDragOver={handleCanvasDragOver}
+              onDragLeave={handleCanvasDragLeave}
+              onDrop={handleCanvasDrop}
               style={{
                 backgroundImage: `
                   linear-gradient(to right, #EBF0F7 1px, transparent 1px),
@@ -356,22 +599,42 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
                   const Icon = nodeTypes.find((nt) => nt.type === node.type)?.icon || MessageSquare
                   const nodeColor = getNodeColor(node.type)
                   const isEditing = editingNodeId === node.id
+                  const isSelected = selectedNodeId === node.id
+                  const isSnapping = snapTarget === node.id
+                  const isReplacing = replaceTarget === node.id
+                  const dragGhostNode = dragGhost ? nodeTypes.find((nt) => nt.type === dragGhost.type) : null
                   return (
                     <Card
                       key={node.id}
-                      className={`absolute cursor-move transition-all duration-200 hover:shadow-xl border-none shadow-lg ${isEditing ? "ring-2 ring-white ring-offset-2" : ""}`}
+                      data-node="true"
+                      className={`absolute cursor-move transition-all duration-150 hover:shadow-xl border-none shadow-lg
+                        ${isEditing ? "ring-2 ring-white ring-offset-2" : ""}
+                        ${isSelected ? "ring-2 ring-[#2F8FFF] ring-offset-2" : ""}
+                        ${isSnapping ? "ring-2 ring-white ring-offset-2 scale-105" : ""}
+                        ${isReplacing ? "ring-4 ring-orange-400 ring-offset-2 scale-105 brightness-75" : ""}
+                      `}
                       style={{
                         left: node.x,
                         top: node.y,
                         width: 200,
-                        backgroundColor: nodeColor,
-                        zIndex: draggedNode === node.id ? 10 : 2,
+                        backgroundColor: isReplacing && dragGhostNode ? dragGhostNode.color : nodeColor,
+                        zIndex: draggedNode === node.id ? 10 : isSelected ? 8 : isReplacing || isSnapping ? 5 : 2,
+                        transition: "background-color 0.15s, box-shadow 0.15s, transform 0.15s, filter 0.15s",
                       }}
                       onMouseDown={(e) => {
-                        e.stopPropagation()
                         handleNodeMouseDown(node.id, e)
                       }}
+                      onMouseUp={(e) => {
+                        handleNodeMouseUp(node.id, e)
+                      }}
                     >
+                      {isReplacing && (
+                        <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+                          <span className="bg-orange-400 text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full shadow">
+                            Replace
+                          </span>
+                        </div>
+                      )}
                       <div className="p-4">
                         <div className="flex items-center gap-2 mb-2">
                           <Icon className="w-4 h-4 text-white" />
@@ -427,57 +690,332 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
               </div>
             </div>
 
-            {/* Minimap + controls overlay */}
-            <div className="absolute top-4 left-4 z-20">
-              <Card className="w-36 bg-white border border-[#DDE5EF] rounded-xl shadow-xl overflow-hidden">
-                <div className="p-3">
-                  <div className="w-full h-24 bg-[#F6F8FA] rounded relative overflow-hidden mb-3 border border-[#DDE5EF]">
+            {/* Node edit popover */}
+            {selectedNodeId && (() => {
+              const node = nodes.find((n) => n.id === selectedNodeId)
+              if (!node) return null
+              const NodeIcon = nodeTypes.find((nt) => nt.type === node.type)?.icon || MessageSquare
+              const nodeColor = getNodeColor(node.type)
+              const scale = zoom / 100
+              const popX = node.x * scale + panOffset.x + 210
+              const popY = node.y * scale + panOffset.y
+              return (
+                <div
+                  className="absolute z-30 w-72 bg-white rounded-xl shadow-2xl border border-[#DDE5EF] flex flex-col overflow-hidden"
+                  style={{ left: popX, top: popY, maxHeight: "420px" }}
+                  onMouseDown={(e) => e.stopPropagation()}
+                >
+                  {/* Header */}
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-[#DDE5EF]">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: nodeColor }}>
+                        <NodeIcon className="w-3.5 h-3.5 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-[#6A738A] uppercase tracking-wider font-medium">{node.type}</p>
+                        <p className="text-sm font-semibold text-[#1E2535] leading-tight">{node.label}</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setSelectedNodeId(null)}
+                      className="w-7 h-7 rounded-lg hover:bg-[#F0F6FF] flex items-center justify-center text-[#6A738A] hover:text-[#1E2535] transition-colors"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  {/* Tabs */}
+                  <div className="flex border-b border-[#DDE5EF]">
+                    {(["skip", "message", "llm", "exception"] as const).map((tab) => (
+                      <button
+                        key={tab}
+                        onClick={() => setNodeEditTab(tab)}
+                        className={`flex-1 py-2 text-xs font-medium transition-colors border-b-2 ${
+                          nodeEditTab === tab
+                            ? "border-[#2F8FFF] text-[#2F8FFF]"
+                            : "border-transparent text-[#6A738A] hover:text-[#1E2535]"
+                        }`}
+                      >
+                        {tab === "llm" ? "LLM" : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                    {nodeEditTab === "message" && (
+                      <>
+                        <div>
+                          <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider block mb-1.5">Task Name</label>
+                          <input
+                            className="w-full px-3 py-2 rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535] focus:outline-none focus:ring-2 focus:ring-[#2F8FFF]/30 focus:border-[#2F8FFF]"
+                            defaultValue={node.label}
+                            onChange={(e) => setNodes((prev) => prev.map((n) => n.id === node.id ? { ...n, label: e.target.value } : n))}
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider block mb-1.5">Message</label>
+                          <Textarea
+                            rows={4}
+                            value={nodeEditContent}
+                            onChange={(e) => setNodeEditContent(e.target.value)}
+                            className="border border-[#DDE5EF] bg-[#F6F8FA] focus:border-[#2F8FFF] resize-none text-sm rounded-lg"
+                            placeholder="Enter message..."
+                          />
+                        </div>
+                      </>
+                    )}
+                    {nodeEditTab === "skip" && (
+                      <p className="text-sm text-[#6A738A]">Configure skip conditions for this node.</p>
+                    )}
+                    {nodeEditTab === "llm" && (
+                      <div>
+                        <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider block mb-1.5">LLM Instructions</label>
+                        <Textarea rows={5} className="border border-[#DDE5EF] rounded-lg text-sm resize-none" placeholder="Add instructions for the LLM..." />
+                      </div>
+                    )}
+                    {nodeEditTab === "exception" && (
+                      <p className="text-sm text-[#6A738A]">Configure exception handling for this node.</p>
+                    )}
+                  </div>
+
+                  {/* Footer */}
+                  <div className="px-4 py-3 border-t border-[#DDE5EF] flex items-center justify-between">
+                    <button
+                      onClick={() => { setNodes((prev) => prev.filter((n) => n.id !== node.id)); setSelectedNodeId(null) }}
+                      className="text-sm text-red-500 hover:text-red-600 flex items-center gap-1.5 transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      Delete
+                    </button>
+                    <Button
+                      className="bg-[#2F8FFF] hover:bg-[#2680E8] text-white px-5 h-8 text-sm rounded-lg"
+                      onClick={() => setSelectedNodeId(null)}
+                    >
+                      Done
+                    </Button>
+                  </div>
+                </div>
+              )
+            })()}
+
+            {/* Left floating panels — Wayfinder + Blocks + Controls */}
+            <div className="absolute top-4 left-4 z-20 w-40 flex flex-col gap-2">
+              {/* Wayfinder */}
+              <div className="bg-[#272C41] border border-white/10 rounded-xl shadow-xl overflow-hidden">
+                <div className="p-2">
+                  <div
+                    ref={minimapRef}
+                    className="w-full h-20 bg-white/5 rounded relative overflow-hidden mb-2 border border-white/10 cursor-crosshair select-none"
+                    onMouseDown={handleMinimapMouseDown}
+                    onMouseMove={handleMinimapMouseMove}
+                    onMouseUp={handleMinimapMouseUp}
+                    onMouseLeave={handleMinimapMouseUp}
+                  >
                     {nodes.map((node) => (
                       <div
                         key={`mini-${node.id}`}
-                        className="absolute rounded-sm"
+                        className="absolute rounded-sm transition-all duration-100"
                         style={{
-                          left: `${(node.x / 1400) * 100}%`,
-                          top: `${(node.y / 1000) * 100}%`,
-                          width: "4px",
-                          height: "4px",
+                          left: `${(node.x / 2000) * 100}%`,
+                          top: `${(node.y / 2000) * 100}%`,
+                          width: `${(200 / 2000) * 100}%`,
+                          height: `${(60 / 2000) * 100}%`,
                           backgroundColor: getNodeColor(node.type),
+                          opacity: 0.8,
+                          borderRadius: "2px",
                         }}
                       />
                     ))}
-                    <div
-                      className="absolute border-2 border-[#2F8FFF] bg-[#2F8FFF]/10 rounded"
-                      style={{ width: "35%", height: "25%", left: "10%", top: "10%" }}
-                    />
+                    {/* Viewport indicator — live */}
+                    {(() => {
+                      const canvasW = canvasRef.current?.clientWidth ?? 800
+                      const canvasH = canvasRef.current?.clientHeight ?? 600
+                      const scale = zoom / 100
+                      const vpW = (canvasW / scale / WORLD) * 100
+                      const vpH = (canvasH / scale / WORLD) * 100
+                      const vpL = (-panOffset.x / scale / WORLD) * 100
+                      const vpT = (-panOffset.y / scale / WORLD) * 100
+                      return (
+                        <div
+                          className="absolute border-2 border-[#2F8FFF] bg-[#2F8FFF]/10 rounded transition-all duration-75"
+                          style={{
+                            left: `${Math.max(0, vpL)}%`,
+                            top: `${Math.max(0, vpT)}%`,
+                            width: `${Math.min(100, vpW)}%`,
+                            height: `${Math.min(100, vpH)}%`,
+                          }}
+                        />
+                      )
+                    })()}
                   </div>
-                  <div className="flex items-center justify-between mb-3 bg-[#F6F8FA] rounded px-2 py-1.5">
-                    <Button variant="ghost" size="icon" onClick={() => setZoom(Math.max(50, zoom - 10))} className="h-6 w-6 hover:bg-white text-[#2F8FFF] font-bold text-base">−</Button>
-                    <span className="font-semibold text-sm text-[#1E2535]">{zoom}%</span>
-                    <Button variant="ghost" size="icon" onClick={() => setZoom(Math.min(200, zoom + 10))} className="h-6 w-6 hover:bg-white text-[#2F8FFF] font-bold text-base">+</Button>
-                  </div>
-                  <div className="flex items-center justify-center gap-1.5 pb-2">
-                    {[Home, Undo, ZoomIn, Pen, Settings, Users].map((Icon, i) => (
-                      <Button key={i} variant="ghost" size="icon" className="h-7 w-7 hover:bg-[#F0F6FF] text-[#6A738A] hover:text-[#1E2535]">
-                        <Icon className="w-4 h-4" />
-                      </Button>
-                    ))}
+                  <div className="flex items-center justify-between bg-white/5 rounded px-2 py-1">
+                    <Button variant="ghost" size="icon" onClick={() => setZoom(Math.max(50, zoom - 10))} className="h-6 w-6 text-[#2F8FFF] hover:bg-white/10 font-bold text-base">−</Button>
+                    <span className="font-semibold text-sm text-white/70">{zoom}%</span>
+                    <Button variant="ghost" size="icon" onClick={() => setZoom(Math.min(200, zoom + 10))} className="h-6 w-6 text-[#2F8FFF] hover:bg-white/10 font-bold text-base">+</Button>
                   </div>
                 </div>
-              </Card>
+              </div>
 
-              <Card className="mt-2 bg-white border border-[#DDE5EF] rounded-xl shadow-lg overflow-hidden">
-                <button className="flex items-center gap-2 px-3 py-2.5 text-sm text-[#6A738A] hover:bg-[#F6F8FA] w-full border-b border-[#DDE5EF] transition-colors">
-                  <Maximize2 className="w-4 h-4" />
-                  <span className="font-medium">Edit Return Types</span>
+              {/* Blocks panel */}
+              <div className="bg-[#272C41] border border-white/10 rounded-xl shadow-xl overflow-hidden">
+                <button
+                  onClick={() => setBlocksCollapsed(!blocksCollapsed)}
+                  className="w-full flex items-center justify-between px-3 py-2 border-b border-white/10 hover:bg-white/[0.05] transition-colors"
+                >
+                  <div className="flex items-center gap-1.5">
+                    <Box className="w-3 h-3 text-white/40" />
+                    <span className="text-[10px] font-semibold uppercase tracking-widest text-white/50">Blocks</span>
+                  </div>
+                  {blocksCollapsed
+                    ? <ChevronRight className="w-3 h-3 text-white/40" />
+                    : <ChevronDown className="w-3 h-3 text-white/40" />
+                  }
                 </button>
-                <button className="flex items-center gap-2 px-3 py-2.5 text-sm text-[#6A738A] hover:bg-[#F6F8FA] w-full transition-colors">
-                  <Settings className="w-4 h-4" />
-                  <span className="font-medium">Edit Parameters</span>
+                {!blocksCollapsed && (
+                  <div className="p-2 grid grid-cols-2 gap-1.5 max-h-[calc(100vh-480px)] overflow-y-auto">
+                    {nodeTypes.map(({ type, label, icon: Icon, color }) => (
+                      <button
+                        key={type}
+                        draggable
+                        onDragStart={(e) => handleBlockDragStart(e, type)}
+                        className="flex flex-col items-center gap-1.5 px-1 py-2.5 rounded-lg text-white/70 hover:bg-white/[0.07] hover:text-white transition-colors border border-white/[0.07] cursor-grab active:cursor-grabbing"
+                        title={label}
+                      >
+                        <div
+                          className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                          style={{ backgroundColor: color }}
+                        >
+                          <Icon className="w-3.5 h-3.5 text-white" />
+                        </div>
+                        <span className="text-[10px] font-medium text-center leading-tight">{label}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Controls panel */}
+              <div className="bg-[#272C41] border border-white/10 rounded-xl shadow-xl overflow-hidden">
+                <button className="flex items-center gap-2.5 px-3 py-2.5 text-white/60 hover:bg-white/[0.06] hover:text-white/90 w-full border-b border-white/10 transition-colors">
+                 <Maximize2 className="w-3.5 h-3.5 flex-shrink-0" />
+                 <span className="text-xs font-medium">Edit Return Types</span>
                 </button>
-              </Card>
+                <button className="flex items-center gap-2.5 px-3 py-2.5 text-white/60 hover:bg-white/[0.06] hover:text-white/90 w-full transition-colors">
+                 <Settings className="w-3.5 h-3.5 flex-shrink-0" />
+                 <span className="text-xs font-medium">Edit Parameters</span>
+                </button>
+              </div>
             </div>
-          </div>
 
+          </div>
+            {selectedNodeId && (() => {
+              const node = nodes.find((n) => n.id === selectedNodeId)
+              if (!node) return null
+              const NodeIcon = nodeTypes.find((nt) => nt.type === node.type)?.icon || MessageSquare
+              const nodeColor = getNodeColor(node.type)
+              const scale = zoom / 100
+              const popX = node.x * scale + panOffset.x + 210
+              const popY = node.y * scale + panOffset.y
+              return (
+                <div
+                  className="absolute z-30 w-72 bg-white rounded-xl shadow-2xl border border-[#DDE5EF] flex flex-col overflow-hidden"
+                  style={{ left: popX, top: popY, maxHeight: "420px" }}
+                  onMouseDown={(e) => e.stopPropagation()}
+                >
+                  {/* Header */}
+                  <div className="flex items-center justify-between px-4 py-3 border-b border-[#DDE5EF]">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: nodeColor }}>
+                        <NodeIcon className="w-3.5 h-3.5 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-[#6A738A] uppercase tracking-wider font-medium">{node.type}</p>
+                        <p className="text-sm font-semibold text-[#1E2535] leading-tight">{node.label}</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setSelectedNodeId(null)}
+                      className="w-7 h-7 rounded-lg hover:bg-[#F0F6FF] flex items-center justify-center text-[#6A738A] hover:text-[#1E2535] transition-colors"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  {/* Tabs */}
+                  <div className="flex border-b border-[#DDE5EF]">
+                    {(["skip", "message", "llm", "exception"] as const).map((tab) => (
+                      <button
+                        key={tab}
+                        onClick={() => setNodeEditTab(tab)}
+                        className={`flex-1 py-2 text-xs font-medium transition-colors border-b-2 ${
+                          nodeEditTab === tab
+                            ? "border-[#2F8FFF] text-[#2F8FFF]"
+                            : "border-transparent text-[#6A738A] hover:text-[#1E2535]"
+                        }`}
+                      >
+                        {tab === "llm" ? "LLM" : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                    {nodeEditTab === "message" && (
+                      <>
+                        <div>
+                          <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider block mb-1.5">Task Name</label>
+                          <input
+                            className="w-full px-3 py-2 rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535] focus:outline-none focus:ring-2 focus:ring-[#2F8FFF]/30 focus:border-[#2F8FFF]"
+                            defaultValue={node.label}
+                            onChange={(e) => setNodes((prev) => prev.map((n) => n.id === node.id ? { ...n, label: e.target.value } : n))}
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider block mb-1.5">Message</label>
+                          <Textarea
+                            rows={4}
+                            value={nodeEditContent}
+                            onChange={(e) => setNodeEditContent(e.target.value)}
+                            className="border border-[#DDE5EF] bg-[#F6F8FA] focus:border-[#2F8FFF] resize-none text-sm rounded-lg"
+                            placeholder="Enter message..."
+                          />
+                        </div>
+                      </>
+                    )}
+                    {nodeEditTab === "skip" && (
+                      <p className="text-sm text-[#6A738A]">Configure skip conditions for this node.</p>
+                    )}
+                    {nodeEditTab === "llm" && (
+                      <div>
+                        <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider block mb-1.5">LLM Instructions</label>
+                        <Textarea rows={5} className="border border-[#DDE5EF] rounded-lg text-sm resize-none" placeholder="Add instructions for the LLM..." />
+                      </div>
+                    )}
+                    {nodeEditTab === "exception" && (
+                      <p className="text-sm text-[#6A738A]">Configure exception handling for this node.</p>
+                    )}
+                  </div>
+
+                  {/* Footer */}
+                  <div className="px-4 py-3 border-t border-[#DDE5EF] flex items-center justify-between">
+                    <button
+                      onClick={() => { setNodes((prev) => prev.filter((n) => n.id !== node.id)); setSelectedNodeId(null) }}
+                      className="text-sm text-red-500 hover:text-red-600 flex items-center gap-1.5 transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      Delete
+                    </button>
+                    <Button
+                      className="bg-[#2F8FFF] hover:bg-[#2680E8] text-white px-5 h-8 text-sm rounded-lg"
+                      onClick={() => setSelectedNodeId(null)}
+                    >
+                      Done
+                    </Button>
+                  </div>
+                </div>
+              )
+            })()}
           {/* RIGHT: Simulator panel OR Node Edit panel */}
           {/* Collapsed simulator FAB — square */}
           {!editingNodeId && simulatorCollapsed && (
@@ -919,6 +1457,28 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack }: FlowCanvasProps) 
           </div>
         </div>
       )}
+
+      {/* Drag ghost — follows cursor */}
+      {dragGhost && (() => {
+        const ghostNode = nodeTypes.find((nt) => nt.type === dragGhost.type)
+        const GhostIcon = ghostNode?.icon || MessageSquare
+        return (
+          <div
+            className="fixed z-[9999] pointer-events-none"
+            style={{ left: dragGhost.x + 12, top: dragGhost.y + 12 }}
+          >
+            <div
+              className={`flex items-center gap-2 px-3 py-2 rounded-xl shadow-2xl border opacity-90 transition-all ${replaceTarget ? "border-orange-400 scale-105" : snapTarget ? "border-white scale-105" : "border-white/20"}`}
+              style={{ backgroundColor: ghostNode?.color ?? "#3B4760" }}
+            >
+              <GhostIcon className="w-4 h-4 text-white flex-shrink-0" />
+              <span className="text-sm font-medium text-white">{ghostNode?.label}</span>
+              {replaceTarget && <span className="text-[10px] text-orange-300 ml-1">replace</span>}
+              {!replaceTarget && snapTarget && <span className="text-[10px] text-white/70 ml-1">auto-connect</span>}
+            </div>
+          </div>
+        )
+      })()}
     </div>
   )
 }

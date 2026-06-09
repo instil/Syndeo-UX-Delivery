@@ -150,11 +150,12 @@ export function FlowsWorkspace() {
   }
 
   const pageBg = "bg-[#272C41]"
+  const isEditorView = activeView === "outcome-detail"
 
   return (
     <div className={`flex h-[calc(100vh-64px)] ${pageBg} transition-colors duration-200`}>
-      {/* Left Navigation Panel */}
-      <aside className="w-64 bg-[#313750] border-r border-white/10 flex-shrink-0 overflow-y-auto">
+      {/* Left Navigation Panel — hidden when in flow editor */}
+      <aside className={`w-64 bg-[#313750] border-r border-white/10 flex-shrink-0 overflow-y-auto transition-all duration-200 ${isEditorView ? "hidden" : ""}`}>
         <div className="p-4">
           <nav className="space-y-1">
             {navigationGroups.map((group) => {
@@ -215,7 +216,7 @@ export function FlowsWorkspace() {
         {activeView === "welcome" && <WelcomeView />}
         {activeView === "outcomes" && <OutcomesList onOutcomeClick={handleOutcomeClick} />}
         {activeView === "outcome-detail" && selectedOutcome && (
-          <FlowCanvas outcomeId={selectedOutcome} outcomeName={selectedOutcomeName} onBack={handleBackToList} />
+          <FlowCanvas outcomeId={selectedOutcome} outcomeName={selectedOutcomeName} onBack={handleBackToList} onOutcomeChange={handleOutcomeClick} />
         )}
         {activeView === "steps" && <GenericListView title="Steps" type="steps" />}
         {activeView === "web-events" && <GenericListView title="Web Events" type="web-events" />}
