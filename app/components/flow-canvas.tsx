@@ -837,7 +837,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                           </button>
                         </div>
                         {/* Prompt Adherence card */}
-                        <div className="rounded-xl border border-[#DDE5EF] bg-white p-4 space-y-3">
+                        <div className={`rounded-xl border border-[#DDE5EF] p-4 space-y-3 transition-opacity ${llmEnabled ? "bg-white opacity-100" : "bg-[#F6F8FA] opacity-40 pointer-events-none"}`}>
                           <p className="text-base font-light text-[#9AA3B0]">Prompt Adherence</p>
                           <hr className="border-[#DDE5EF]" />
                           <div>
@@ -1135,7 +1135,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                           </button>
                         </div>
                         {/* Prompt Adherence card */}
-                        <div className="rounded-xl border border-[#DDE5EF] bg-white p-4 space-y-3">
+                        <div className={`rounded-xl border border-[#DDE5EF] p-4 space-y-3 transition-opacity ${llmEnabled ? "bg-white opacity-100" : "bg-[#F6F8FA] opacity-40 pointer-events-none"}`}>
                           <p className="text-base font-light text-[#9AA3B0]">Prompt Adherence</p>
                           <hr className="border-[#DDE5EF]" />
                           <div>
@@ -1281,7 +1281,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                           <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${llmEnabled ? "translate-x-5" : "translate-x-0"}`} />
                         </button>
                       </div>
-                      <div className="rounded-xl border border-[#DDE5EF] bg-white p-4 space-y-3">
+                      <div className={`rounded-xl border border-[#DDE5EF] p-4 space-y-3 transition-opacity ${llmEnabled ? "bg-white opacity-100" : "bg-[#F6F8FA] opacity-40 pointer-events-none"}`}>
                         <p className="text-base font-light text-[#9AA3B0]">Prompt Adherence</p>
                         <hr className="border-[#DDE5EF]" />
                         <div>
