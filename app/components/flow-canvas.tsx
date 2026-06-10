@@ -1340,12 +1340,8 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
       {activeTab === "details" && (
         <div className="w-1/2 border-r border-[#DDE5EF] overflow-auto p-8 bg-white">
           <div className="max-w-3xl">
-            <div className="relative flex items-center gap-3 mb-6">
-              <Button className="bg-[#2F8FFF] hover:bg-[#2680E8] text-white px-6 h-8 text-sm">Save</Button>
-              <Button variant="link" className="text-red-600 hover:text-red-700 px-0 h-8 text-sm">
-                Delete Outcome
-              </Button>
-              <h2 className="text-2xl font-light tracking-tight text-[#1E2535] ml-2">Outcome Details</h2>
+            <div className="relative flex items-center gap-2 mb-6">
+              <h2 className="text-2xl font-light tracking-tight text-[#1E2535]">Outcome Details</h2>
               <button
                 className="w-5 h-5 rounded-full bg-[#6A738A] text-white flex items-center justify-center text-xs hover:bg-[#3B4760] transition-colors"
                 onMouseEnter={() => setShowDetailsInfo(true)}
@@ -1353,6 +1349,12 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
               >
                 i
               </button>
+              <div className="flex items-center gap-3 ml-auto">
+                <Button className="bg-[#2F8FFF] hover:bg-[#2680E8] text-white px-6 h-8 text-sm">Save</Button>
+                <Button variant="link" className="text-red-600 hover:text-red-700 px-0 h-8 text-sm">
+                  Delete Outcome
+                </Button>
+              </div>
 
               {showDetailsInfo && (
                 <Card className="absolute top-full left-0 right-0 mt-2 p-6 bg-[#3B4760] text-white border-none shadow-xl z-50">
