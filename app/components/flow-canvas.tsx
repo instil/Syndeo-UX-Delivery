@@ -1460,7 +1460,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
             )
           })() : (
             /* Simulator floating panel */
-            <div className={`${simulatorCollapsed ? "hidden" : "flex"} absolute top-3 right-3 z-10 w-80 flex-col bg-white rounded-xl shadow-2xl border border-[#DDE5EF] overflow-hidden`} style={{maxHeight: "calc(100% - 24px)"}}>
+            <div className={`${simulatorCollapsed ? "hidden" : "flex"} absolute z-10 w-80 flex-col bg-white rounded-xl shadow-2xl border border-[#DDE5EF] overflow-hidden`} style={{ top: 12, right: 12, bottom: 84 }}>
               {/* Blue header */}
               <div className="bg-[#2F8FFF] px-4 py-3 flex items-center justify-between flex-shrink-0">
                 <div className="flex items-center gap-2">
