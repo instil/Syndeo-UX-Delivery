@@ -715,8 +715,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                         <NodeIcon className="w-3.5 h-3.5 text-white" />
                       </div>
                       <div>
-                        <p className="text-[10px] text-[#6A738A] uppercase tracking-wider font-medium">{node.type}</p>
-                        <p className="text-sm font-semibold text-[#1E2535] leading-tight">{node.label}</p>
+                        <p className="text-sm font-semibold text-[#1E2535] leading-tight capitalize">{node.type}</p>
                       </div>
                     </div>
                     <button
@@ -985,8 +984,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                         <NodeIcon className="w-3.5 h-3.5 text-white" />
                       </div>
                       <div>
-                        <p className="text-[10px] text-[#6A738A] uppercase tracking-wider font-medium">{node.type}</p>
-                        <p className="text-sm font-semibold text-[#1E2535] leading-tight">{node.label}</p>
+                        <p className="text-sm font-semibold text-[#1E2535] leading-tight capitalize">{node.type}</p>
                       </div>
                     </div>
                     <button
