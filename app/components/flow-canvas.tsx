@@ -121,7 +121,9 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
   const [panStart, setPanStart] = useState({ x: 0, y: 0 })
   const canvasRef = useRef<HTMLDivElement>(null)
   const minimapRef = useRef<HTMLDivElement>(null)
-  const [statements, setStatements] = useState<string[]>(["test"])
+  const [statements, setStatements] = useState<{ text: string; createdAt: string }[]>([
+    { text: "test", createdAt: "Jun 10, 2025" },
+  ])
   const [newStatement, setNewStatement] = useState("")
   const [showStatementsInfo, setShowStatementsInfo] = useState(false)
   const [showDetailsInfo, setShowDetailsInfo] = useState(false)
@@ -1268,7 +1270,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                     className="flex-1 border-[#DDE5EF] focus:border-[#2F8FFF]"
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && newStatement.trim()) {
-                        setStatements([...statements, newStatement.trim()])
+                        setStatements([...statements, { text: newStatement.trim(), createdAt: new Date().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) }])
                         setNewStatement("")
                       }
                     }}
@@ -1277,7 +1279,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                     className="bg-[#F0F6FF] hover:bg-[#2F8FFF] text-[#6A738A] hover:text-white px-6"
                     onClick={() => {
                       if (newStatement.trim()) {
-                        setStatements([...statements, newStatement.trim()])
+                        setStatements([...statements, { text: newStatement.trim(), createdAt: new Date().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) }])
                         setNewStatement("")
                       }
                     }}
@@ -1286,22 +1288,34 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                   </Button>
                 </div>
 
-                <div className="flex flex-wrap gap-2">
-                  {statements.map((statement, index) => (
-                    <div
-                      key={index}
-                      className="inline-flex items-center gap-2 bg-white border border-[#DDE5EF] rounded-full px-4 py-2 text-sm text-[#1E2535]"
-                    >
-                      {statement}
-                      <button
-                        onClick={() => setStatements(statements.filter((_, i) => i !== index))}
-                        className="w-4 h-4 rounded-full bg-[#6A738A] text-white flex items-center justify-center hover:bg-[#3B4760] transition-colors"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
+                <table className="w-full table-fixed border border-[#DDE5EF] rounded-xl overflow-hidden text-sm">
+                  <colgroup>
+                    <col className="w-[70%]" />
+                    <col className="w-[30%]" />
+                  </colgroup>
+                  <thead>
+                    <tr className="border-b border-[#DDE5EF] bg-[#F6F8FA]">
+                      <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-[#6A738A]">Statement</th>
+                      <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-[#6A738A]">Created</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {statements.map((statement, index) => (
+                      <tr key={index} className="border-b border-[#DDE5EF] last:border-0 hover:bg-[#F6F8FA] transition-colors group">
+                        <td className="px-4 py-3 text-[#1E2535]">{statement.text}</td>
+                        <td className="px-4 py-3 text-[#6A738A] flex items-center justify-between">
+                          {statement.createdAt}
+                          <button
+                            onClick={() => setStatements(statements.filter((_, i) => i !== index))}
+                            className="opacity-0 group-hover:opacity-100 w-5 h-5 rounded-full bg-[#6A738A] text-white flex items-center justify-center hover:bg-[#3B4760] transition-all"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
 
               {/* Pagination */}
