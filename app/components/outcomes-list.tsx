@@ -15,10 +15,12 @@ function OutcomeTable({
   items,
   searchQuery,
   onOutcomeClick,
+  showSortIcons = true,
 }: {
   items: Outcome[]
   searchQuery: string
   onOutcomeClick: (id: string, name: string) => void
+  showSortIcons?: boolean
 }) {
   const filtered = items.filter(
     (o) =>
@@ -38,13 +40,13 @@ function OutcomeTable({
         <thead>
           <tr className="border-b border-white/10">
             <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-white/60">
-              <div className="flex items-center gap-1.5">Name <ArrowUpDown className="w-3 h-3" /></div>
+              <div className="flex items-center gap-1.5">Name {showSortIcons && <ArrowUpDown className="w-3 h-3" />}</div>
             </th>
             <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-white/60">
-              <div className="flex items-center gap-1.5">Description <ArrowUpDown className="w-3 h-3" /></div>
+              <div className="flex items-center gap-1.5">Description {showSortIcons && <ArrowUpDown className="w-3 h-3" />}</div>
             </th>
             <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-white/60">
-              <div className="flex items-center gap-1.5">Updated <ArrowUpDown className="w-3 h-3" /></div>
+              <div className="flex items-center gap-1.5">Updated {showSortIcons && <ArrowUpDown className="w-3 h-3" />}</div>
             </th>
             <th className="text-right px-4 py-3 text-xs font-semibold uppercase tracking-wide text-white/60">Actions</th>
           </tr>
@@ -113,7 +115,7 @@ export function OutcomesList({ onOutcomeClick }: OutcomesListProps) {
         {/* Welcome section */}
         <div>
           <h2 className="text-base font-semibold text-white mb-4">Welcome</h2>
-          <OutcomeTable items={mockWelcome} searchQuery="" onOutcomeClick={onOutcomeClick} />
+          <OutcomeTable items={mockWelcome} searchQuery="" onOutcomeClick={onOutcomeClick} showSortIcons={false} />
         </div>
 
         <hr className="border-white/10" />
