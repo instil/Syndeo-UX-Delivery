@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useSimulatorVisibility } from "@/components/simulator-visibility-context"
 import { Header } from "@/components/header"
 import { HomepageNewUser } from "@/components/homepage-new-user"
 import { HomepageReturningUser } from "@/components/homepage-returning-user"
@@ -18,6 +19,12 @@ type ReturningVersion = "phase1" | "v1" | "v2" | "v3" | "v4" | "v5"
 export default function DashboardPage() {
   const [isNewUser, setIsNewUser] = useState(false)
   const [homepageVersion, setHomepageVersion] = useState<ReturningVersion>("phase1")
+  const { hide, show } = useSimulatorVisibility()
+
+  useEffect(() => {
+    hide()
+    return () => show()
+  }, [hide, show])
 
   const isDark = homepageVersion === "phase1" || (!isNewUser && homepageVersion !== "v1")
 
