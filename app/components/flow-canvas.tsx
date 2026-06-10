@@ -131,7 +131,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null)
   const [nodeEditTab, setNodeEditTab] = useState<"skip" | "message" | "llm" | "exception">("message")
   const [nodeEditContent, setNodeEditContent] = useState<string[]>([""])
-  const [llmMode, setLlmMode] = useState<"deterministic" | "balanced" | "creative">("deterministic")
+  const [llmEnabled, setLlmEnabled] = useState(false)
   const [llmAdherence, setLlmAdherence] = useState(1)
   const mouseDownPos = useRef<{ x: number; y: number } | null>(null)
   const [simulatorInput, setSimulatorInput] = useState("")
@@ -826,21 +826,15 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                     )}
                     {nodeEditTab === "llm" && (
                       <div className="space-y-4">
-                        {/* Mode toggle */}
-                        <div className="flex rounded-full border border-[#2F8FFF] overflow-hidden bg-white">
-                          {(["deterministic", "balanced", "creative"] as const).map((mode) => (
-                            <button
-                              key={mode}
-                              onClick={() => setLlmMode(mode)}
-                              className={`flex-1 py-2 text-xs font-semibold uppercase tracking-widest transition-colors ${
-                                llmMode === mode
-                                  ? "bg-white text-[#2F8FFF]"
-                                  : "bg-[#5BBCB8] text-white hover:bg-[#4AADA9]"
-                              }`}
-                            >
-                              {mode === "deterministic" ? "Deterministic" : "···"}
-                            </button>
-                          ))}
+                        {/* LLM on/off toggle */}
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium text-[#1E2535]">Enable LLM</span>
+                          <button
+                            onClick={() => setLlmEnabled(!llmEnabled)}
+                            className={`relative w-11 h-6 rounded-full transition-colors ${llmEnabled ? "bg-[#2F8FFF]" : "bg-[#DDE5EF]"}`}
+                          >
+                            <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${llmEnabled ? "translate-x-5" : "translate-x-0"}`} />
+                          </button>
                         </div>
                         {/* Prompt Adherence card */}
                         <div className="rounded-xl border border-[#DDE5EF] bg-white p-4 space-y-3">
@@ -1130,21 +1124,15 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                     )}
                     {nodeEditTab === "llm" && (
                       <div className="space-y-4">
-                        {/* Mode toggle */}
-                        <div className="flex rounded-full border border-[#2F8FFF] overflow-hidden bg-white">
-                          {(["deterministic", "balanced", "creative"] as const).map((mode) => (
-                            <button
-                              key={mode}
-                              onClick={() => setLlmMode(mode)}
-                              className={`flex-1 py-2 text-xs font-semibold uppercase tracking-widest transition-colors ${
-                                llmMode === mode
-                                  ? "bg-white text-[#2F8FFF]"
-                                  : "bg-[#5BBCB8] text-white hover:bg-[#4AADA9]"
-                              }`}
-                            >
-                              {mode === "deterministic" ? "Deterministic" : "···"}
-                            </button>
-                          ))}
+                        {/* LLM on/off toggle */}
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium text-[#1E2535]">Enable LLM</span>
+                          <button
+                            onClick={() => setLlmEnabled(!llmEnabled)}
+                            className={`relative w-11 h-6 rounded-full transition-colors ${llmEnabled ? "bg-[#2F8FFF]" : "bg-[#DDE5EF]"}`}
+                          >
+                            <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${llmEnabled ? "translate-x-5" : "translate-x-0"}`} />
+                          </button>
                         </div>
                         {/* Prompt Adherence card */}
                         <div className="rounded-xl border border-[#DDE5EF] bg-white p-4 space-y-3">
@@ -1284,20 +1272,14 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                   )}
                   {nodeEditTab === "llm" && (
                     <div className="space-y-4">
-                      <div className="flex rounded-full border border-[#2F8FFF] overflow-hidden bg-white">
-                        {(["deterministic", "balanced", "creative"] as const).map((mode) => (
-                          <button
-                            key={mode}
-                            onClick={() => setLlmMode(mode)}
-                            className={`flex-1 py-2 text-xs font-semibold uppercase tracking-widest transition-colors ${
-                              llmMode === mode
-                                ? "bg-white text-[#2F8FFF]"
-                                : "bg-[#5BBCB8] text-white hover:bg-[#4AADA9]"
-                            }`}
-                          >
-                            {mode === "deterministic" ? "Deterministic" : "···"}
-                          </button>
-                        ))}
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-[#1E2535]">Enable LLM</span>
+                        <button
+                          onClick={() => setLlmEnabled(!llmEnabled)}
+                          className={`relative w-11 h-6 rounded-full transition-colors ${llmEnabled ? "bg-[#2F8FFF]" : "bg-[#DDE5EF]"}`}
+                        >
+                          <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${llmEnabled ? "translate-x-5" : "translate-x-0"}`} />
+                        </button>
                       </div>
                       <div className="rounded-xl border border-[#DDE5EF] bg-white p-4 space-y-3">
                         <p className="text-base font-light text-[#9AA3B0]">Prompt Adherence</p>
