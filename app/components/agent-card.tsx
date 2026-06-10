@@ -41,9 +41,7 @@ export function AgentCard({ title, description, icon: Icon, iconColor, onClick, 
 
         <h4 className="text-base font-semibold text-white mb-3">{title}</h4>
 
-        <p className="text-sm text-white/60 leading-relaxed mb-4 flex-1">{description}</p>
-
-        <p className="text-xs text-white/40">Published by Syndeo</p>
+        <p className="text-sm text-white/60 leading-relaxed flex-1">{description}</p>
       </div>
     </Card>
   )
