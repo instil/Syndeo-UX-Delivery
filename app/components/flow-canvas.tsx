@@ -770,34 +770,34 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                             <button className="w-4 h-4 rounded-full bg-[#6A738A] text-white flex items-center justify-center text-xs flex-shrink-0">i</button>
                           </div>
                           {nodeEditContent.map((msg, msgIdx) => (
-                            <div key={msgIdx} className="flex items-start gap-2">
-                              <div className="flex-1 border border-[#DDE5EF] rounded-xl overflow-hidden">
-                                <div className="flex gap-1 p-2 border-b border-[#DDE5EF] bg-[#F6F8FA]">
+                            <div key={msgIdx} className="border border-[#DDE5EF] rounded-xl overflow-hidden">
+                              <div className="flex items-center p-2 border-b border-[#DDE5EF] bg-[#F6F8FA]">
+                                <div className="flex gap-1">
                                   {[Bold, Italic, Underline, Strikethrough, List, Code, Link, Smile].map((Icon, i) => (
                                     <Button key={i} variant="ghost" size="icon" className="h-7 w-7 hover:bg-white text-[#6A738A]">
                                       <Icon className="w-3.5 h-3.5" />
                                     </Button>
                                   ))}
                                 </div>
-                                <Textarea
-                                  rows={4}
-                                  value={msg}
-                                  onChange={(e) => setNodeEditContent(nodeEditContent.map((m, i) => i === msgIdx ? e.target.value : m))}
-                                  className="border-none bg-[#F6F8FA] focus:ring-0 resize-none text-sm rounded-none"
-                                  placeholder="Enter message..."
-                                />
-                                <div className="px-3 py-1.5 text-xs text-[#9AA3B0] text-right border-t border-[#DDE5EF] bg-[#F6F8FA]">
-                                  {msg.length} of 2000 characters
-                                </div>
+                                {nodeEditContent.length > 1 && (
+                                  <button
+                                    onClick={() => setNodeEditContent(nodeEditContent.filter((_, i) => i !== msgIdx))}
+                                    className="ml-auto w-7 h-7 rounded-lg hover:bg-red-50 flex items-center justify-center text-[#9AA3B0] hover:text-red-500 transition-colors"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                )}
                               </div>
-                              {nodeEditContent.length > 1 && (
-                                <button
-                                  onClick={() => setNodeEditContent(nodeEditContent.filter((_, i) => i !== msgIdx))}
-                                  className="mt-2 w-7 h-7 rounded-lg hover:bg-red-50 flex items-center justify-center text-[#9AA3B0] hover:text-red-500 transition-colors flex-shrink-0"
-                                >
-                                  <Trash2 className="w-3.5 h-3.5" />
-                                </button>
-                              )}
+                              <Textarea
+                                rows={4}
+                                value={msg}
+                                onChange={(e) => setNodeEditContent(nodeEditContent.map((m, i) => i === msgIdx ? e.target.value : m))}
+                                className="border-none bg-[#F6F8FA] focus:ring-0 resize-none text-sm rounded-none"
+                                placeholder="Enter message..."
+                              />
+                              <div className="px-3 py-1.5 text-xs text-[#9AA3B0] text-right border-t border-[#DDE5EF] bg-[#F6F8FA]">
+                                {msg.length} of 2000 characters
+                              </div>
                             </div>
                           ))}
                           <div className="flex items-center gap-3">
@@ -1040,34 +1040,34 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                             <button className="w-4 h-4 rounded-full bg-[#6A738A] text-white flex items-center justify-center text-xs flex-shrink-0">i</button>
                           </div>
                           {nodeEditContent.map((msg, msgIdx) => (
-                            <div key={msgIdx} className="flex items-start gap-2">
-                              <div className="flex-1 border border-[#DDE5EF] rounded-xl overflow-hidden">
-                                <div className="flex gap-1 p-2 border-b border-[#DDE5EF] bg-[#F6F8FA]">
+                            <div key={msgIdx} className="border border-[#DDE5EF] rounded-xl overflow-hidden">
+                              <div className="flex items-center p-2 border-b border-[#DDE5EF] bg-[#F6F8FA]">
+                                <div className="flex gap-1">
                                   {[Bold, Italic, Underline, Strikethrough, List, Code, Link, Smile].map((Icon, i) => (
                                     <Button key={i} variant="ghost" size="icon" className="h-7 w-7 hover:bg-white text-[#6A738A]">
                                       <Icon className="w-3.5 h-3.5" />
                                     </Button>
                                   ))}
                                 </div>
-                                <Textarea
-                                  rows={4}
-                                  value={msg}
-                                  onChange={(e) => setNodeEditContent(nodeEditContent.map((m, i) => i === msgIdx ? e.target.value : m))}
-                                  className="border-none bg-[#F6F8FA] focus:ring-0 resize-none text-sm rounded-none"
-                                  placeholder="Enter message..."
-                                />
-                                <div className="px-3 py-1.5 text-xs text-[#9AA3B0] text-right border-t border-[#DDE5EF] bg-[#F6F8FA]">
-                                  {msg.length} of 2000 characters
-                                </div>
+                                {nodeEditContent.length > 1 && (
+                                  <button
+                                    onClick={() => setNodeEditContent(nodeEditContent.filter((_, i) => i !== msgIdx))}
+                                    className="ml-auto w-7 h-7 rounded-lg hover:bg-red-50 flex items-center justify-center text-[#9AA3B0] hover:text-red-500 transition-colors"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                )}
                               </div>
-                              {nodeEditContent.length > 1 && (
-                                <button
-                                  onClick={() => setNodeEditContent(nodeEditContent.filter((_, i) => i !== msgIdx))}
-                                  className="mt-2 w-7 h-7 rounded-lg hover:bg-red-50 flex items-center justify-center text-[#9AA3B0] hover:text-red-500 transition-colors flex-shrink-0"
-                                >
-                                  <Trash2 className="w-3.5 h-3.5" />
-                                </button>
-                              )}
+                              <Textarea
+                                rows={4}
+                                value={msg}
+                                onChange={(e) => setNodeEditContent(nodeEditContent.map((m, i) => i === msgIdx ? e.target.value : m))}
+                                className="border-none bg-[#F6F8FA] focus:ring-0 resize-none text-sm rounded-none"
+                                placeholder="Enter message..."
+                              />
+                              <div className="px-3 py-1.5 text-xs text-[#9AA3B0] text-right border-t border-[#DDE5EF] bg-[#F6F8FA]">
+                                {msg.length} of 2000 characters
+                              </div>
                             </div>
                           ))}
                           <div className="flex items-center gap-3">
