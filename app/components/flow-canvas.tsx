@@ -506,7 +506,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
         <div className={`${activeTab !== "flow" ? "w-1/2" : "flex-1"} flex overflow-hidden relative`}>
 
           {/* CENTRE: Canvas (full remaining width) */}
-          <div className={activeTab !== "flow" ? "hidden" : "flex-1 relative overflow-hidden"}>
+          <div className="flex-1 relative overflow-hidden">
             <div
               ref={canvasRef}
               className={`h-full overflow-hidden bg-[#F6F8FA] select-none ${isPanning ? "cursor-grabbing" : "cursor-grab"} ${isDragOverCanvas ? "ring-2 ring-inset ring-[#2F8FFF]/40" : ""}`}
@@ -527,6 +527,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
               }}
             >
               <div
+                className={activeTab !== "flow" ? "hidden" : ""}
                 style={{
                   transform: `scale(${zoom / 100}) translate(${panOffset.x / (zoom / 100)}px, ${panOffset.y / (zoom / 100)}px)`,
                   transformOrigin: "top left",
@@ -691,7 +692,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
             </div>
 
             {/* Node edit popover */}
-            {selectedNodeId && (() => {
+            {activeTab === "flow" && selectedNodeId && (() => {
               const node = nodes.find((n) => n.id === selectedNodeId)
               if (!node) return null
               const NodeIcon = nodeTypes.find((nt) => nt.type === node.type)?.icon || MessageSquare
@@ -800,7 +801,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
             })()}
 
             {/* Left floating panels — Wayfinder + Blocks + Controls */}
-            <div className="absolute top-4 left-4 z-20 w-40 flex flex-col gap-2">
+            <div className={`absolute top-4 left-4 z-20 w-40 flex flex-col gap-2 ${activeTab !== "flow" ? "hidden" : ""}`}>
               {/* Wayfinder */}
               <div className="bg-[#272C41] border border-white/10 rounded-xl shadow-xl overflow-hidden">
                 <div className="p-2">
