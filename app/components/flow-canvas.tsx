@@ -130,7 +130,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
   const [editingNodeId, setEditingNodeId] = useState<string | null>(null)
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null)
   const [nodeEditTab, setNodeEditTab] = useState<"skip" | "message" | "llm" | "exception">("message")
-  const [nodeEditContent, setNodeEditContent] = useState("")
+  const [nodeEditContent, setNodeEditContent] = useState<string[]>([""])
   const mouseDownPos = useRef<{ x: number; y: number } | null>(null)
   const [simulatorInput, setSimulatorInput] = useState("")
   const [simulatorMessages, setSimulatorMessages] = useState<{ role: "bot" | "user"; text: string }[]>([
@@ -245,7 +245,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
     if (dist < 5) {
       // It's a click, not a drag — select the node
       setSelectedNodeId((prev) => prev === nodeId ? null : nodeId)
-      setNodeEditContent(nodes.find((n) => n.id === nodeId)?.label ?? "")
+      setNodeEditContent([nodes.find((n) => n.id === nodeId)?.label ?? ""])
       setNodeEditTab("message")
     }
   }
@@ -414,7 +414,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
 
   const handleEditNode = (nodeId: string) => {
     const node = nodes.find((n) => n.id === nodeId)
-    setNodeEditContent(node?.label || "")
+    setNodeEditContent([node?.label || ""])
     setNodeEditTab("message")
     setEditingNodeId(nodeId)
   }
@@ -769,25 +769,37 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                             </label>
                             <button className="w-4 h-4 rounded-full bg-[#6A738A] text-white flex items-center justify-center text-xs flex-shrink-0">i</button>
                           </div>
-                          <div className="border border-[#DDE5EF] rounded-xl overflow-hidden">
-                            <div className="flex gap-1 p-2 border-b border-[#DDE5EF] bg-[#F6F8FA]">
-                              {[Bold, Italic, Underline, Strikethrough, List, Code, Link, Smile].map((Icon, i) => (
-                                <Button key={i} variant="ghost" size="icon" className="h-7 w-7 hover:bg-white text-[#6A738A]">
-                                  <Icon className="w-3.5 h-3.5" />
-                                </Button>
-                              ))}
+                          {nodeEditContent.map((msg, msgIdx) => (
+                            <div key={msgIdx} className="flex items-start gap-2">
+                              <div className="flex-1 border border-[#DDE5EF] rounded-xl overflow-hidden">
+                                <div className="flex gap-1 p-2 border-b border-[#DDE5EF] bg-[#F6F8FA]">
+                                  {[Bold, Italic, Underline, Strikethrough, List, Code, Link, Smile].map((Icon, i) => (
+                                    <Button key={i} variant="ghost" size="icon" className="h-7 w-7 hover:bg-white text-[#6A738A]">
+                                      <Icon className="w-3.5 h-3.5" />
+                                    </Button>
+                                  ))}
+                                </div>
+                                <Textarea
+                                  rows={4}
+                                  value={msg}
+                                  onChange={(e) => setNodeEditContent(nodeEditContent.map((m, i) => i === msgIdx ? e.target.value : m))}
+                                  className="border-none bg-[#F6F8FA] focus:ring-0 resize-none text-sm rounded-none"
+                                  placeholder="Enter message..."
+                                />
+                                <div className="px-3 py-1.5 text-xs text-[#9AA3B0] text-right border-t border-[#DDE5EF] bg-[#F6F8FA]">
+                                  {msg.length} of 2000 characters
+                                </div>
+                              </div>
+                              {nodeEditContent.length > 1 && (
+                                <button
+                                  onClick={() => setNodeEditContent(nodeEditContent.filter((_, i) => i !== msgIdx))}
+                                  className="mt-2 w-7 h-7 rounded-lg hover:bg-red-50 flex items-center justify-center text-[#9AA3B0] hover:text-red-500 transition-colors flex-shrink-0"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              )}
                             </div>
-                            <Textarea
-                              rows={4}
-                              value={nodeEditContent}
-                              onChange={(e) => setNodeEditContent(e.target.value)}
-                              className="border-none bg-[#F6F8FA] focus:ring-0 resize-none text-sm rounded-none"
-                              placeholder="Enter message..."
-                            />
-                            <div className="px-3 py-1.5 text-xs text-[#9AA3B0] text-right border-t border-[#DDE5EF] bg-[#F6F8FA]">
-                              {nodeEditContent.length} of 2000 characters
-                            </div>
-                          </div>
+                          ))}
                           <div className="flex items-center gap-3">
                             <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider whitespace-nowrap">Media Type</label>
                             <select className="px-3 py-2 rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535] focus:outline-none focus:ring-2 focus:ring-[#2F8FFF]/30">
@@ -797,7 +809,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                               <option>File</option>
                             </select>
                           </div>
-                          <Button variant="ghost" className="w-full border border-[#DDE5EF] text-[#6A738A] hover:text-[#1E2535] hover:bg-[#F6F8FA] text-sm h-9">+ Add Alternative Message</Button>
+                          <Button variant="ghost" className="w-full border border-[#DDE5EF] text-[#6A738A] hover:text-[#1E2535] hover:bg-[#F6F8FA] text-sm h-9" onClick={() => setNodeEditContent([...nodeEditContent, ""])}>+ Add Alternative Message</Button>
                         </div>
                         <div className="rounded-xl border border-[#DDE5EF] bg-white p-4">
                           <label className="flex items-center gap-2 cursor-pointer">
@@ -1027,25 +1039,37 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                             </label>
                             <button className="w-4 h-4 rounded-full bg-[#6A738A] text-white flex items-center justify-center text-xs flex-shrink-0">i</button>
                           </div>
-                          <div className="border border-[#DDE5EF] rounded-xl overflow-hidden">
-                            <div className="flex gap-1 p-2 border-b border-[#DDE5EF] bg-[#F6F8FA]">
-                              {[Bold, Italic, Underline, Strikethrough, List, Code, Link, Smile].map((Icon, i) => (
-                                <Button key={i} variant="ghost" size="icon" className="h-7 w-7 hover:bg-white text-[#6A738A]">
-                                  <Icon className="w-3.5 h-3.5" />
-                                </Button>
-                              ))}
+                          {nodeEditContent.map((msg, msgIdx) => (
+                            <div key={msgIdx} className="flex items-start gap-2">
+                              <div className="flex-1 border border-[#DDE5EF] rounded-xl overflow-hidden">
+                                <div className="flex gap-1 p-2 border-b border-[#DDE5EF] bg-[#F6F8FA]">
+                                  {[Bold, Italic, Underline, Strikethrough, List, Code, Link, Smile].map((Icon, i) => (
+                                    <Button key={i} variant="ghost" size="icon" className="h-7 w-7 hover:bg-white text-[#6A738A]">
+                                      <Icon className="w-3.5 h-3.5" />
+                                    </Button>
+                                  ))}
+                                </div>
+                                <Textarea
+                                  rows={4}
+                                  value={msg}
+                                  onChange={(e) => setNodeEditContent(nodeEditContent.map((m, i) => i === msgIdx ? e.target.value : m))}
+                                  className="border-none bg-[#F6F8FA] focus:ring-0 resize-none text-sm rounded-none"
+                                  placeholder="Enter message..."
+                                />
+                                <div className="px-3 py-1.5 text-xs text-[#9AA3B0] text-right border-t border-[#DDE5EF] bg-[#F6F8FA]">
+                                  {msg.length} of 2000 characters
+                                </div>
+                              </div>
+                              {nodeEditContent.length > 1 && (
+                                <button
+                                  onClick={() => setNodeEditContent(nodeEditContent.filter((_, i) => i !== msgIdx))}
+                                  className="mt-2 w-7 h-7 rounded-lg hover:bg-red-50 flex items-center justify-center text-[#9AA3B0] hover:text-red-500 transition-colors flex-shrink-0"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              )}
                             </div>
-                            <Textarea
-                              rows={4}
-                              value={nodeEditContent}
-                              onChange={(e) => setNodeEditContent(e.target.value)}
-                              className="border-none bg-[#F6F8FA] focus:ring-0 resize-none text-sm rounded-none"
-                              placeholder="Enter message..."
-                            />
-                            <div className="px-3 py-1.5 text-xs text-[#9AA3B0] text-right border-t border-[#DDE5EF] bg-[#F6F8FA]">
-                              {nodeEditContent.length} of 2000 characters
-                            </div>
-                          </div>
+                          ))}
                           <div className="flex items-center gap-3">
                             <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider whitespace-nowrap">Media Type</label>
                             <select className="px-3 py-2 rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535] focus:outline-none focus:ring-2 focus:ring-[#2F8FFF]/30">
@@ -1055,7 +1079,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                               <option>File</option>
                             </select>
                           </div>
-                          <Button variant="ghost" className="w-full border border-[#DDE5EF] text-[#6A738A] hover:text-[#1E2535] hover:bg-[#F6F8FA] text-sm h-9">+ Add Alternative Message</Button>
+                          <Button variant="ghost" className="w-full border border-[#DDE5EF] text-[#6A738A] hover:text-[#1E2535] hover:bg-[#F6F8FA] text-sm h-9" onClick={() => setNodeEditContent([...nodeEditContent, ""])}>+ Add Alternative Message</Button>
                         </div>
                         <div className="rounded-xl border border-[#DDE5EF] bg-white p-4">
                           <label className="flex items-center gap-2 cursor-pointer">
@@ -1173,13 +1197,13 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                           </div>
                           <Textarea
                             rows={5}
-                            value={nodeEditContent}
-                            onChange={(e) => setNodeEditContent(e.target.value)}
+                            value={nodeEditContent[0] ?? ""}
+                            onChange={(e) => setNodeEditContent([e.target.value, ...nodeEditContent.slice(1)])}
                             className="border-none bg-white focus:ring-0 resize-none text-sm rounded-none"
                             placeholder="Enter message..."
                           />
                           <div className="px-3 py-1.5 text-xs text-[#9AA3B0] text-right border-t border-[#DDE5EF] bg-[#F6F8FA]">
-                            {nodeEditContent.length} of 2000 characters
+                            {(nodeEditContent[0] ?? "").length} of 2000 characters
                           </div>
                         </div>
                       </div>
