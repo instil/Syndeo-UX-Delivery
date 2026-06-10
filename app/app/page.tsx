@@ -19,12 +19,12 @@ type ReturningVersion = "phase1" | "v1" | "v2" | "v3" | "v4" | "v5"
 export default function DashboardPage() {
   const [isNewUser, setIsNewUser] = useState(false)
   const [homepageVersion, setHomepageVersion] = useState<ReturningVersion>("phase1")
-  const { hide, show } = useSimulatorVisibility()
+  const { disable, enable } = useSimulatorVisibility()
 
   useEffect(() => {
-    hide()
-    return () => show()
-  }, [hide, show])
+    disable()
+    return () => enable()
+  }, [disable, enable])
 
   const isDark = homepageVersion === "phase1" || (!isNewUser && homepageVersion !== "v1")
 
