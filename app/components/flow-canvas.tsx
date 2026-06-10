@@ -502,8 +502,8 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
       </div>
 
       {/* Tab Content */}
-      {activeTab === "flow" && (
-        <div className="flex-1 flex overflow-hidden relative">
+      <div className="flex-1 flex overflow-hidden">
+        <div className={`${activeTab !== "flow" ? "w-1/2" : "flex-1"} flex overflow-hidden relative`}>
 
           {/* CENTRE: Canvas (full remaining width) */}
           <div className="flex-1 relative overflow-hidden">
@@ -1229,10 +1229,9 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
             </div>
           )}
         </div>
-      )}
 
       {activeTab === "statements" && (
-        <div className="flex-1 overflow-auto p-8 bg-white">
+        <div className="w-1/2 border-l border-[#DDE5EF] overflow-auto p-8 bg-white">
           <div className="max-w-3xl">
             <div className="relative flex items-center gap-2 mb-6">
               <h2 className="text-2xl font-light tracking-tight text-[#1E2535]">Customer Statements</h2>
@@ -1322,7 +1321,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
       )}
 
       {activeTab === "details" && (
-        <div className="flex-1 overflow-auto p-8 bg-white">
+        <div className="w-1/2 border-l border-[#DDE5EF] overflow-auto p-8 bg-white">
           <div className="max-w-3xl">
             <div className="relative flex items-center gap-2 mb-6">
               <h2 className="text-2xl font-light tracking-tight text-[#1E2535]">Outcome Details</h2>
@@ -1457,6 +1456,8 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
           </div>
         </div>
       )}
+
+      </div>
 
       {/* Drag ghost — follows cursor */}
       {dragGhost && (() => {
