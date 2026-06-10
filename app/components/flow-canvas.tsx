@@ -747,7 +747,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                   {/* Content */}
                   <div className="flex-1 overflow-y-auto p-4 space-y-3">
                     {nodeEditTab === "message" && (
-                      <>
+                      <div className="space-y-3">
                         <div>
                           <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider block mb-1.5">Task Name</label>
                           <input
@@ -756,17 +756,59 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                             onChange={(e) => setNodes((prev) => prev.map((n) => n.id === node.id ? { ...n, label: e.target.value } : n))}
                           />
                         </div>
-                        <div>
-                          <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider block mb-1.5">Message</label>
-                          <Textarea
-                            rows={4}
-                            value={nodeEditContent}
-                            onChange={(e) => setNodeEditContent(e.target.value)}
-                            className="border border-[#DDE5EF] bg-[#F6F8FA] focus:border-[#2F8FFF] resize-none text-sm rounded-lg"
-                            placeholder="Enter message..."
-                          />
+                        <div className="rounded-xl border border-[#DDE5EF] bg-white p-4 space-y-3">
+                          <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider block">Message</label>
+                          <div className="flex items-center gap-4">
+                            <label className="flex items-center gap-2 cursor-pointer">
+                              <input type="checkbox" className="w-3.5 h-3.5 rounded border-[#DDE5EF] accent-[#2F8FFF]" />
+                              <span className="text-xs font-medium text-[#6A738A] uppercase tracking-wider">Out of Bubble</span>
+                            </label>
+                            <label className="flex items-center gap-2 cursor-pointer">
+                              <input type="checkbox" className="w-3.5 h-3.5 rounded border-[#DDE5EF] accent-[#2F8FFF]" />
+                              <span className="text-xs font-medium text-[#6A738A] uppercase tracking-wider">Allow Reactions</span>
+                            </label>
+                            <button className="w-4 h-4 rounded-full bg-[#6A738A] text-white flex items-center justify-center text-xs flex-shrink-0">i</button>
+                          </div>
+                          <div className="border border-[#DDE5EF] rounded-xl overflow-hidden">
+                            <div className="flex gap-1 p-2 border-b border-[#DDE5EF] bg-[#F6F8FA]">
+                              {[Bold, Italic, Underline, Strikethrough, List, Code, Link, Smile].map((Icon, i) => (
+                                <Button key={i} variant="ghost" size="icon" className="h-7 w-7 hover:bg-white text-[#6A738A]">
+                                  <Icon className="w-3.5 h-3.5" />
+                                </Button>
+                              ))}
+                            </div>
+                            <Textarea
+                              rows={4}
+                              value={nodeEditContent}
+                              onChange={(e) => setNodeEditContent(e.target.value)}
+                              className="border-none bg-[#F6F8FA] focus:ring-0 resize-none text-sm rounded-none"
+                              placeholder="Enter message..."
+                            />
+                            <div className="px-3 py-1.5 text-xs text-[#9AA3B0] text-right border-t border-[#DDE5EF] bg-[#F6F8FA]">
+                              {nodeEditContent.length} of 2000 characters
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider whitespace-nowrap">Media Type</label>
+                            <select className="px-3 py-2 rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535] focus:outline-none focus:ring-2 focus:ring-[#2F8FFF]/30">
+                              <option>No</option>
+                              <option>Image</option>
+                              <option>Video</option>
+                              <option>File</option>
+                            </select>
+                          </div>
                         </div>
-                      </>
+                        <div className="flex justify-end">
+                          <Button className="bg-[#2F8FFF] hover:bg-[#2680E8] text-white text-sm">Add Alternative Message</Button>
+                        </div>
+                        <div className="rounded-xl border border-[#DDE5EF] bg-white p-4">
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" className="w-3.5 h-3.5 rounded border-[#DDE5EF] accent-[#2F8FFF]" />
+                            <span className="text-xs font-medium text-[#6A738A] uppercase tracking-wider">Send Immediately</span>
+                            <button className="w-4 h-4 rounded-full bg-[#6A738A] text-white flex items-center justify-center text-xs flex-shrink-0">i</button>
+                          </label>
+                        </div>
+                      </div>
                     )}
                     {nodeEditTab === "skip" && (
                       <p className="text-sm text-[#6A738A]">Configure skip conditions for this node.</p>
@@ -965,7 +1007,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                   {/* Content */}
                   <div className="flex-1 overflow-y-auto p-4 space-y-3">
                     {nodeEditTab === "message" && (
-                      <>
+                      <div className="space-y-3">
                         <div>
                           <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider block mb-1.5">Task Name</label>
                           <input
@@ -974,17 +1016,59 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                             onChange={(e) => setNodes((prev) => prev.map((n) => n.id === node.id ? { ...n, label: e.target.value } : n))}
                           />
                         </div>
-                        <div>
-                          <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider block mb-1.5">Message</label>
-                          <Textarea
-                            rows={4}
-                            value={nodeEditContent}
-                            onChange={(e) => setNodeEditContent(e.target.value)}
-                            className="border border-[#DDE5EF] bg-[#F6F8FA] focus:border-[#2F8FFF] resize-none text-sm rounded-lg"
-                            placeholder="Enter message..."
-                          />
+                        <div className="rounded-xl border border-[#DDE5EF] bg-white p-4 space-y-3">
+                          <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider block">Message</label>
+                          <div className="flex items-center gap-4">
+                            <label className="flex items-center gap-2 cursor-pointer">
+                              <input type="checkbox" className="w-3.5 h-3.5 rounded border-[#DDE5EF] accent-[#2F8FFF]" />
+                              <span className="text-xs font-medium text-[#6A738A] uppercase tracking-wider">Out of Bubble</span>
+                            </label>
+                            <label className="flex items-center gap-2 cursor-pointer">
+                              <input type="checkbox" className="w-3.5 h-3.5 rounded border-[#DDE5EF] accent-[#2F8FFF]" />
+                              <span className="text-xs font-medium text-[#6A738A] uppercase tracking-wider">Allow Reactions</span>
+                            </label>
+                            <button className="w-4 h-4 rounded-full bg-[#6A738A] text-white flex items-center justify-center text-xs flex-shrink-0">i</button>
+                          </div>
+                          <div className="border border-[#DDE5EF] rounded-xl overflow-hidden">
+                            <div className="flex gap-1 p-2 border-b border-[#DDE5EF] bg-[#F6F8FA]">
+                              {[Bold, Italic, Underline, Strikethrough, List, Code, Link, Smile].map((Icon, i) => (
+                                <Button key={i} variant="ghost" size="icon" className="h-7 w-7 hover:bg-white text-[#6A738A]">
+                                  <Icon className="w-3.5 h-3.5" />
+                                </Button>
+                              ))}
+                            </div>
+                            <Textarea
+                              rows={4}
+                              value={nodeEditContent}
+                              onChange={(e) => setNodeEditContent(e.target.value)}
+                              className="border-none bg-[#F6F8FA] focus:ring-0 resize-none text-sm rounded-none"
+                              placeholder="Enter message..."
+                            />
+                            <div className="px-3 py-1.5 text-xs text-[#9AA3B0] text-right border-t border-[#DDE5EF] bg-[#F6F8FA]">
+                              {nodeEditContent.length} of 2000 characters
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider whitespace-nowrap">Media Type</label>
+                            <select className="px-3 py-2 rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535] focus:outline-none focus:ring-2 focus:ring-[#2F8FFF]/30">
+                              <option>No</option>
+                              <option>Image</option>
+                              <option>Video</option>
+                              <option>File</option>
+                            </select>
+                          </div>
                         </div>
-                      </>
+                        <div className="flex justify-end">
+                          <Button className="bg-[#2F8FFF] hover:bg-[#2680E8] text-white text-sm">Add Alternative Message</Button>
+                        </div>
+                        <div className="rounded-xl border border-[#DDE5EF] bg-white p-4">
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" className="w-3.5 h-3.5 rounded border-[#DDE5EF] accent-[#2F8FFF]" />
+                            <span className="text-xs font-medium text-[#6A738A] uppercase tracking-wider">Send Immediately</span>
+                            <button className="w-4 h-4 rounded-full bg-[#6A738A] text-white flex items-center justify-center text-xs flex-shrink-0">i</button>
+                          </label>
+                        </div>
+                      </div>
                     )}
                     {nodeEditTab === "skip" && (
                       <p className="text-sm text-[#6A738A]">Configure skip conditions for this node.</p>
