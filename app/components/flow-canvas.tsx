@@ -133,6 +133,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
   const [nodeEditContent, setNodeEditContent] = useState<string[]>([""])
   const [llmEnabled, setLlmEnabled] = useState(false)
   const [llmAdherence, setLlmAdherence] = useState(1)
+  const [skipEnabled, setSkipEnabled] = useState(false)
   const mouseDownPos = useRef<{ x: number; y: number } | null>(null)
   const [simulatorInput, setSimulatorInput] = useState("")
   const [simulatorMessages, setSimulatorMessages] = useState<{ role: "bot" | "user"; text: string }[]>([
@@ -822,7 +823,42 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                       </div>
                     )}
                     {nodeEditTab === "skip" && (
-                      <p className="text-sm text-[#6A738A]">Configure skip conditions for this node.</p>
+                      <div className="space-y-4">
+                        {/* Skip on/off toggle */}
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium text-[#1E2535]">Enable Skip Rule</span>
+                          <button
+                            onClick={() => setSkipEnabled(!skipEnabled)}
+                            className={`relative w-11 h-6 rounded-full transition-colors ${skipEnabled ? "bg-[#2F8FFF]" : "bg-[#DDE5EF]"}`}
+                          >
+                            <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${skipEnabled ? "translate-x-5" : "translate-x-0"}`} />
+                          </button>
+                        </div>
+                        {/* Skip rule card */}
+                        <div className={`rounded-xl border border-[#DDE5EF] p-4 space-y-3 transition-opacity ${skipEnabled ? "bg-white opacity-100" : "bg-[#F6F8FA] opacity-40 pointer-events-none"}`}>
+                          <div className="grid grid-cols-[1fr_auto_1fr] gap-3 items-center">
+                            <div className="space-y-2">
+                              <select className="w-full rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] px-3 py-2.5 text-sm text-[#1E2535] appearance-none">
+                                <option>Variable</option>
+                              </select>
+                              <input type="text" placeholder="Variable Name..." className="w-full rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] px-3 py-2.5 text-sm text-[#1E2535] placeholder-[#9AA3B0]" />
+                            </div>
+                            <div className="w-8 h-8 rounded-full border border-[#DDE5EF] bg-white flex items-center justify-center text-sm text-[#6A738A] font-medium">=</div>
+                            <div className="space-y-2">
+                              <select className="w-full rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] px-3 py-2.5 text-sm text-[#1E2535] appearance-none">
+                                <option>Value</option>
+                              </select>
+                              <input type="text" placeholder="Value..." className="w-full rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] px-3 py-2.5 text-sm text-[#1E2535] placeholder-[#9AA3B0]" />
+                            </div>
+                          </div>
+                          <div className="flex justify-center pt-1">
+                            <button className="flex items-center gap-1.5 text-xs text-[#9AA3B0] hover:text-[#E5534B] transition-colors">
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                              Delete Skip Rule
+                            </button>
+                          </div>
+                        </div>
+                      </div>
                     )}
                     {nodeEditTab === "llm" && (
                       <div className="space-y-4">
@@ -1120,7 +1156,42 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                       </div>
                     )}
                     {nodeEditTab === "skip" && (
-                      <p className="text-sm text-[#6A738A]">Configure skip conditions for this node.</p>
+                      <div className="space-y-4">
+                        {/* Skip on/off toggle */}
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium text-[#1E2535]">Enable Skip Rule</span>
+                          <button
+                            onClick={() => setSkipEnabled(!skipEnabled)}
+                            className={`relative w-11 h-6 rounded-full transition-colors ${skipEnabled ? "bg-[#2F8FFF]" : "bg-[#DDE5EF]"}`}
+                          >
+                            <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${skipEnabled ? "translate-x-5" : "translate-x-0"}`} />
+                          </button>
+                        </div>
+                        {/* Skip rule card */}
+                        <div className={`rounded-xl border border-[#DDE5EF] p-4 space-y-3 transition-opacity ${skipEnabled ? "bg-white opacity-100" : "bg-[#F6F8FA] opacity-40 pointer-events-none"}`}>
+                          <div className="grid grid-cols-[1fr_auto_1fr] gap-3 items-center">
+                            <div className="space-y-2">
+                              <select className="w-full rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] px-3 py-2.5 text-sm text-[#1E2535] appearance-none">
+                                <option>Variable</option>
+                              </select>
+                              <input type="text" placeholder="Variable Name..." className="w-full rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] px-3 py-2.5 text-sm text-[#1E2535] placeholder-[#9AA3B0]" />
+                            </div>
+                            <div className="w-8 h-8 rounded-full border border-[#DDE5EF] bg-white flex items-center justify-center text-sm text-[#6A738A] font-medium">=</div>
+                            <div className="space-y-2">
+                              <select className="w-full rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] px-3 py-2.5 text-sm text-[#1E2535] appearance-none">
+                                <option>Value</option>
+                              </select>
+                              <input type="text" placeholder="Value..." className="w-full rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] px-3 py-2.5 text-sm text-[#1E2535] placeholder-[#9AA3B0]" />
+                            </div>
+                          </div>
+                          <div className="flex justify-center pt-1">
+                            <button className="flex items-center gap-1.5 text-xs text-[#9AA3B0] hover:text-[#E5534B] transition-colors">
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                              Delete Skip Rule
+                            </button>
+                          </div>
+                        </div>
+                      </div>
                     )}
                     {nodeEditTab === "llm" && (
                       <div className="space-y-4">
@@ -1268,7 +1339,42 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                     </>
                   )}
                   {nodeEditTab === "skip" && (
-                    <p className="text-sm text-[#6A738A]">Configure skip conditions for this node.</p>
+                    <div className="space-y-4">
+                      {/* Skip on/off toggle */}
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-[#1E2535]">Enable Skip Rule</span>
+                        <button
+                          onClick={() => setSkipEnabled(!skipEnabled)}
+                          className={`relative w-11 h-6 rounded-full transition-colors ${skipEnabled ? "bg-[#2F8FFF]" : "bg-[#DDE5EF]"}`}
+                        >
+                          <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${skipEnabled ? "translate-x-5" : "translate-x-0"}`} />
+                        </button>
+                      </div>
+                      {/* Skip rule card */}
+                      <div className={`rounded-xl border border-[#DDE5EF] p-4 space-y-3 transition-opacity ${skipEnabled ? "bg-white opacity-100" : "bg-[#F6F8FA] opacity-40 pointer-events-none"}`}>
+                        <div className="grid grid-cols-[1fr_auto_1fr] gap-3 items-center">
+                          <div className="space-y-2">
+                            <select className="w-full rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] px-3 py-2.5 text-sm text-[#1E2535] appearance-none">
+                              <option>Variable</option>
+                            </select>
+                            <input type="text" placeholder="Variable Name..." className="w-full rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] px-3 py-2.5 text-sm text-[#1E2535] placeholder-[#9AA3B0]" />
+                          </div>
+                          <div className="w-8 h-8 rounded-full border border-[#DDE5EF] bg-white flex items-center justify-center text-sm text-[#6A738A] font-medium">=</div>
+                          <div className="space-y-2">
+                            <select className="w-full rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] px-3 py-2.5 text-sm text-[#1E2535] appearance-none">
+                              <option>Value</option>
+                            </select>
+                            <input type="text" placeholder="Value..." className="w-full rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] px-3 py-2.5 text-sm text-[#1E2535] placeholder-[#9AA3B0]" />
+                          </div>
+                        </div>
+                        <div className="flex justify-center pt-1">
+                          <button className="flex items-center gap-1.5 text-xs text-[#9AA3B0] hover:text-[#E5534B] transition-colors">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                            Delete Skip Rule
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   )}
                   {nodeEditTab === "llm" && (
                     <div className="space-y-4">
