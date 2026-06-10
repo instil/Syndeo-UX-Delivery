@@ -711,7 +711,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
               const NodeIcon = nodeTypes.find((nt) => nt.type === node.type)?.icon || MessageSquare
               const nodeColor = getNodeColor(node.type)
               const scale = zoom / 100
-              const popX = node.x * scale + panOffset.x + 210
+              const popX = node.x * scale + panOffset.x - 492
               const popY = node.y * scale + panOffset.y
               return (
                 <div
@@ -1051,7 +1051,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
               const NodeIcon = nodeTypes.find((nt) => nt.type === node.type)?.icon || MessageSquare
               const nodeColor = getNodeColor(node.type)
               const scale = zoom / 100
-              const popX = node.x * scale + panOffset.x + 210
+              const popX = node.x * scale + panOffset.x - 492
               const popY = node.y * scale + panOffset.y
               return (
                 <div
