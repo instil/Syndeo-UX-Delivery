@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react"
 import { MessageSquare, X, ChevronDown, Send, RefreshCw, Pencil } from "lucide-react"
 import { allOutcomes, type Outcome } from "@/lib/mock-outcomes"
 import { useRouter } from "next/navigation"
+import { useSimulatorVisibility } from "@/components/simulator-visibility-context"
 
 type Panel = "closed" | "picker" | "chat"
 
@@ -13,6 +14,7 @@ export function FloatingSimulatorLauncher({ disabled = false }: { disabled?: boo
   const [input, setInput] = useState("")
   const containerRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
+  const { simulatorToggle } = useSimulatorVisibility()
 
   // Close on outside click
   useEffect(() => {
@@ -147,7 +149,14 @@ export function FloatingSimulatorLauncher({ disabled = false }: { disabled?: boo
 
       {/* Floating trigger button */}
       <button
-        onClick={() => !disabled && setPanel(panel === "closed" ? "picker" : "closed")}
+        onClick={() => {
+          if (disabled) return
+          if (simulatorToggle) {
+            simulatorToggle()
+          } else {
+            setPanel(panel === "closed" ? "picker" : "closed")
+          }
+        }}
         disabled={disabled}
         className={`flex items-center gap-2 px-4 py-3 rounded-full shadow-lg text-white text-sm font-semibold transition-all duration-200 ${
           disabled

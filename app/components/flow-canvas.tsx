@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useCallback, useRef } from "react"
+import { useState, useCallback, useRef, useEffect } from "react"
 import {
   MessageSquare,
   HelpCircle,
@@ -50,6 +50,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { useSimulatorVisibility } from "@/components/simulator-visibility-context"
 
 type NodeType =
   | "message"
@@ -148,6 +149,12 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
   const [snapTarget, setSnapTarget] = useState<string | null>(null)
   const [replaceTarget, setReplaceTarget] = useState<string | null>(null)
   const isMinimapDragging = useRef(false)
+
+  const { registerSimulatorToggle } = useSimulatorVisibility()
+  useEffect(() => {
+    registerSimulatorToggle(() => setSimulatorCollapsed((v) => !v))
+    return () => registerSimulatorToggle(null)
+  }, [registerSimulatorToggle])
 
   const WORLD = 2000
   const SNAP_THRESHOLD = 160 // canvas px
