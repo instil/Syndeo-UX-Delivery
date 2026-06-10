@@ -36,7 +36,7 @@ export function VersionSwitcher({
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-center border-t border-[#E8F0FB] bg-white px-4 py-2 shadow-md">
+    <div className="fixed bottom-4 left-0 right-0 z-50 flex items-center justify-center">
 
       <button
         type="button"
