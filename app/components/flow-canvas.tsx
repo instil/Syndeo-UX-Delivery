@@ -1288,7 +1288,8 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                   </Button>
                 </div>
 
-                <table className="w-full table-fixed border border-[#DDE5EF] rounded-xl overflow-hidden text-sm">
+                <div className="rounded-xl border border-[#DDE5EF] overflow-hidden">
+                <table className="w-full table-fixed text-sm">
                   <colgroup>
                     <col className="w-[70%]" />
                     <col className="w-[30%]" />
@@ -1316,6 +1317,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                     ))}
                   </tbody>
                 </table>
+                </div>
               </div>
 
               {/* Pagination */}
