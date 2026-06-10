@@ -3,9 +3,7 @@
 import { useState } from "react"
 import { Header } from "@/components/header"
 import { AgentCard } from "@/components/agent-card"
-import { AgentModal } from "@/components/agent-modal"
 import { Target, MessageCircleQuestion, Compass, Search, Heart, ShoppingCart, TrendingUp, MapPin } from "lucide-react"
-import { useRouter } from "next/navigation"
 
 const verticals = [
   "Retail",
@@ -90,19 +88,6 @@ const agents = {
 
 export default function AIAgentsPage() {
   const [activeVertical, setActiveVertical] = useState("Retail")
-  const [selectedAgent, setSelectedAgent] = useState<string | null>(null)
-  const router = useRouter()
-
-  const handleInstall = (agentId: string, variantId?: string) => {
-    console.log("[v0] Installing agent:", agentId, "variant:", variantId)
-    setTimeout(() => {
-      router.push("/integrations")
-    }, 500)
-  }
-
-  const handleAgentClick = (agentId: string) => {
-    setSelectedAgent(agentId)
-  }
 
   return (
     <div className="min-h-screen bg-[#272C41]">
@@ -136,29 +121,18 @@ export default function AIAgentsPage() {
           {Object.entries(agents).map(([section, items]) => (
             <div key={section} className="mb-8">
               {/* Section Header */}
-              <div className="bg-gradient-to-r from-[#4B6CB7] to-[#5B7FC7] rounded-lg px-6 py-4 mb-6">
-                <h3 className="text-xl font-semibold text-white">{section}</h3>
-              </div>
+              <h3 className="text-lg font-semibold text-white mb-4">{section}</h3>
 
               {/* Agent Cards Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {items.map((agent) => (
-                  <AgentCard key={agent.id} {...agent} onClick={() => handleAgentClick(agent.id)} />
+                  <AgentCard key={agent.id} {...agent} />
                 ))}
               </div>
             </div>
           ))}
         </div>
       </main>
-
-      {/* Modal */}
-      {selectedAgent && (
-        <AgentModal
-          agentId={selectedAgent}
-          onClose={() => setSelectedAgent(null)}
-          onInstall={(variantId) => handleInstall(selectedAgent, variantId)}
-        />
-      )}
     </div>
   )
 }
