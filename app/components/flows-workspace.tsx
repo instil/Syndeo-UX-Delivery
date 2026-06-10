@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import {
   Workflow,
   Languages,
@@ -17,6 +18,7 @@ import { GenericListView } from "@/components/generic-list-view"
 import { ResponsesView } from "@/components/responses-view"
 import { DefaultMessagesView } from "@/components/default-messages-view"
 import { SettingsView } from "@/components/settings-view"
+import { useSimulatorVisibility } from "@/components/simulator-visibility-context"
 
 type NavViewType =
   | "welcome"
@@ -54,8 +56,8 @@ const navigationGroups: NavGroup[] = [
     icon: Workflow,
     defaultOpen: true,
     items: [
-      { id: "welcome", label: "Welcome" },
-      { id: "outcomes", label: "Outcomes" },
+      { id: "welcome", label: "Getting Started" },
+      { id: "outcomes", label: "Responses" },
       { id: "steps", label: "Steps" },
       { id: "web-events", label: "Web Events" },
     ],
@@ -123,6 +125,18 @@ export function FlowsWorkspace() {
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(
     () => initialOpenState("welcome")
   )
+  const searchParams = useSearchParams()
+
+  // Auto-open flow editor when navigated from the simulator launcher
+  useEffect(() => {
+    const outcomeId = searchParams.get("outcomeId")
+    const outcomeName = searchParams.get("outcomeName")
+    if (outcomeId && outcomeName) {
+      setSelectedOutcome(outcomeId)
+      setSelectedOutcomeName(outcomeName)
+      setActiveView("outcome-detail")
+    }
+  }, [searchParams])
 
   const toggleGroup = useCallback((groupId: string) => {
     setOpenGroups((prev) => ({ ...prev, [groupId]: !prev[groupId] }))
@@ -151,6 +165,12 @@ export function FlowsWorkspace() {
 
   const pageBg = "bg-[#272C41]"
   const isEditorView = activeView === "outcome-detail"
+
+  const { show } = useSimulatorVisibility()
+  useEffect(() => {
+    show()
+    return () => show()
+  }, [isEditorView, show])
 
   return (
     <div className={`flex h-[calc(100vh-64px)] ${pageBg} transition-colors duration-200`}>
@@ -213,7 +233,7 @@ export function FlowsWorkspace() {
 
       {/* Main Content Area */}
       <div className="flex-1 overflow-hidden">
-        {activeView === "welcome" && <WelcomeView />}
+        {activeView === "welcome" && <WelcomeView onNewOutcome={() => handleOutcomeClick("new", "Untitled Outcome")} />}
         {activeView === "outcomes" && <OutcomesList onOutcomeClick={handleOutcomeClick} />}
         {activeView === "outcome-detail" && selectedOutcome && (
           <FlowCanvas outcomeId={selectedOutcome} outcomeName={selectedOutcomeName} onBack={handleBackToList} onOutcomeChange={handleOutcomeClick} />
