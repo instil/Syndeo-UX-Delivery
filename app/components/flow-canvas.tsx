@@ -502,11 +502,11 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
       </div>
 
       {/* Tab Content */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex flex-row-reverse overflow-hidden">
         <div className={`${activeTab !== "flow" ? "w-1/2" : "flex-1"} flex overflow-hidden relative`}>
 
           {/* CENTRE: Canvas (full remaining width) */}
-          <div className="flex-1 relative overflow-hidden">
+          <div className={activeTab !== "flow" ? "hidden" : "flex-1 relative overflow-hidden"}>
             <div
               ref={canvasRef}
               className={`h-full overflow-hidden bg-[#F6F8FA] select-none ${isPanning ? "cursor-grabbing" : "cursor-grab"} ${isDragOverCanvas ? "ring-2 ring-inset ring-[#2F8FFF]/40" : ""}`}
@@ -1231,7 +1231,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
         </div>
 
       {activeTab === "statements" && (
-        <div className="w-1/2 border-l border-[#DDE5EF] overflow-auto p-8 bg-white">
+        <div className="w-1/2 border-r border-[#DDE5EF] overflow-auto p-8 bg-white">
           <div className="max-w-3xl">
             <div className="relative flex items-center gap-2 mb-6">
               <h2 className="text-2xl font-light tracking-tight text-[#1E2535]">Customer Statements</h2>
@@ -1321,7 +1321,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
       )}
 
       {activeTab === "details" && (
-        <div className="w-1/2 border-l border-[#DDE5EF] overflow-auto p-8 bg-white">
+        <div className="w-1/2 border-r border-[#DDE5EF] overflow-auto p-8 bg-white">
           <div className="max-w-3xl">
             <div className="relative flex items-center gap-2 mb-6">
               <h2 className="text-2xl font-light tracking-tight text-[#1E2535]">Outcome Details</h2>
