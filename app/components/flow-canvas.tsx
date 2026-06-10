@@ -122,7 +122,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
   const canvasRef = useRef<HTMLDivElement>(null)
   const minimapRef = useRef<HTMLDivElement>(null)
   const [statements, setStatements] = useState<{ text: string; createdAt: string }[]>([
-    { text: "test", createdAt: "Jun 10, 2025" },
+    { text: "test", createdAt: "10 Jun 2025" },
   ])
   const [newStatement, setNewStatement] = useState("")
   const [showStatementsInfo, setShowStatementsInfo] = useState(false)
