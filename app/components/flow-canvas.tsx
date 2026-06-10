@@ -131,6 +131,8 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null)
   const [nodeEditTab, setNodeEditTab] = useState<"skip" | "message" | "llm" | "exception">("message")
   const [nodeEditContent, setNodeEditContent] = useState<string[]>([""])
+  const [llmMode, setLlmMode] = useState<"deterministic" | "balanced" | "creative">("deterministic")
+  const [llmAdherence, setLlmAdherence] = useState(1)
   const mouseDownPos = useRef<{ x: number; y: number } | null>(null)
   const [simulatorInput, setSimulatorInput] = useState("")
   const [simulatorMessages, setSimulatorMessages] = useState<{ role: "bot" | "user"; text: string }[]>([
@@ -823,9 +825,44 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                       <p className="text-sm text-[#6A738A]">Configure skip conditions for this node.</p>
                     )}
                     {nodeEditTab === "llm" && (
-                      <div>
-                        <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider block mb-1.5">LLM Instructions</label>
-                        <Textarea rows={5} className="border border-[#DDE5EF] rounded-lg text-sm resize-none" placeholder="Add instructions for the LLM..." />
+                      <div className="space-y-4">
+                        {/* Mode toggle */}
+                        <div className="flex rounded-full border border-[#2F8FFF] overflow-hidden bg-white">
+                          {(["deterministic", "balanced", "creative"] as const).map((mode) => (
+                            <button
+                              key={mode}
+                              onClick={() => setLlmMode(mode)}
+                              className={`flex-1 py-2 text-xs font-semibold uppercase tracking-widest transition-colors ${
+                                llmMode === mode
+                                  ? "bg-white text-[#2F8FFF]"
+                                  : "bg-[#5BBCB8] text-white hover:bg-[#4AADA9]"
+                              }`}
+                            >
+                              {mode === "deterministic" ? "Deterministic" : "···"}
+                            </button>
+                          ))}
+                        </div>
+                        {/* Prompt Adherence card */}
+                        <div className="rounded-xl border border-[#DDE5EF] bg-white p-4 space-y-3">
+                          <p className="text-base font-light text-[#9AA3B0]">Prompt Adherence</p>
+                          <hr className="border-[#DDE5EF]" />
+                          <div>
+                            <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider block mb-3">Adherence</label>
+                            <div className="flex justify-between text-xs text-[#9AA3B0] mb-1 px-1">
+                              {[1,2,3,4,5].map((n) => <span key={n}>{n}</span>)}
+                            </div>
+                            <input
+                              type="range" min={1} max={5} step={1}
+                              value={llmAdherence}
+                              onChange={(e) => setLlmAdherence(Number(e.target.value))}
+                              className="w-full accent-[#2F8FFF]"
+                            />
+                            <div className="flex justify-between text-xs text-[#9AA3B0] mt-1">
+                              <span>Compliance</span>
+                              <span>Creativity</span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     )}
                     {nodeEditTab === "exception" && (
@@ -1092,9 +1129,44 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                       <p className="text-sm text-[#6A738A]">Configure skip conditions for this node.</p>
                     )}
                     {nodeEditTab === "llm" && (
-                      <div>
-                        <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider block mb-1.5">LLM Instructions</label>
-                        <Textarea rows={5} className="border border-[#DDE5EF] rounded-lg text-sm resize-none" placeholder="Add instructions for the LLM..." />
+                      <div className="space-y-4">
+                        {/* Mode toggle */}
+                        <div className="flex rounded-full border border-[#2F8FFF] overflow-hidden bg-white">
+                          {(["deterministic", "balanced", "creative"] as const).map((mode) => (
+                            <button
+                              key={mode}
+                              onClick={() => setLlmMode(mode)}
+                              className={`flex-1 py-2 text-xs font-semibold uppercase tracking-widest transition-colors ${
+                                llmMode === mode
+                                  ? "bg-white text-[#2F8FFF]"
+                                  : "bg-[#5BBCB8] text-white hover:bg-[#4AADA9]"
+                              }`}
+                            >
+                              {mode === "deterministic" ? "Deterministic" : "···"}
+                            </button>
+                          ))}
+                        </div>
+                        {/* Prompt Adherence card */}
+                        <div className="rounded-xl border border-[#DDE5EF] bg-white p-4 space-y-3">
+                          <p className="text-base font-light text-[#9AA3B0]">Prompt Adherence</p>
+                          <hr className="border-[#DDE5EF]" />
+                          <div>
+                            <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider block mb-3">Adherence</label>
+                            <div className="flex justify-between text-xs text-[#9AA3B0] mb-1 px-1">
+                              {[1,2,3,4,5].map((n) => <span key={n}>{n}</span>)}
+                            </div>
+                            <input
+                              type="range" min={1} max={5} step={1}
+                              value={llmAdherence}
+                              onChange={(e) => setLlmAdherence(Number(e.target.value))}
+                              className="w-full accent-[#2F8FFF]"
+                            />
+                            <div className="flex justify-between text-xs text-[#9AA3B0] mt-1">
+                              <span>Compliance</span>
+                              <span>Creativity</span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     )}
                     {nodeEditTab === "exception" && (
@@ -1211,9 +1283,42 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                     <p className="text-sm text-[#6A738A]">Configure skip conditions for this node.</p>
                   )}
                   {nodeEditTab === "llm" && (
-                    <div>
-                      <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider block mb-2">LLM Instructions</label>
-                      <Textarea rows={6} className="border border-[#DDE5EF] rounded-xl text-sm resize-none" placeholder="Add instructions for the LLM..." />
+                    <div className="space-y-4">
+                      <div className="flex rounded-full border border-[#2F8FFF] overflow-hidden bg-white">
+                        {(["deterministic", "balanced", "creative"] as const).map((mode) => (
+                          <button
+                            key={mode}
+                            onClick={() => setLlmMode(mode)}
+                            className={`flex-1 py-2 text-xs font-semibold uppercase tracking-widest transition-colors ${
+                              llmMode === mode
+                                ? "bg-white text-[#2F8FFF]"
+                                : "bg-[#5BBCB8] text-white hover:bg-[#4AADA9]"
+                            }`}
+                          >
+                            {mode === "deterministic" ? "Deterministic" : "···"}
+                          </button>
+                        ))}
+                      </div>
+                      <div className="rounded-xl border border-[#DDE5EF] bg-white p-4 space-y-3">
+                        <p className="text-base font-light text-[#9AA3B0]">Prompt Adherence</p>
+                        <hr className="border-[#DDE5EF]" />
+                        <div>
+                          <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider block mb-3">Adherence</label>
+                          <div className="flex justify-between text-xs text-[#9AA3B0] mb-1 px-1">
+                            {[1,2,3,4,5].map((n) => <span key={n}>{n}</span>)}
+                          </div>
+                          <input
+                            type="range" min={1} max={5} step={1}
+                            value={llmAdherence}
+                            onChange={(e) => setLlmAdherence(Number(e.target.value))}
+                            className="w-full accent-[#2F8FFF]"
+                          />
+                          <div className="flex justify-between text-xs text-[#9AA3B0] mt-1">
+                            <span>Compliance</span>
+                            <span>Creativity</span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   )}
                   {nodeEditTab === "exception" && (
