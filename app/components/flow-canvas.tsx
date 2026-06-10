@@ -797,9 +797,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                               <option>File</option>
                             </select>
                           </div>
-                        </div>
-                        <div className="flex justify-end">
-                          <Button className="bg-[#2F8FFF] hover:bg-[#2680E8] text-white text-sm">Add Alternative Message</Button>
+                          <Button variant="ghost" className="w-full border border-[#DDE5EF] text-[#6A738A] hover:text-[#1E2535] hover:bg-[#F6F8FA] text-sm h-9">+ Add Alternative Message</Button>
                         </div>
                         <div className="rounded-xl border border-[#DDE5EF] bg-white p-4">
                           <label className="flex items-center gap-2 cursor-pointer">
@@ -1057,9 +1055,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                               <option>File</option>
                             </select>
                           </div>
-                        </div>
-                        <div className="flex justify-end">
-                          <Button className="bg-[#2F8FFF] hover:bg-[#2680E8] text-white text-sm">Add Alternative Message</Button>
+                          <Button variant="ghost" className="w-full border border-[#DDE5EF] text-[#6A738A] hover:text-[#1E2535] hover:bg-[#F6F8FA] text-sm h-9">+ Add Alternative Message</Button>
                         </div>
                         <div className="rounded-xl border border-[#DDE5EF] bg-white p-4">
                           <label className="flex items-center gap-2 cursor-pointer">
