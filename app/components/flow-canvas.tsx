@@ -1349,6 +1349,12 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
               >
                 i
               </button>
+              <div className="flex items-center gap-3 ml-4">
+                <Button className="bg-[#2F8FFF] hover:bg-[#2680E8] text-white px-6 h-8 text-sm">Save</Button>
+                <Button variant="link" className="text-red-600 hover:text-red-700 px-0 h-8 text-sm">
+                  Delete Outcome
+                </Button>
+              </div>
 
               {showDetailsInfo && (
                 <Card className="absolute top-full left-0 right-0 mt-2 p-6 bg-[#3B4760] text-white border-none shadow-xl z-50">
@@ -1463,12 +1469,6 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                 </div>
               </div>
 
-              <div className="flex items-center justify-center gap-6 pt-6 border-t border-[#DDE5EF]">
-                <Button className="bg-[#2F8FFF] hover:bg-[#2680E8] text-white px-8">Save</Button>
-                <Button variant="link" className="text-red-600 hover:text-red-700">
-                  Delete Outcome
-                </Button>
-              </div>
             </div>
           </div>
         </div>
