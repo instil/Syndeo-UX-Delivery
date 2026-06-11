@@ -136,6 +136,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
   const [llmAdherence, setLlmAdherence] = useState(1)
   const [skipEnabled, setSkipEnabled] = useState(false)
   const [skipRules, setSkipRules] = useState<Record<string, never>[]>([{}])
+  const [decisionRules, setDecisionRules] = useState<{ matchMode: "all" | "any" }[]>([])
   const mouseDownPos = useRef<{ x: number; y: number } | null>(null)
   const [simulatorInput, setSimulatorInput] = useState("")
   const [simulatorMessages, setSimulatorMessages] = useState<{ role: "bot" | "user"; text: string }[]>([
@@ -255,9 +256,11 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
     setDraggedNode(null)
     if (dist < 5) {
       // It's a click, not a drag — select the node
+      const n = nodes.find((n) => n.id === nodeId)
       setSelectedNodeId((prev) => prev === nodeId ? null : nodeId)
-      setNodeEditContent([nodes.find((n) => n.id === nodeId)?.label ?? ""])
+      setNodeEditContent([n?.label ?? ""])
       setNodeEditTab("message")
+      if (n?.type === "decision") setDecisionRules([{ matchMode: "all" }])
     }
   }
 
@@ -427,6 +430,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
     const node = nodes.find((n) => n.id === nodeId)
     setNodeEditContent([node?.label || ""])
     setNodeEditTab("message")
+    if (node?.type === "decision") setDecisionRules([{ matchMode: "all" }])
     setEditingNodeId(nodeId)
   }
 
@@ -738,24 +742,107 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                   </div>
 
                   {/* Tabs */}
-                  <div className="flex border-b border-[#DDE5EF]">
-                    {(["skip", "message", "llm", "exception"] as const).map((tab) => (
-                      <button
-                        key={tab}
-                        onClick={() => setNodeEditTab(tab)}
-                        className={`flex-1 py-2 text-xs font-medium transition-colors border-b-2 ${
-                          nodeEditTab === tab
-                            ? "border-[#2F8FFF] text-[#2F8FFF]"
-                            : "border-transparent text-[#6A738A] hover:text-[#1E2535]"
-                        }`}
-                      >
-                        {tab === "llm" ? "LLM" : tab === "message" && node.type === "question" ? "Question" : tab.charAt(0).toUpperCase() + tab.slice(1)}
-                      </button>
-                    ))}
-                  </div>
+                  {node.type === "decision" ? (
+                    <div className="flex border-b border-[#DDE5EF]">
+                      <div className="flex-1 py-2 text-xs font-medium text-center text-[#2F8FFF] border-b-2 border-[#2F8FFF]">Decision</div>
+                    </div>
+                  ) : (
+                    <div className="flex border-b border-[#DDE5EF]">
+                      {(["skip", "message", "llm", "exception"] as const).map((tab) => (
+                        <button
+                          key={tab}
+                          onClick={() => setNodeEditTab(tab)}
+                          className={`flex-1 py-2 text-xs font-medium transition-colors border-b-2 ${
+                            nodeEditTab === tab
+                              ? "border-[#2F8FFF] text-[#2F8FFF]"
+                              : "border-transparent text-[#6A738A] hover:text-[#1E2535]"
+                          }`}
+                        >
+                          {tab === "llm" ? "LLM" : tab === "message" && node.type === "question" ? "Question" : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                        </button>
+                      ))}
+                    </div>
+                  )}
 
                   {/* Content */}
                   <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                    {node.type === "decision" ? (
+                      node.connections.length === 0 ? (
+                        <div className="flex-1 flex items-center justify-center p-8 text-center">
+                          <p className="text-xs font-semibold text-[#9AA3B0] uppercase tracking-wider leading-relaxed">
+                            To use a decision task, you must first create at least one path out of this task.
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-semibold text-[#1E2535]">Decision</span>
+                            <button
+                              onClick={() => setDecisionRules([...decisionRules, { matchMode: "all" }])}
+                              className="px-3 py-1.5 bg-[#2F8FFF] text-white text-xs font-semibold rounded-lg hover:bg-[#2680E8] transition-colors"
+                            >
+                              Add Rule
+                            </button>
+                          </div>
+                          {decisionRules.map((rule, ruleIdx) => (
+                            <div key={ruleIdx} className="border border-[#DDE5EF] rounded-xl p-4 space-y-3">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="text-xs font-medium text-[#6A738A] uppercase tracking-wider">When</span>
+                                <select
+                                  value={rule.matchMode}
+                                  onChange={(e) => setDecisionRules(decisionRules.map((r, i) => i === ruleIdx ? { ...r, matchMode: e.target.value as "all" | "any" } : r))}
+                                  className="px-2 py-1 rounded border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535]"
+                                >
+                                  <option value="all">all</option>
+                                  <option value="any">any</option>
+                                </select>
+                                <span className="text-xs font-medium text-[#6A738A] uppercase tracking-wider">of the following conditions are met:</span>
+                                <button className="ml-auto text-[#6A738A] hover:text-[#1E2535] font-bold text-lg leading-none">+</button>
+                              </div>
+                              <div className="pl-3 border-l-2 border-[#DDE5EF] space-y-2">
+                                <select className="w-full px-3 py-2 rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535]">
+                                  <option>Variable</option>
+                                </select>
+                                <div className="grid grid-cols-3 gap-2">
+                                  <input placeholder="Variable..." className="px-3 py-2 rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535] placeholder-[#9AA3B0] focus:outline-none focus:ring-2 focus:ring-[#2F8FFF]/30" />
+                                  <select className="px-3 py-2 rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535]">
+                                    <option>is</option>
+                                    <option>is not</option>
+                                    <option>contains</option>
+                                    <option>starts with</option>
+                                  </select>
+                                  <input placeholder="Value..." className="px-3 py-2 rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535] placeholder-[#9AA3B0] focus:outline-none focus:ring-2 focus:ring-[#2F8FFF]/30" />
+                                </div>
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs font-medium text-[#6A738A] uppercase tracking-wider whitespace-nowrap">Then follow path:</span>
+                                  <select className="px-2 py-1 rounded border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535]">
+                                    {node.connections.map((_, i) => <option key={i}>{i}:</option>)}
+                                  </select>
+                                </div>
+                                <button
+                                  onClick={() => setDecisionRules(decisionRules.filter((_, i) => i !== ruleIdx))}
+                                  className="flex items-center gap-1 text-xs text-[#9AA3B0] hover:text-[#E5534B] transition-colors"
+                                >
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                                  Delete Rule
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                          <div className="border border-[#DDE5EF] rounded-xl p-4">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-xs font-medium text-[#6A738A] uppercase tracking-wider whitespace-nowrap">If no conditions met then follow path:</span>
+                              <select className="flex-1 px-2 py-1 rounded border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535]">
+                                {node.connections.map((_, i) => <option key={i}>{i}:</option>)}
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    ) : (
+                      <>
                     {nodeEditTab === "message" && (
                       <div className="space-y-3">
                         <div>
@@ -926,6 +1013,8 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                     )}
                     {nodeEditTab === "exception" && (
                       <p className="text-sm text-[#6A738A]">Configure exception handling for this node.</p>
+                    )}
+                      </>
                     )}
                   </div>
 
@@ -1092,24 +1181,107 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                   </div>
 
                   {/* Tabs */}
-                  <div className="flex border-b border-[#DDE5EF]">
-                    {(["skip", "message", "llm", "exception"] as const).map((tab) => (
-                      <button
-                        key={tab}
-                        onClick={() => setNodeEditTab(tab)}
-                        className={`flex-1 py-2 text-xs font-medium transition-colors border-b-2 ${
-                          nodeEditTab === tab
-                            ? "border-[#2F8FFF] text-[#2F8FFF]"
-                            : "border-transparent text-[#6A738A] hover:text-[#1E2535]"
-                        }`}
-                      >
-                        {tab === "llm" ? "LLM" : tab === "message" && node.type === "question" ? "Question" : tab.charAt(0).toUpperCase() + tab.slice(1)}
-                      </button>
-                    ))}
-                  </div>
+                  {node.type === "decision" ? (
+                    <div className="flex border-b border-[#DDE5EF]">
+                      <div className="flex-1 py-2 text-xs font-medium text-center text-[#2F8FFF] border-b-2 border-[#2F8FFF]">Decision</div>
+                    </div>
+                  ) : (
+                    <div className="flex border-b border-[#DDE5EF]">
+                      {(["skip", "message", "llm", "exception"] as const).map((tab) => (
+                        <button
+                          key={tab}
+                          onClick={() => setNodeEditTab(tab)}
+                          className={`flex-1 py-2 text-xs font-medium transition-colors border-b-2 ${
+                            nodeEditTab === tab
+                              ? "border-[#2F8FFF] text-[#2F8FFF]"
+                              : "border-transparent text-[#6A738A] hover:text-[#1E2535]"
+                          }`}
+                        >
+                          {tab === "llm" ? "LLM" : tab === "message" && node.type === "question" ? "Question" : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                        </button>
+                      ))}
+                    </div>
+                  )}
 
                   {/* Content */}
                   <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                    {node.type === "decision" ? (
+                      node.connections.length === 0 ? (
+                        <div className="flex-1 flex items-center justify-center p-8 text-center">
+                          <p className="text-xs font-semibold text-[#9AA3B0] uppercase tracking-wider leading-relaxed">
+                            To use a decision task, you must first create at least one path out of this task.
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-semibold text-[#1E2535]">Decision</span>
+                            <button
+                              onClick={() => setDecisionRules([...decisionRules, { matchMode: "all" }])}
+                              className="px-3 py-1.5 bg-[#2F8FFF] text-white text-xs font-semibold rounded-lg hover:bg-[#2680E8] transition-colors"
+                            >
+                              Add Rule
+                            </button>
+                          </div>
+                          {decisionRules.map((rule, ruleIdx) => (
+                            <div key={ruleIdx} className="border border-[#DDE5EF] rounded-xl p-4 space-y-3">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="text-xs font-medium text-[#6A738A] uppercase tracking-wider">When</span>
+                                <select
+                                  value={rule.matchMode}
+                                  onChange={(e) => setDecisionRules(decisionRules.map((r, i) => i === ruleIdx ? { ...r, matchMode: e.target.value as "all" | "any" } : r))}
+                                  className="px-2 py-1 rounded border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535]"
+                                >
+                                  <option value="all">all</option>
+                                  <option value="any">any</option>
+                                </select>
+                                <span className="text-xs font-medium text-[#6A738A] uppercase tracking-wider">of the following conditions are met:</span>
+                                <button className="ml-auto text-[#6A738A] hover:text-[#1E2535] font-bold text-lg leading-none">+</button>
+                              </div>
+                              <div className="pl-3 border-l-2 border-[#DDE5EF] space-y-2">
+                                <select className="w-full px-3 py-2 rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535]">
+                                  <option>Variable</option>
+                                </select>
+                                <div className="grid grid-cols-3 gap-2">
+                                  <input placeholder="Variable..." className="px-3 py-2 rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535] placeholder-[#9AA3B0] focus:outline-none focus:ring-2 focus:ring-[#2F8FFF]/30" />
+                                  <select className="px-3 py-2 rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535]">
+                                    <option>is</option>
+                                    <option>is not</option>
+                                    <option>contains</option>
+                                    <option>starts with</option>
+                                  </select>
+                                  <input placeholder="Value..." className="px-3 py-2 rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535] placeholder-[#9AA3B0] focus:outline-none focus:ring-2 focus:ring-[#2F8FFF]/30" />
+                                </div>
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs font-medium text-[#6A738A] uppercase tracking-wider whitespace-nowrap">Then follow path:</span>
+                                  <select className="px-2 py-1 rounded border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535]">
+                                    {node.connections.map((_, i) => <option key={i}>{i}:</option>)}
+                                  </select>
+                                </div>
+                                <button
+                                  onClick={() => setDecisionRules(decisionRules.filter((_, i) => i !== ruleIdx))}
+                                  className="flex items-center gap-1 text-xs text-[#9AA3B0] hover:text-[#E5534B] transition-colors"
+                                >
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                                  Delete Rule
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                          <div className="border border-[#DDE5EF] rounded-xl p-4">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-xs font-medium text-[#6A738A] uppercase tracking-wider whitespace-nowrap">If no conditions met then follow path:</span>
+                              <select className="flex-1 px-2 py-1 rounded border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535]">
+                                {node.connections.map((_, i) => <option key={i}>{i}:</option>)}
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    ) : (
+                      <>
                     {nodeEditTab === "message" && (
                       <div className="space-y-3">
                         <div>
@@ -1281,6 +1453,8 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                     {nodeEditTab === "exception" && (
                       <p className="text-sm text-[#6A738A]">Configure exception handling for this node.</p>
                     )}
+                      </>
+                    )}
                   </div>
 
                   {/* Footer */}
@@ -1337,24 +1511,108 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                 </div>
 
                 {/* Tabs */}
-                <div className="flex border-b border-[#DDE5EF]">
-                  {(["skip", "message", "llm", "exception"] as const).map((tab) => (
-                    <button
-                      key={tab}
-                      onClick={() => setNodeEditTab(tab)}
-                      className={`flex-1 py-2.5 text-xs font-medium transition-colors border-b-2 ${
-                        nodeEditTab === tab
-                          ? "border-[#2F8FFF] text-[#2F8FFF]"
-                          : "border-transparent text-[#6A738A] hover:text-[#1E2535]"
-                      }`}
-                    >
-                      {tab === "llm" ? "LLM" : tab.charAt(0).toUpperCase() + tab.slice(1)}
-                    </button>
-                  ))}
-                </div>
+                {node?.type === "decision" ? (
+                  <div className="flex border-b border-[#DDE5EF]">
+                    <div className="flex-1 py-2 text-xs font-medium text-center text-[#2F8FFF] border-b-2 border-[#2F8FFF]">Decision</div>
+                  </div>
+                ) : (
+                  <div className="flex border-b border-[#DDE5EF]">
+                    {(["skip", "message", "llm", "exception"] as const).map((tab) => (
+                      <button
+                        key={tab}
+                        onClick={() => setNodeEditTab(tab)}
+                        className={`flex-1 py-2.5 text-xs font-medium transition-colors border-b-2 ${
+                          nodeEditTab === tab
+                            ? "border-[#2F8FFF] text-[#2F8FFF]"
+                            : "border-transparent text-[#6A738A] hover:text-[#1E2535]"
+                        }`}
+                      >
+                        {tab === "llm" ? "LLM" : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
 
                 {/* Content */}
                 <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                  {node?.type === "decision" ? (
+                    node?.connections.length === 0 ? (
+                      <div className="flex-1 flex items-center justify-center p-8 text-center">
+                        <p className="text-xs font-semibold text-[#9AA3B0] uppercase tracking-wider leading-relaxed">
+                          To use a decision task, you must first create at least one path out of this task.
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-semibold text-[#1E2535]">Decision</span>
+                          <button
+                            onClick={() => setDecisionRules([...decisionRules, { matchMode: "all" }])}
+                            className="px-3 py-1.5 bg-[#2F8FFF] text-white text-xs font-semibold rounded-lg hover:bg-[#2680E8] transition-colors"
+                          >
+                            Add Rule
+                          </button>
+                        </div>
+                        {decisionRules.map((rule, ruleIdx) => (
+                          <div key={ruleIdx} className="border border-[#DDE5EF] rounded-xl p-4 space-y-3">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-xs font-medium text-[#6A738A] uppercase tracking-wider">When</span>
+                              <select
+                                value={rule.matchMode}
+                                onChange={(e) => setDecisionRules(decisionRules.map((r, i) => i === ruleIdx ? { ...r, matchMode: e.target.value as "all" | "any" } : r))}
+                                className="px-2 py-1 rounded border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535]"
+                              >
+                                <option value="all">all</option>
+                                <option value="any">any</option>
+                              </select>
+                              <span className="text-xs font-medium text-[#6A738A] uppercase tracking-wider">of the following conditions are met:</span>
+                              <button className="ml-auto text-[#6A738A] hover:text-[#1E2535] font-bold text-lg leading-none">+</button>
+                            </div>
+                            <div className="pl-3 border-l-2 border-[#DDE5EF] space-y-2">
+                              <select className="w-full px-3 py-2 rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535]">
+                                <option>Variable</option>
+                              </select>
+                              <div className="grid grid-cols-3 gap-2">
+                                <input placeholder="Variable..." className="px-3 py-2 rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535] placeholder-[#9AA3B0] focus:outline-none focus:ring-2 focus:ring-[#2F8FFF]/30" />
+                                <select className="px-3 py-2 rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535]">
+                                  <option>is</option>
+                                  <option>is not</option>
+                                  <option>contains</option>
+                                  <option>starts with</option>
+                                </select>
+                                <input placeholder="Value..." className="px-3 py-2 rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535] placeholder-[#9AA3B0] focus:outline-none focus:ring-2 focus:ring-[#2F8FFF]/30" />
+                              </div>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs font-medium text-[#6A738A] uppercase tracking-wider whitespace-nowrap">Then follow path:</span>
+                                <select className="px-2 py-1 rounded border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535]">
+                                  {node?.connections.map((_, i) => <option key={i}>{i}:</option>)}
+                                </select>
+                              </div>
+                              <button
+                                onClick={() => setDecisionRules(decisionRules.filter((_, i) => i !== ruleIdx))}
+                                className="flex items-center gap-1 text-xs text-[#9AA3B0] hover:text-[#E5534B] transition-colors"
+                              >
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                                Delete Rule
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                        <div className="border border-[#DDE5EF] rounded-xl p-4">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-xs font-medium text-[#6A738A] uppercase tracking-wider whitespace-nowrap">If no conditions met then follow path:</span>
+                            <select className="flex-1 px-2 py-1 rounded border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535]">
+                              {node?.connections.map((_, i) => <option key={i}>{i}:</option>)}
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  ) : (
+                    <>
                   {nodeEditTab === "message" && (
                     <>
                       <div>
@@ -1468,6 +1726,8 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                   )}
                   {nodeEditTab === "exception" && (
                     <p className="text-sm text-[#6A738A]">Configure exception handling for this node.</p>
+                  )}
+                    </>
                   )}
                 </div>
 
@@ -1749,8 +2009,8 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                     i
                   </button>
                 </div>
-                <div className="border border-[#DDE5EF] rounded-xl bg-[#F6F8FA]">
-                  <div className="flex gap-2 p-2 border-b border-[#DDE5EF] bg-white rounded-t-lg">
+                <div className="border border-[#DDE5EF] rounded-xl bg-[#F6F8FA] overflow-hidden">
+                  <div className="flex gap-2 p-2 border-b border-[#DDE5EF] bg-white">
                     <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-[#F0F6FF]">
                       <Bold className="w-4 h-4" />
                     </Button>
@@ -1785,7 +2045,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                     className="border-none bg-transparent focus:ring-0 resize-none"
                     placeholder="Enter confirmation question..."
                   />
-                  <div className="px-3 py-2 text-xs text-[#6A738A] text-right border-t border-[#DDE5EF] bg-white rounded-b-lg">
+                  <div className="px-3 py-2 text-xs text-[#6A738A] text-right border-t border-[#DDE5EF] bg-white">
                     0 of 2000 characters
                   </div>
                 </div>
@@ -1813,7 +2073,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                   </div>
                   <Input
                     placeholder="Add an intent"
-                    className="flex-1 border-[#DDE5EF] bg-[#F6F8FA] focus:border-[#2F8FFF]"
+                    className="flex-1 h-10 border-[#DDE5EF] bg-[#F6F8FA] focus:border-[#2F8FFF]"
                   />
                   <Button size="icon" className="h-10 w-10 rounded bg-[#2F8FFF] hover:bg-[#2680E8] text-white">
                     <Plus className="w-5 h-5" />
