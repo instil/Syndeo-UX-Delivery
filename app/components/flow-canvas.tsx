@@ -749,7 +749,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                             : "border-transparent text-[#6A738A] hover:text-[#1E2535]"
                         }`}
                       >
-                        {tab === "llm" ? "LLM" : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                        {tab === "llm" ? "LLM" : tab === "message" && node.type === "question" ? "Question" : tab.charAt(0).toUpperCase() + tab.slice(1)}
                       </button>
                     ))}
                   </div>
@@ -767,7 +767,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                           />
                         </div>
                         <div className="rounded-xl border border-[#DDE5EF] bg-white p-4 space-y-3">
-                          <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider block">Message</label>
+                          <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider block">{node.type === "question" ? "Question" : "Message"}</label>
                           <div className="flex items-center gap-4">
                             <label className="flex items-center gap-2 cursor-pointer">
                               <input type="checkbox" className="w-3.5 h-3.5 rounded border-[#DDE5EF] accent-[#2F8FFF]" />
@@ -820,6 +820,25 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                             </select>
                           </div>
                           <Button variant="ghost" className="w-full border border-[#DDE5EF] text-[#6A738A] hover:text-[#1E2535] hover:bg-[#F6F8FA] text-sm h-9" onClick={() => setNodeEditContent([...nodeEditContent, ""])}>+ Add Alternative Message</Button>
+                        {node.type === "question" && (
+                          <div className="rounded-xl border border-[#DDE5EF] bg-white p-4 space-y-3 mt-3">
+                            <div className="flex items-center justify-between">
+                              <label className="text-xs font-medium text-[#E5534B] uppercase tracking-wider">Entity</label>
+                              <button className="px-3 py-1.5 rounded-lg bg-[#2F8FFF] text-white text-xs font-medium hover:bg-[#2680E8] transition-colors">
+                                Add Alternative Wording
+                              </button>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="text"
+                                placeholder="Type to search for an entity"
+                                className="flex-1 px-3 py-2.5 rounded-lg border border-[#E5534B] bg-[#F6F8FA] text-sm text-[#1E2535] placeholder-[#9AA3B0] focus:outline-none focus:ring-2 focus:ring-[#E5534B]/30"
+                              />
+                              <button className="w-10 h-10 rounded-lg bg-[#2F8FFF] text-white flex items-center justify-center hover:bg-[#2680E8] transition-colors flex-shrink-0 text-xl font-light">+</button>
+                            </div>
+                            <p className="text-xs font-semibold text-[#E5534B] uppercase tracking-wider">Please choose an entity to request from the user.</p>
+                          </div>
+                        )}
                         </div>
                         <div className="rounded-xl border border-[#DDE5EF] bg-white p-4">
                           <label className="flex items-center gap-2 cursor-pointer">
@@ -1089,7 +1108,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                             : "border-transparent text-[#6A738A] hover:text-[#1E2535]"
                         }`}
                       >
-                        {tab === "llm" ? "LLM" : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                        {tab === "llm" ? "LLM" : tab === "message" && node.type === "question" ? "Question" : tab.charAt(0).toUpperCase() + tab.slice(1)}
                       </button>
                     ))}
                   </div>
@@ -1107,7 +1126,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                           />
                         </div>
                         <div className="rounded-xl border border-[#DDE5EF] bg-white p-4 space-y-3">
-                          <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider block">Message</label>
+                          <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider block">{node.type === "question" ? "Question" : "Message"}</label>
                           <div className="flex items-center gap-4">
                             <label className="flex items-center gap-2 cursor-pointer">
                               <input type="checkbox" className="w-3.5 h-3.5 rounded border-[#DDE5EF] accent-[#2F8FFF]" />
@@ -1160,6 +1179,25 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                             </select>
                           </div>
                           <Button variant="ghost" className="w-full border border-[#DDE5EF] text-[#6A738A] hover:text-[#1E2535] hover:bg-[#F6F8FA] text-sm h-9" onClick={() => setNodeEditContent([...nodeEditContent, ""])}>+ Add Alternative Message</Button>
+                        {node.type === "question" && (
+                          <div className="rounded-xl border border-[#DDE5EF] bg-white p-4 space-y-3 mt-3">
+                            <div className="flex items-center justify-between">
+                              <label className="text-xs font-medium text-[#E5534B] uppercase tracking-wider">Entity</label>
+                              <button className="px-3 py-1.5 rounded-lg bg-[#2F8FFF] text-white text-xs font-medium hover:bg-[#2680E8] transition-colors">
+                                Add Alternative Wording
+                              </button>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="text"
+                                placeholder="Type to search for an entity"
+                                className="flex-1 px-3 py-2.5 rounded-lg border border-[#E5534B] bg-[#F6F8FA] text-sm text-[#1E2535] placeholder-[#9AA3B0] focus:outline-none focus:ring-2 focus:ring-[#E5534B]/30"
+                              />
+                              <button className="w-10 h-10 rounded-lg bg-[#2F8FFF] text-white flex items-center justify-center hover:bg-[#2680E8] transition-colors flex-shrink-0 text-xl font-light">+</button>
+                            </div>
+                            <p className="text-xs font-semibold text-[#E5534B] uppercase tracking-wider">Please choose an entity to request from the user.</p>
+                          </div>
+                        )}
                         </div>
                         <div className="rounded-xl border border-[#DDE5EF] bg-white p-4">
                           <label className="flex items-center gap-2 cursor-pointer">
