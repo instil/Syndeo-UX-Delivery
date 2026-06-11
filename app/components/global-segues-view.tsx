@@ -17,12 +17,24 @@ import {
   ArrowRight,
   Zap,
   XCircle,
+  Search,
+  ArrowUpDown,
+  ChevronDown,
 } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+
+const SORT_OPTIONS = [
+  { label: "Name A–Z" },
+  { label: "Name Z–A" },
+  { label: "Recently updated" },
+  { label: "Oldest updated" },
+] as const
 
 export function GlobalSeguesView() {
   const [selectedSegue, setSelectedSegue] = useState<string | null>(null)
+  const [sortOption, setSortOption] = useState<(typeof SORT_OPTIONS)[number] | null>(null)
 
   const segues = [
     { name: "@@@@", description: "" },
@@ -47,20 +59,30 @@ export function GlobalSeguesView() {
             Create New Global Segue
           </Button>
         </div>
-        <div className="relative">
-          <svg
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.35-4.35" />
-          </svg>
-          <Input
-            placeholder="Search segues..."
-            className="pl-10 bg-white/10 border-white/10 text-white placeholder:text-white/40 focus:border-[#2F8FFF] focus-visible:ring-[#2F8FFF]"
-          />
+        <div className="flex items-center gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+            <Input
+              placeholder="Search segues..."
+              className="pl-10 bg-white/10 border-white/10 text-white placeholder:text-white/40 focus:border-[#2F8FFF] focus-visible:ring-[#2F8FFF]"
+            />
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="flex items-center gap-1.5 border border-white/10 bg-white/10 hover:bg-white/15 text-white/70 hover:text-white text-sm rounded-lg px-3 py-2 h-auto">
+                <ArrowUpDown className="w-3.5 h-3.5" />
+                {sortOption ? sortOption.label : "Sort by"}
+                <ChevronDown className="w-3.5 h-3.5 ml-0.5 opacity-60" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {SORT_OPTIONS.map((opt) => (
+                <DropdownMenuItem key={opt.label} onClick={() => setSortOption(opt)} className={sortOption?.label === opt.label ? "font-semibold text-[#2F8FFF]" : ""}>
+                  {opt.label}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 

@@ -1,9 +1,11 @@
 "use client"
 
+import { useState } from "react"
 import { Header } from "@/components/header"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Plus, Eye, Edit, Trash2 } from "lucide-react"
+import { Plus, Eye, Edit, Trash2, Search, ArrowUpDown, ChevronDown } from "lucide-react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 const integrations = [
   {
@@ -16,6 +18,21 @@ const integrations = [
 ]
 
 export default function IntegrationsPage() {
+  const [searchQuery, setSearchQuery] = useState("")
+  const [sortOption, setSortOption] = useState<{ label: string } | null>(null)
+
+  const SORT_OPTIONS = [
+    { label: "Name A–Z" },
+    { label: "Name Z–A" },
+    { label: "Recently updated" },
+    { label: "Oldest updated" },
+  ]
+
+  const filteredIntegrations = integrations.filter(
+    (i) => i.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+           i.description.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+
   return (
     <div className="min-h-screen bg-[#272C41]">
       <Header dark={true} />
@@ -35,12 +52,40 @@ export default function IntegrationsPage() {
 
         {/* Main Content */}
         <div className="flex-1 p-8">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-4">
             <h1 className="text-2xl font-bold text-white">Your Integrations</h1>
             <Button className="bg-[#2F8FFF] hover:bg-[#2680E8] text-white gap-2">
               <Plus className="w-4 h-4" />
               Create New Integration Group
             </Button>
+          </div>
+
+          <div className="flex items-center gap-2 mb-6">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+              <input
+                placeholder="Search integrations..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 rounded-lg border border-white/10 bg-white/10 text-sm text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#2F8FFF]/30 focus:border-[#2F8FFF]"
+              />
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center gap-1.5 border border-white/10 bg-white/10 hover:bg-white/15 text-white/70 hover:text-white text-sm rounded-lg px-3 py-2 h-auto">
+                  <ArrowUpDown className="w-3.5 h-3.5" />
+                  {sortOption ? sortOption.label : "Sort by"}
+                  <ChevronDown className="w-3.5 h-3.5 ml-0.5 opacity-60" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {SORT_OPTIONS.map((opt) => (
+                  <DropdownMenuItem key={opt.label} onClick={() => setSortOption(opt)} className={sortOption?.label === opt.label ? "font-semibold text-[#2F8FFF]" : ""}>
+                    {opt.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           <Card className="border border-white/10 bg-[#313750]">
@@ -54,7 +99,7 @@ export default function IntegrationsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {integrations.map((integration) => (
+                  {filteredIntegrations.map((integration) => (
                     <tr key={integration.id} className="border-b border-white/10 hover:bg-white/[0.04] transition-colors">
                       <td className="p-4">
                         <span className="text-sm font-medium text-white">{integration.name}</span>
