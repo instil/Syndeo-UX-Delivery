@@ -384,20 +384,6 @@ export default function AIWorkbenchPage() {
                     </div>
                     <div className="flex-1 pr-4">
                       <div className="flex items-center gap-2">
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          className="h-6 w-6 text-white/40 hover:text-[#2F8FFF] hover:bg-white/10"
-                        >
-                          <Edit2 className="h-3 w-3" />
-                        </Button>
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          className="h-6 w-6 text-white/40 hover:text-[#2F8FFF] hover:bg-white/10"
-                        >
-                          <Copy className="h-3 w-3" />
-                        </Button>
                         {statement.intent ? (
                           <div className="bg-[#2F8FFF] text-white px-2.5 py-1 rounded text-xs font-medium flex items-center gap-1">
                             <span className="truncate max-w-[120px]">{statement.intent}</span>
