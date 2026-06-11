@@ -720,7 +720,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
               return (
                 <div
                   className="absolute z-30 w-[480px] bg-white rounded-xl shadow-2xl border border-[#DDE5EF] flex flex-col overflow-hidden"
-                  style={{ left: popX, top: "50%", transform: "translateY(-50%)", maxHeight: "80vh" }}
+                  style={{ left: "50%", top: "50%", transform: "translate(-50%, -50%)", maxHeight: "80vh" }}
                   onMouseDown={(e) => e.stopPropagation()}
                 >
                   {/* Header */}
@@ -1171,7 +1171,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
               return (
                 <div
                   className="absolute z-30 w-[480px] bg-white rounded-xl shadow-2xl border border-[#DDE5EF] flex flex-col overflow-hidden"
-                  style={{ left: popX, top: "50%", transform: "translateY(-50%)", maxHeight: "80vh" }}
+                  style={{ left: "50%", top: "50%", transform: "translate(-50%, -50%)", maxHeight: "80vh" }}
                   onMouseDown={(e) => e.stopPropagation()}
                 >
                   {/* Header */}
