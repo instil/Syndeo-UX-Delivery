@@ -222,7 +222,7 @@ export function HomepageReturningUserPhase1() {
         </div>
 
         {/* Flows + Simulator panel + Connected Channels */}
-        <div className="mx-auto flex w-fit items-start gap-6">
+        <div className="mx-auto flex w-fit items-stretch gap-6">
         <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl">
           <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
             <p className="text-xs font-semibold uppercase tracking-widest text-white">Your recent flows</p>
