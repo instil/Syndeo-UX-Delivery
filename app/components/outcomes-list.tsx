@@ -194,8 +194,10 @@ export function OutcomesList({ onOutcomeClick }: OutcomesListProps) {
 
 function NewOutcomeModal({ onClose, onOpen }: { onClose: () => void; onOpen: (id: string, name: string) => void }) {
   const [name, setName] = useState("")
+  const [nameTouched, setNameTouched] = useState(false)
   const [createIntent, setCreateIntent] = useState(true)
   const [customFields, setCustomFields] = useState<string[]>([])
+  const nameInvalid = nameTouched && name.trim() === ""
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
@@ -223,13 +225,18 @@ function NewOutcomeModal({ onClose, onOpen }: { onClose: () => void; onOpen: (id
 
           {/* Name */}
           <div className="mb-4">
-            <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">Name</label>
+            <label className="flex items-center gap-1.5 text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">
+              Name
+              <span className="text-red-400 normal-case tracking-normal font-medium">*required</span>
+            </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-lg border border-white/10 bg-white/[0.06] text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#2F8FFF]/40 focus:border-[#2F8FFF]"
+              onBlur={() => setNameTouched(true)}
+              className={`w-full px-3 py-2.5 rounded-lg border bg-white/[0.06] text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#2F8FFF]/40 focus:border-[#2F8FFF] transition-colors ${nameInvalid ? "border-red-400" : "border-white/10"}`}
             />
+            {nameInvalid && <p className="mt-1 text-xs text-red-400">Name is required</p>}
           </div>
 
           {/* Description */}
@@ -291,8 +298,11 @@ function NewOutcomeModal({ onClose, onOpen }: { onClose: () => void; onOpen: (id
 
           {/* Actions */}
           <Button
-            onClick={() => { onClose(); onOpen("new", name || "Untitled Outcome") }}
-            className="w-full bg-[#2F8FFF] hover:bg-[#2680E8] text-white font-semibold rounded-lg py-2.5 mb-3"
+            onClick={() => {
+              if (!name.trim()) { setNameTouched(true); return }
+              onClose(); onOpen("new", name.trim())
+            }}
+            className="w-full bg-[#2F8FFF] hover:bg-[#2680E8] disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold rounded-lg py-2.5 mb-3"
           >
             Create &amp; Open in Editor
           </Button>
