@@ -2,7 +2,20 @@
 
 import { useState, useEffect, useRef, KeyboardEvent } from "react"
 import { useRouter } from "next/navigation"
-import { MessageSquare, ArrowRight, Play, Square, Send, ChevronDown, X, Clock, BarChart3 } from "lucide-react"
+import { MessageSquare, ArrowRight, Play, Square, Send, ChevronDown, X, Clock, BarChart3, Mic, Globe, Smartphone, Camera, MessageCircle, Phone, Hash, Facebook, Settings, Eye, Plus } from "lucide-react"
+
+const CHANNELS = [
+  { name: "Voice",     count: 10, color: "bg-[#9B3A3A]", icon: Mic },
+  { name: "Web",       count: 10, color: "bg-[#4A5568]", icon: Globe },
+  { name: "WhatsApp",  count: 10, color: "bg-[#25A366]", icon: MessageCircle },
+  { name: "Mobile",    count: 6,  color: "bg-[#718096]", icon: Smartphone },
+  { name: "Instagram", count: 4,  color: "bg-[#C2185B]", icon: Camera },
+  { name: "Facebook",  count: 3,  color: "bg-[#3B5998]", icon: Facebook },
+  { name: "Telegram",  count: 2,  color: "bg-[#2CA5E0]", icon: Phone },
+  { name: "Slack",     count: 2,  color: "bg-[#4A154B]", icon: Hash },
+  { name: "Viber",     count: 4,  color: "bg-[#7360F2]", icon: Phone },
+  { name: "Line",      count: 4,  color: "bg-[#06C755]", icon: MessageCircle },
+]
 
 const DEFAULT_BOT_REPLY = "Thanks for your message! Let me look into that for you. Could you provide a bit more detail so I can help?"
 
@@ -377,6 +390,40 @@ export function HomepageReturningUserPhase1() {
             </div>
           </div>
         </div>
+
+        {/* Connected Channels */}
+        <div className="mx-auto mt-6 w-fit overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl">
+          <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
+            <p className="text-xs font-semibold uppercase tracking-widest text-white">Connected Channels</p>
+            <div className="flex items-center gap-3">
+              <button className="text-white/40 hover:text-white transition-colors">
+                <Settings className="h-4 w-4" />
+              </button>
+              <button className="flex items-center gap-1.5 rounded-lg bg-[#2F8FFF] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#2680E8] transition-colors">
+                <Plus className="h-3 w-3" />
+                Add Channel
+              </button>
+            </div>
+          </div>
+          <div className="grid grid-cols-5 gap-2 p-5">
+            {CHANNELS.map((ch) => {
+              const Icon = ch.icon
+              return (
+                <div key={ch.name} className={`${ch.color} flex items-center gap-2 rounded-lg px-4 py-2.5 cursor-pointer hover:brightness-110 transition-all`}>
+                  <Icon className="h-4 w-4 shrink-0 text-white" />
+                  <span className="text-sm font-medium text-white whitespace-nowrap">{ch.name} ({ch.count})</span>
+                </div>
+              )
+            })}
+          </div>
+          <div className="flex justify-end border-t border-white/10 px-6 py-3">
+            <button className="flex items-center gap-1.5 text-xs text-white/50 hover:text-white transition-colors">
+              <Eye className="h-3.5 w-3.5" />
+              View All Channels
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
   )
