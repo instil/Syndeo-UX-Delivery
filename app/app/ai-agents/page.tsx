@@ -25,6 +25,7 @@ const agents = {
         "Proactively engage website visitors, asking about their shopping preferences or what they're looking to buy, and capture their contact information for future marketing campaigns.",
       icon: Target,
       iconColor: "#9333EA",
+      verticals: ["Retail", "Finance", "Healthcare", "Housing", "Insurance", "Travel & Leisure", "Utilities", "Telecommunications"],
     },
     {
       id: "faq",
@@ -32,6 +33,7 @@ const agents = {
       description: "Enable customers to ask questions and receive responses to common questions.",
       icon: MessageCircleQuestion,
       iconColor: "#6B7280",
+      verticals: ["Retail", "Finance", "Healthcare", "Housing", "Insurance", "Travel & Leisure", "Utilities", "Telecommunications"],
     },
     {
       id: "discovery",
@@ -39,6 +41,7 @@ const agents = {
       description: "Enable customers to conversationally search for and pinpoint content on a website.",
       icon: Compass,
       iconColor: "#06B6D4",
+      verticals: ["Retail", "Finance", "Healthcare", "Housing", "Insurance", "Travel & Leisure"],
     },
     {
       id: "product-search",
@@ -47,6 +50,7 @@ const agents = {
         "Show customer products and services based on their previous browsing or purchase history. Requires access to a customer data or customer relationship platform.",
       icon: Search,
       iconColor: "#6B7280",
+      verticals: ["Retail", "Travel & Leisure", "Telecommunications"],
     },
     {
       id: "branch-locator",
@@ -56,6 +60,7 @@ const agents = {
       icon: MapPin,
       iconColor: "#8B5CF6",
       hasVariants: true,
+      verticals: ["Finance", "Healthcare", "Housing", "Utilities", "Telecommunications"],
     },
   ],
   Sales: [
@@ -67,6 +72,7 @@ const agents = {
       icon: Heart,
       iconColor: "#EC4899",
       hasVariants: true,
+      verticals: ["Retail", "Telecommunications"],
     },
     {
       id: "cart-abandonment",
@@ -75,6 +81,7 @@ const agents = {
         "Offer help with checkout or provide one-time limited discount based on products or time or activity spent in a cart.",
       icon: ShoppingCart,
       iconColor: "#6B7280",
+      verticals: ["Retail"],
     },
     {
       id: "cross-sell",
@@ -82,6 +89,7 @@ const agents = {
       description: "Suggest complementary or premium products during the purchasing process based on need or budget.",
       icon: TrendingUp,
       iconColor: "#10B981",
+      verticals: ["Retail", "Finance", "Insurance", "Telecommunications"],
     },
   ],
 }
@@ -118,19 +126,20 @@ export default function AIAgentsPage() {
 
         {/* Main Content */}
         <div className="flex-1 p-8">
-          {Object.entries(agents).map(([section, items]) => (
-            <div key={section} className="mb-8">
-              {/* Section Header */}
-              <h3 className="text-lg font-semibold text-white mb-4">{section}</h3>
-
-              {/* Agent Cards Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {items.map((agent) => (
-                  <AgentCard key={agent.id} {...agent} />
-                ))}
+          {Object.entries(agents).map(([section, items]) => {
+            const filtered = items.filter((a) => a.verticals.includes(activeVertical))
+            if (filtered.length === 0) return null
+            return (
+              <div key={section} className="mb-8">
+                <h3 className="text-lg font-semibold text-white mb-4">{section}</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filtered.map((agent) => (
+                    <AgentCard key={agent.id} {...agent} />
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </main>
     </div>
