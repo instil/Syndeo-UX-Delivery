@@ -709,6 +709,11 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
               </div>
             </div>
 
+            {/* Backdrop — disables canvas interactions while popover is open */}
+            {activeTab === "flow" && selectedNodeId && (
+              <div className="absolute inset-0 z-20 bg-black/20 backdrop-blur-[1px]" onClick={() => setSelectedNodeId(null)} />
+            )}
+
             {/* Node edit popover */}
             {activeTab === "flow" && selectedNodeId && (() => {
               const node = nodes.find((n) => n.id === selectedNodeId)
@@ -1161,6 +1166,11 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
             </div>
 
           </div>
+            {/* Backdrop */}
+            {selectedNodeId && (
+              <div className="absolute inset-0 z-20 bg-black/20 backdrop-blur-[1px]" onClick={() => setSelectedNodeId(null)} />
+            )}
+
             {selectedNodeId && (() => {
               const node = nodes.find((n) => n.id === selectedNodeId)
               if (!node) return null
@@ -1502,16 +1512,6 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
               )
             })()}
           {/* RIGHT: Simulator panel OR Node Edit panel */}
-          {/* Collapsed simulator FAB — square */}
-          {!editingNodeId && simulatorCollapsed && (
-            <button
-              onClick={() => setSimulatorCollapsed(false)}
-              className="absolute top-3 right-6 z-10 w-10 h-10 rounded-lg bg-[#2F8FFF] shadow-lg flex items-center justify-center hover:bg-[#1a7ae8] transition-all"
-              title="Open Simulator"
-            >
-              <MessageSquare className="w-5 h-5 text-white" />
-            </button>
-          )}
 
           {editingNodeId ? (() => {
             const node = nodes.find((n) => n.id === editingNodeId)
