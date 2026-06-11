@@ -95,11 +95,11 @@ const nodeTypes: Array<{ type: NodeType; label: string; icon: any; color: string
 ]
 
 const initialNodes: Node[] = [
-  { id: "1", type: "message", label: "Welcome message", x: 600, y: 150, connections: ["2"] },
-  { id: "2", type: "question", label: "Ask for email", x: 600, y: 350, connections: ["3"] },
-  { id: "3", type: "decision", label: "If user says yes", x: 600, y: 550, connections: ["4", "5"] },
-  { id: "4", type: "message", label: "Send confirmation", x: 450, y: 750, connections: [] },
-  { id: "5", type: "web", label: "API call", x: 750, y: 750, connections: [] },
+  { id: "1", type: "message", label: "Welcome to account setup", x: 600, y: 150, connections: ["2"] },
+  { id: "2", type: "question", label: "Enter your email address", x: 600, y: 350, connections: ["3"] },
+  { id: "3", type: "decision", label: "Email already registered?", x: 600, y: 550, connections: ["4", "5"] },
+  { id: "4", type: "message", label: "Account created successfully", x: 450, y: 750, connections: [] },
+  { id: "5", type: "web", label: "Register new account", x: 750, y: 750, connections: [] },
 ]
 
 interface FlowCanvasProps {
