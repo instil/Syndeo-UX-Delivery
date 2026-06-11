@@ -405,13 +405,12 @@ export function HomepageReturningUserPhase1() {
                 </button>
               </div>
             </div>
-            <div className="grid grid-cols-1 gap-2 p-5">
+            <div className="grid grid-cols-2 gap-2 p-5">
               {CHANNELS.map((ch) => {
                 const Icon = ch.icon
                 return (
-                  <div key={ch.name} className={`${ch.color} flex items-center gap-2 rounded-lg px-4 py-2.5 cursor-pointer hover:brightness-110 transition-all`}>
-                    <Icon className="h-4 w-4 shrink-0 text-white" />
-                    <span className="text-sm font-medium text-white whitespace-nowrap">{ch.name} ({ch.count})</span>
+                  <div key={ch.name} className={`${ch.color} flex items-center justify-center rounded-lg p-3 cursor-pointer hover:brightness-110 transition-all`}>
+                    <Icon className="h-5 w-5 text-white" />
                   </div>
                 )
               })}
