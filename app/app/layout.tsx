@@ -2,6 +2,8 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Nunito_Sans } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
+import { SimulatorLauncherWrapper } from "@/components/simulator-launcher-wrapper"
+import { SimulatorVisibilityProvider } from "@/components/simulator-visibility-context"
 import "./globals.css"
 
 const nunitoSans = Nunito_Sans({
@@ -25,9 +27,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={nunitoSans.variable}>
       <body className={`antialiased ${nunitoSans.className}`}>
-        {children}
-        <Analytics />
-      </body>
+          <SimulatorVisibilityProvider>
+            {children}
+            <SimulatorLauncherWrapper />
+          </SimulatorVisibilityProvider>
+          <Analytics />
+        </body>
     </html>
   )
 }

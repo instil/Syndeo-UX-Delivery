@@ -1,6 +1,7 @@
 "use client"
 
-import { Sparkles, Workflow, Target } from "lucide-react"
+import { Sparkles, Workflow, Target, Plus } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 const STEPS = [
   {
@@ -21,16 +22,20 @@ const STEPS = [
   },
 ]
 
-export function WelcomeView() {
+interface WelcomeViewProps {
+  onNewOutcome?: () => void
+}
+
+export function WelcomeView({ onNewOutcome }: WelcomeViewProps) {
   return (
     <div className="h-full overflow-y-auto p-8">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-light tracking-tight text-white mb-2">Welcome to Flows</h1>
+          <h1 className="text-3xl font-light tracking-tight text-white mb-2">Getting Started with Flows</h1>
           <p className="text-lg text-white/60">
-            Build intelligent conversation flows with our visual editor.
+            Everything you need to build your first conversation flow.
             <br />
-            Design, test, and deploy conversational experiences across all your channels.
+            Follow the steps below to design, test, and deploy across all your channels.
           </p>
         </div>
 
@@ -67,7 +72,19 @@ export function WelcomeView() {
         </div>
 
         <div className="mt-8 p-6 rounded-xl border border-white/10 bg-white/5">
-          <h3 className="text-lg font-semibold text-white mb-6">Getting Started</h3>
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-semibold text-white">Your first flow in 4 steps</h3>
+            {onNewOutcome && (
+              <Button
+                size="sm"
+                onClick={onNewOutcome}
+                className="gap-1.5 bg-[#2F8FFF] hover:bg-[#2680E8] text-white text-xs rounded-lg h-7 px-3"
+              >
+                <Plus className="w-3 h-3" />
+                New Outcome
+              </Button>
+            )}
+          </div>
           <div className="grid grid-cols-4 gap-3">
             {STEPS.map((step, index) => (
               <div key={index} className="relative flex flex-col gap-3 p-4 rounded-lg border border-white/10 bg-white/5">
