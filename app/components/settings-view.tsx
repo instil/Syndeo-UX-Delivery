@@ -55,12 +55,12 @@ export function SettingsView() {
                 <span className="text-sm font-medium text-white">{channel.name}</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="flex flex-col bg-white/10 rounded px-3 py-2">
-                  <button className="text-xs text-[#2F8FFF]">▲</button>
-                  <span className="text-sm font-medium text-white my-1">{channel.value}</span>
-                  <button className="text-xs text-[#2F8FFF]">▼</button>
+                <div className="flex items-center bg-white/10 rounded-lg overflow-hidden">
+                  <button className="px-2.5 py-1.5 text-[#2F8FFF] hover:bg-white/10 transition-colors text-sm font-medium">−</button>
+                  <span className="px-3 text-sm font-medium text-white border-x border-white/10">{channel.value}</span>
+                  <button className="px-2.5 py-1.5 text-[#2F8FFF] hover:bg-white/10 transition-colors text-sm font-medium">+</button>
                 </div>
-                <span className="text-xs text-white/60">milliseconds</span>
+                <span className="text-xs text-white/60">ms</span>
               </div>
             </div>
           ))}
