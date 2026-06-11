@@ -133,6 +133,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
   const [nodeEditTab, setNodeEditTab] = useState<"skip" | "message" | "llm" | "exception">("message")
   const [nodeEditContent, setNodeEditContent] = useState<string[]>([""])
   const [llmEnabled, setLlmEnabled] = useState(false)
+  const [llmMode, setLlmMode] = useState<"flow-guided" | "inherit">("flow-guided")
   const [llmAdherence, setLlmAdherence] = useState(1)
   const [skipEnabled, setSkipEnabled] = useState(false)
   const [skipRules, setSkipRules] = useState<Record<string, never>[]>([{}])
@@ -716,11 +717,10 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
               const nodeColor = getNodeColor(node.type)
               const scale = zoom / 100
               const popX = node.x * scale + panOffset.x - 492
-              const popY = node.y * scale + panOffset.y
               return (
                 <div
                   className="absolute z-30 w-[480px] bg-white rounded-xl shadow-2xl border border-[#DDE5EF] flex flex-col overflow-hidden"
-                  style={{ left: popX, top: popY, maxHeight: "80vh" }}
+                  style={{ left: popX, top: "50%", transform: "translateY(-50%)", maxHeight: "80vh" }}
                   onMouseDown={(e) => e.stopPropagation()}
                 >
                   {/* Header */}
@@ -988,6 +988,19 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                             <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${llmEnabled ? "translate-x-5" : "translate-x-0"}`} />
                           </button>
                         </div>
+                         {/* Mode dropdown */}
+                         <div className="flex items-center justify-between">
+                           <label className="text-sm font-medium text-[#1E2535]">Mode</label>
+                           <select
+                             value={llmMode}
+                             onChange={(e) => setLlmMode(e.target.value as "flow-guided" | "inherit")}
+                             disabled={!llmEnabled}
+                             className={`text-sm border border-[#DDE5EF] rounded-lg px-3 py-1.5 bg-white text-[#1E2535] focus:outline-none focus:border-[#2F8FFF] transition-opacity ${!llmEnabled ? "opacity-40 cursor-not-allowed" : ""}`}
+                           >
+                             <option value="flow-guided">Flow Guided</option>
+                             <option value="inherit">Inherit</option>
+                           </select>
+                         </div>
                         {/* Prompt Adherence card */}
                         <div className={`rounded-xl border border-[#DDE5EF] p-4 space-y-3 transition-opacity ${llmEnabled ? "bg-white opacity-100" : "bg-[#F6F8FA] opacity-40 pointer-events-none"}`}>
                           <p className="text-base font-light text-[#9AA3B0]">Prompt Adherence</p>
@@ -1155,11 +1168,10 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
               const nodeColor = getNodeColor(node.type)
               const scale = zoom / 100
               const popX = node.x * scale + panOffset.x - 492
-              const popY = node.y * scale + panOffset.y
               return (
                 <div
                   className="absolute z-30 w-[480px] bg-white rounded-xl shadow-2xl border border-[#DDE5EF] flex flex-col overflow-hidden"
-                  style={{ left: popX, top: popY, maxHeight: "80vh" }}
+                  style={{ left: popX, top: "50%", transform: "translateY(-50%)", maxHeight: "80vh" }}
                   onMouseDown={(e) => e.stopPropagation()}
                 >
                   {/* Header */}
@@ -1427,6 +1439,19 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                             <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${llmEnabled ? "translate-x-5" : "translate-x-0"}`} />
                           </button>
                         </div>
+                         {/* Mode dropdown */}
+                         <div className="flex items-center justify-between">
+                           <label className="text-sm font-medium text-[#1E2535]">Mode</label>
+                           <select
+                             value={llmMode}
+                             onChange={(e) => setLlmMode(e.target.value as "flow-guided" | "inherit")}
+                             disabled={!llmEnabled}
+                             className={`text-sm border border-[#DDE5EF] rounded-lg px-3 py-1.5 bg-white text-[#1E2535] focus:outline-none focus:border-[#2F8FFF] transition-opacity ${!llmEnabled ? "opacity-40 cursor-not-allowed" : ""}`}
+                           >
+                             <option value="flow-guided">Flow Guided</option>
+                             <option value="inherit">Inherit</option>
+                           </select>
+                         </div>
                         {/* Prompt Adherence card */}
                         <div className={`rounded-xl border border-[#DDE5EF] p-4 space-y-3 transition-opacity ${llmEnabled ? "bg-white opacity-100" : "bg-[#F6F8FA] opacity-40 pointer-events-none"}`}>
                           <p className="text-base font-light text-[#9AA3B0]">Prompt Adherence</p>
@@ -1481,7 +1506,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
           {!editingNodeId && simulatorCollapsed && (
             <button
               onClick={() => setSimulatorCollapsed(false)}
-              className="absolute top-3 right-3 z-10 w-10 h-10 rounded-lg bg-[#2F8FFF] shadow-lg flex items-center justify-center hover:bg-[#1a7ae8] transition-all"
+              className="absolute top-3 right-6 z-10 w-10 h-10 rounded-lg bg-[#2F8FFF] shadow-lg flex items-center justify-center hover:bg-[#1a7ae8] transition-all"
               title="Open Simulator"
             >
               <MessageSquare className="w-5 h-5 text-white" />
@@ -1702,6 +1727,19 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                           <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${llmEnabled ? "translate-x-5" : "translate-x-0"}`} />
                         </button>
                       </div>
+                       {/* Mode dropdown */}
+                       <div className="flex items-center justify-between">
+                         <label className="text-sm font-medium text-[#1E2535]">Mode</label>
+                         <select
+                           value={llmMode}
+                           onChange={(e) => setLlmMode(e.target.value as "flow-guided" | "inherit")}
+                           disabled={!llmEnabled}
+                           className={`text-sm border border-[#DDE5EF] rounded-lg px-3 py-1.5 bg-white text-[#1E2535] focus:outline-none focus:border-[#2F8FFF] transition-opacity ${!llmEnabled ? "opacity-40 cursor-not-allowed" : ""}`}
+                         >
+                           <option value="flow-guided">Flow Guided</option>
+                           <option value="inherit">Inherit</option>
+                         </select>
+                       </div>
                       <div className={`rounded-xl border border-[#DDE5EF] p-4 space-y-3 transition-opacity ${llmEnabled ? "bg-white opacity-100" : "bg-[#F6F8FA] opacity-40 pointer-events-none"}`}>
                         <p className="text-base font-light text-[#9AA3B0]">Prompt Adherence</p>
                         <hr className="border-[#DDE5EF]" />
@@ -1748,7 +1786,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
             )
           })() : (
             /* Simulator floating panel */
-            <div className={`${simulatorCollapsed ? "hidden" : "flex"} absolute z-10 w-80 flex-col bg-white rounded-xl shadow-2xl border border-[#DDE5EF] overflow-hidden`} style={{ top: 12, right: 12, bottom: 84 }}>
+            <div className={`${simulatorCollapsed ? "hidden" : "flex"} absolute z-10 w-80 flex-col bg-white rounded-xl shadow-2xl border border-[#DDE5EF] overflow-hidden`} style={{ top: 12, right: 24, bottom: 84 }}>
               {/* Blue header */}
               <div className="bg-[#2F8FFF] px-4 py-3 flex items-center justify-between flex-shrink-0">
                 <div className="flex items-center gap-2">
