@@ -43,6 +43,7 @@ import {
   ChevronDown,
   ChevronRight,
   Box,
+  Info,
 } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -996,7 +997,23 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                         </div>
                          {/* Mode dropdown */}
                          <div className="flex items-center justify-between">
-                           <label className="text-sm font-medium text-[#1E2535]">Mode</label>
+                           <div className="flex items-center gap-1.5">
+                             <label className="text-sm font-medium text-[#1E2535]">Mode</label>
+                             <div className="relative group">
+                               <Info className="w-3.5 h-3.5 text-[#9AA3B0] cursor-pointer hover:text-[#2F8FFF] transition-colors" />
+                               <div className="absolute left-5 top-1/2 -translate-y-1/2 z-50 w-64 bg-[#1E2535] text-white text-xs rounded-xl shadow-xl p-3 space-y-2 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-150 pointer-events-none">
+                                 <div>
+                                   <p className="font-semibold text-white mb-0.5">Flow Guided</p>
+                                   <p className="text-white/70 leading-relaxed">The LLM follows the defined conversation flow strictly, keeping responses aligned with the flow structure and steps.</p>
+                                 </div>
+                                 <hr className="border-white/10" />
+                                 <div>
+                                   <p className="font-semibold text-white mb-0.5">Inherit</p>
+                                   <p className="text-white/70 leading-relaxed">The LLM inherits its mode configuration from the parent flow or global agent settings.</p>
+                                 </div>
+                               </div>
+                             </div>
+                           </div>
                            <select
                              value={llmMode}
                              onChange={(e) => setLlmMode(e.target.value as "flow-guided" | "inherit")}
@@ -1448,7 +1465,23 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                         </div>
                          {/* Mode dropdown */}
                          <div className="flex items-center justify-between">
-                           <label className="text-sm font-medium text-[#1E2535]">Mode</label>
+                           <div className="flex items-center gap-1.5">
+                             <label className="text-sm font-medium text-[#1E2535]">Mode</label>
+                             <div className="relative group">
+                               <Info className="w-3.5 h-3.5 text-[#9AA3B0] cursor-pointer hover:text-[#2F8FFF] transition-colors" />
+                               <div className="absolute left-5 top-1/2 -translate-y-1/2 z-50 w-64 bg-[#1E2535] text-white text-xs rounded-xl shadow-xl p-3 space-y-2 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-150 pointer-events-none">
+                                 <div>
+                                   <p className="font-semibold text-white mb-0.5">Flow Guided</p>
+                                   <p className="text-white/70 leading-relaxed">The LLM follows the defined conversation flow strictly, keeping responses aligned with the flow structure and steps.</p>
+                                 </div>
+                                 <hr className="border-white/10" />
+                                 <div>
+                                   <p className="font-semibold text-white mb-0.5">Inherit</p>
+                                   <p className="text-white/70 leading-relaxed">The LLM inherits its mode configuration from the parent flow or global agent settings.</p>
+                                 </div>
+                               </div>
+                             </div>
+                           </div>
                            <select
                              value={llmMode}
                              onChange={(e) => setLlmMode(e.target.value as "flow-guided" | "inherit")}
@@ -1724,19 +1757,35 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                           <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${llmEnabled ? "translate-x-5" : "translate-x-0"}`} />
                         </button>
                       </div>
-                       {/* Mode dropdown */}
-                       <div className="flex items-center justify-between">
-                         <label className="text-sm font-medium text-[#1E2535]">Mode</label>
-                         <select
-                           value={llmMode}
-                           onChange={(e) => setLlmMode(e.target.value as "flow-guided" | "inherit")}
-                           disabled={!llmEnabled}
-                           className={`text-sm border border-[#DDE5EF] rounded-lg px-3 py-1.5 bg-white text-[#1E2535] focus:outline-none focus:border-[#2F8FFF] transition-opacity ${!llmEnabled ? "opacity-40 cursor-not-allowed" : ""}`}
-                         >
-                           <option value="flow-guided">Flow Guided</option>
-                           <option value="inherit">Inherit</option>
-                         </select>
-                       </div>
+                         {/* Mode dropdown */}
+                         <div className="flex items-center justify-between">
+                           <div className="flex items-center gap-1.5">
+                             <label className="text-sm font-medium text-[#1E2535]">Mode</label>
+                             <div className="relative group">
+                               <Info className="w-3.5 h-3.5 text-[#9AA3B0] cursor-pointer hover:text-[#2F8FFF] transition-colors" />
+                               <div className="absolute left-5 top-1/2 -translate-y-1/2 z-50 w-64 bg-[#1E2535] text-white text-xs rounded-xl shadow-xl p-3 space-y-2 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-150 pointer-events-none">
+                                 <div>
+                                   <p className="font-semibold text-white mb-0.5">Flow Guided</p>
+                                   <p className="text-white/70 leading-relaxed">The LLM follows the defined conversation flow strictly, keeping responses aligned with the flow structure and steps.</p>
+                                 </div>
+                                 <hr className="border-white/10" />
+                                 <div>
+                                   <p className="font-semibold text-white mb-0.5">Inherit</p>
+                                   <p className="text-white/70 leading-relaxed">The LLM inherits its mode configuration from the parent flow or global agent settings.</p>
+                                 </div>
+                               </div>
+                             </div>
+                           </div>
+                           <select
+                             value={llmMode}
+                             onChange={(e) => setLlmMode(e.target.value as "flow-guided" | "inherit")}
+                             disabled={!llmEnabled}
+                             className={`text-sm border border-[#DDE5EF] rounded-lg px-3 py-1.5 bg-white text-[#1E2535] focus:outline-none focus:border-[#2F8FFF] transition-opacity ${!llmEnabled ? "opacity-40 cursor-not-allowed" : ""}`}
+                           >
+                             <option value="flow-guided">Flow Guided</option>
+                             <option value="inherit">Inherit</option>
+                           </select>
+                         </div>
                       <div className={`rounded-xl border border-[#DDE5EF] p-4 space-y-3 transition-opacity ${llmEnabled ? "bg-white opacity-100" : "bg-[#F6F8FA] opacity-40 pointer-events-none"}`}>
                         <p className="text-base font-light text-[#9AA3B0]">Prompt Adherence</p>
                         <hr className="border-[#DDE5EF]" />
