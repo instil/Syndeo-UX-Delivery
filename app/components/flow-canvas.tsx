@@ -823,16 +823,15 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                         {node.type === "question" && (
                           <div className="space-y-3 pt-3">
                             <hr className="border-[#DDE5EF]" />
-                            <label className="text-xs font-medium text-[#E5534B] uppercase tracking-wider">Entity</label>
+                            <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider">Entity</label>
                             <div className="flex items-center gap-2">
                               <input
                                 type="text"
                                 placeholder="Type to search for an entity"
-                                className="flex-1 px-3 py-2.5 rounded-lg border border-[#E5534B] bg-[#F6F8FA] text-sm text-[#1E2535] placeholder-[#9AA3B0] focus:outline-none focus:ring-2 focus:ring-[#E5534B]/30"
+                                className="flex-1 px-3 py-2.5 rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535] placeholder-[#9AA3B0] focus:outline-none focus:ring-2 focus:ring-[#2F8FFF]/30 focus:border-[#2F8FFF]"
                               />
                               <button className="w-10 h-10 rounded-lg border border-[#DDE5EF] bg-white text-[#6A738A] flex items-center justify-center hover:bg-[#F6F8FA] transition-colors flex-shrink-0 text-xl font-light">+</button>
                             </div>
-                            <p className="text-xs font-semibold text-[#E5534B] uppercase tracking-wider">Please choose an entity to request from the user.</p>
                           </div>
                         )}
                         </div>
@@ -1178,16 +1177,15 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                         {node.type === "question" && (
                           <div className="space-y-3 pt-3">
                             <hr className="border-[#DDE5EF]" />
-                            <label className="text-xs font-medium text-[#E5534B] uppercase tracking-wider">Entity</label>
+                            <label className="text-xs font-medium text-[#6A738A] uppercase tracking-wider">Entity</label>
                             <div className="flex items-center gap-2">
                               <input
                                 type="text"
                                 placeholder="Type to search for an entity"
-                                className="flex-1 px-3 py-2.5 rounded-lg border border-[#E5534B] bg-[#F6F8FA] text-sm text-[#1E2535] placeholder-[#9AA3B0] focus:outline-none focus:ring-2 focus:ring-[#E5534B]/30"
+                                className="flex-1 px-3 py-2.5 rounded-lg border border-[#DDE5EF] bg-[#F6F8FA] text-sm text-[#1E2535] placeholder-[#9AA3B0] focus:outline-none focus:ring-2 focus:ring-[#2F8FFF]/30 focus:border-[#2F8FFF]"
                               />
                               <button className="w-10 h-10 rounded-lg border border-[#DDE5EF] bg-white text-[#6A738A] flex items-center justify-center hover:bg-[#F6F8FA] transition-colors flex-shrink-0 text-xl font-light">+</button>
                             </div>
-                            <p className="text-xs font-semibold text-[#E5534B] uppercase tracking-wider">Please choose an entity to request from the user.</p>
                           </div>
                         )}
                         </div>
