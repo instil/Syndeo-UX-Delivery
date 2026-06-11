@@ -80,7 +80,13 @@ export function GenericListView({ title, type }: GenericListViewProps) {
 
       <div className="flex-1 overflow-auto px-6 pb-6">
         <div className="rounded-xl border border-white/10 bg-[#313750] overflow-hidden">
-          <table className="w-full">
+          <table className="w-full table-fixed">
+            <colgroup>
+              <col className="w-[28%]" />
+              <col className="w-[42%]" />
+              <col className="w-[16%]" />
+              <col className="w-[14%]" />
+            </colgroup>
             <thead>
               <tr className="border-b border-white/10">
                 <th className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wide text-white/60">Name</th>
@@ -92,8 +98,8 @@ export function GenericListView({ title, type }: GenericListViewProps) {
             <tbody>
               {filteredData.map((item) => (
                 <tr key={item.id} className="border-b border-white/10 last:border-0 hover:bg-white/[0.04] transition-colors">
-                  <td className="px-4 py-3 text-sm font-medium text-[#2F8FFF]">{item.name}</td>
-                  <td className="px-4 py-3 text-sm text-white/60">{item.description}</td>
+                  <td className="px-4 py-3 text-sm font-medium text-[#2F8FFF] truncate">{item.name}</td>
+                  <td className="px-4 py-3 text-sm text-white/60 truncate">{item.description}</td>
                   <td className="px-4 py-3 text-sm text-white/60">{item.updated}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-2">
