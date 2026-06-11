@@ -505,7 +505,13 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
             return (
               <button
                 key={tab}
-                onClick={() => setActiveTab(tab)}
+                onClick={() => {
+                  if (tab !== "flow" && selectedNodeId) {
+                    setSelectedNodeId(null)
+                    setSimulatorCollapsed(false)
+                  }
+                  setActiveTab(tab)
+                }}
                 className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${
                   activeTab === tab
                     ? "bg-[#E2E8F0] text-[#1E2535] font-semibold"
