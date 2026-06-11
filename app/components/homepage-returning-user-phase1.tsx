@@ -400,9 +400,8 @@ export function HomepageReturningUserPhase1() {
                 <button className="text-white/40 hover:text-white transition-colors">
                   <Settings className="h-4 w-4" />
                 </button>
-                <button className="flex items-center gap-1.5 rounded-lg bg-[#2F8FFF] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#2680E8] transition-colors">
-                  <Plus className="h-3 w-3" />
-                  Add Channel
+                <button className="flex items-center justify-center rounded-lg bg-[#2F8FFF] p-1.5 text-white hover:bg-[#2680E8] transition-colors">
+                  <Plus className="h-3.5 w-3.5" />
                 </button>
               </div>
             </div>
