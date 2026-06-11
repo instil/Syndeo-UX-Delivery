@@ -6,7 +6,7 @@ import { AgentCard } from "@/components/agent-card"
 import { Target, MessageCircleQuestion, Compass, Search, Heart, ShoppingCart, TrendingUp, MapPin } from "lucide-react"
 
 const verticals = [
-  "Retail",
+  "All",
   "Finance",
   "Healthcare",
   "Housing",
@@ -95,7 +95,7 @@ const agents = {
 }
 
 export default function AIAgentsPage() {
-  const [activeVertical, setActiveVertical] = useState("Retail")
+  const [activeVertical, setActiveVertical] = useState("All")
 
   return (
     <div className="min-h-screen bg-[#272C41]">
@@ -127,7 +127,7 @@ export default function AIAgentsPage() {
         {/* Main Content */}
         <div className="flex-1 p-8">
           {Object.entries(agents).map(([section, items]) => {
-            const filtered = items.filter((a) => a.verticals.includes(activeVertical))
+            const filtered = activeVertical === "All" ? items : items.filter((a) => a.verticals.includes(activeVertical))
             if (filtered.length === 0) return null
             return (
               <div key={section} className="mb-8">
