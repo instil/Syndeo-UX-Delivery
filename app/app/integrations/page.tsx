@@ -4,8 +4,10 @@ import { useState } from "react"
 import { Header } from "@/components/header"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Plus, Eye, Edit, Trash2, Search, ArrowUpDown, ChevronDown } from "lucide-react"
+import { Plus, Eye, Edit, Trash2, Search, ArrowUpDown, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+
+const PAGE_SIZE = 5
 
 const integrations = [
   {
@@ -20,6 +22,7 @@ const integrations = [
 export default function IntegrationsPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [sortOption, setSortOption] = useState<{ label: string } | null>(null)
+  const [currentPage, setCurrentPage] = useState(1)
 
   const SORT_OPTIONS = [
     { label: "Name A–Z" },
@@ -32,6 +35,11 @@ export default function IntegrationsPage() {
     (i) => i.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
            i.description.toLowerCase().includes(searchQuery.toLowerCase())
   )
+
+  const totalPages = Math.max(1, Math.ceil(filteredIntegrations.length / PAGE_SIZE))
+  const safePage = Math.min(currentPage, totalPages)
+  const pageStart = (safePage - 1) * PAGE_SIZE
+  const pageData = filteredIntegrations.slice(pageStart, pageStart + PAGE_SIZE)
 
   return (
     <div className="min-h-screen bg-[#272C41]">
@@ -99,7 +107,7 @@ export default function IntegrationsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredIntegrations.map((integration) => (
+                  {pageData.map((integration) => (
                     <tr key={integration.id} className="border-b border-white/10 hover:bg-white/[0.04] transition-colors">
                       <td className="p-4">
                         <span className="text-sm font-medium text-white">{integration.name}</span>
@@ -128,9 +136,49 @@ export default function IntegrationsPage() {
                 </tbody>
               </table>
             </div>
-          </Card>
-        </div>
-      </main>
-    </div>
-  )
-}
+            </Card>
+
+            {/* Pagination */}
+            <div className="flex items-center justify-between pt-3 pb-1 px-1">
+              <p className="text-xs text-white/50">
+                Showing {filteredIntegrations.length === 0 ? 0 : pageStart + 1}–{Math.min(pageStart + PAGE_SIZE, filteredIntegrations.length)} of {filteredIntegrations.length} results
+              </p>
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 text-white/60 hover:text-white hover:bg-white/10 disabled:opacity-30"
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  disabled={safePage <= 1}
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </Button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`h-7 w-7 rounded-md text-xs font-medium transition-colors ${
+                      page === safePage
+                        ? "bg-[#2F8FFF] text-white"
+                        : "text-white/60 hover:text-white hover:bg-white/10"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 text-white/60 hover:text-white hover:bg-white/10 disabled:opacity-30"
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={safePage >= totalPages}
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    )
+  }

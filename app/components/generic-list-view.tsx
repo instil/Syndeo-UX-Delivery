@@ -2,8 +2,10 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Search, Plus, MoreVertical, ArrowUpDown, ChevronDown } from "lucide-react"
+import { Search, Plus, MoreVertical, ArrowUpDown, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+
+const PAGE_SIZE = 5
 
 interface GenericListViewProps {
   title: string
@@ -27,6 +29,7 @@ const generateMockData = (type: string) => [
 export function GenericListView({ title, type }: GenericListViewProps) {
   const [searchQuery, setSearchQuery] = useState("")
   const [sortOption, setSortOption] = useState<(typeof SORT_OPTIONS)[number] | null>(null)
+  const [currentPage, setCurrentPage] = useState(1)
   const mockData = generateMockData(type)
 
   const filteredData = mockData.filter(
@@ -34,6 +37,12 @@ export function GenericListView({ title, type }: GenericListViewProps) {
       item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.description.toLowerCase().includes(searchQuery.toLowerCase()),
   )
+
+  const totalPages = Math.max(1, Math.ceil(filteredData.length / PAGE_SIZE))
+  const safePage = Math.min(currentPage, totalPages)
+  const pageStart = (safePage - 1) * PAGE_SIZE
+  const pageEnd = pageStart + PAGE_SIZE
+  const pageData = filteredData.slice(pageStart, pageEnd)
 
   return (
     <div className="h-full flex flex-col bg-[#272C41]">
@@ -96,7 +105,7 @@ export function GenericListView({ title, type }: GenericListViewProps) {
               </tr>
             </thead>
             <tbody>
-              {filteredData.map((item) => (
+              {pageData.map((item) => (
                 <tr key={item.id} className="border-b border-white/10 last:border-0 hover:bg-white/[0.04] transition-colors">
                   <td className="px-4 py-3 text-sm font-medium text-[#2F8FFF] truncate">{item.name}</td>
                   <td className="px-4 py-3 text-sm text-white/60 truncate">{item.description}</td>
@@ -125,6 +134,46 @@ export function GenericListView({ title, type }: GenericListViewProps) {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Pagination */}
+        <div className="flex items-center justify-between pt-3 pb-1 px-1">
+          <p className="text-xs text-white/50">
+            Showing {filteredData.length === 0 ? 0 : pageStart + 1}–{Math.min(pageEnd, filteredData.length)} of {filteredData.length} results
+          </p>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 text-white/60 hover:text-white hover:bg-white/10 disabled:opacity-30"
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={safePage <= 1}
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </Button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                className={`h-7 w-7 rounded-md text-xs font-medium transition-colors ${
+                  page === safePage
+                    ? "bg-[#2F8FFF] text-white"
+                    : "text-white/60 hover:text-white hover:bg-white/10"
+                }`}
+              >
+                {page}
+              </button>
+            ))}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 text-white/60 hover:text-white hover:bg-white/10 disabled:opacity-30"
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={safePage >= totalPages}
+            >
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
       </div>
     </div>
