@@ -414,7 +414,7 @@ export function HomepageReturningUserPhase1() {
                     className="flex items-center justify-center rounded-xl border bg-white/[0.04] p-3 cursor-pointer transition-all hover:bg-white/[0.08]"
                     style={{ borderColor: `${ch.hex}66` }}
                   >
-                    <Icon className="h-5 w-5" style={{ color: ch.hex }} />
+                    <Icon className="h-5 w-5 text-white" />
                   </div>
                 )
               })}
