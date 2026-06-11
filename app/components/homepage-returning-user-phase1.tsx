@@ -119,6 +119,7 @@ export function HomepageReturningUserPhase1() {
   const [isTyping, setIsTyping] = useState(false)
   const [activeFlowIndex, setActiveFlowIndex] = useState<number | null>(null)
   const [stoppingIndex, setStoppingIndex] = useState<number | null>(null)
+  const [hoveredChannel, setHoveredChannel] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -411,8 +412,13 @@ export function HomepageReturningUserPhase1() {
                 return (
                   <div
                     key={ch.name}
-                    className="flex items-center justify-center rounded-xl border bg-white/[0.04] p-3 cursor-pointer transition-all hover:bg-white/[0.08]"
-                    style={{ borderColor: `${ch.hex}66` }}
+                    className="flex items-center justify-center rounded-xl border bg-white/[0.04] p-3 cursor-pointer transition-all"
+                    style={{
+                      borderColor: `${ch.hex}66`,
+                      backgroundColor: hoveredChannel === ch.name ? ch.hex : undefined,
+                    }}
+                    onMouseEnter={() => setHoveredChannel(ch.name)}
+                    onMouseLeave={() => setHoveredChannel(null)}
                   >
                     <Icon className="h-5 w-5 text-white" />
                   </div>
