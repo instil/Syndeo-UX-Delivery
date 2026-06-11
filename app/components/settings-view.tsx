@@ -1,38 +1,58 @@
 "use client"
 
+import { useState } from "react"
 import { Info, ChevronDown, Plus } from "lucide-react"
 import { MessageCircle, Smartphone } from "lucide-react"
 
 export function SettingsView() {
+  const [typingDelays, setTypingDelays] = useState([1000, 1000, 1000, 0, 1000])
+  const [inactivityTab, setInactivityTab] = useState<"automated" | "inQueue" | "handover">("automated")
+  const [inactivityValues, setInactivityValues] = useState({
+    automated: [10, 10, 10, 10, 7200],
+    inQueue: [5, 10, 10],
+    handover: [10, 1, 10, 10],
+  })
+
   const channels = [
-    { name: "production 2", icon: MessageCircle, value: 1000 },
-    { name: "test", icon: MessageCircle, value: 1000 },
-    { name: "Bohdan test pro...", icon: MessageCircle, value: 1000 },
-    { name: "PROD test web...", icon: MessageCircle, value: 0 },
-    { name: "Test to remove", icon: MessageCircle, value: 1000 },
+    { name: "production 2", icon: MessageCircle },
+    { name: "test", icon: MessageCircle },
+    { name: "Bohdan test pro...", icon: MessageCircle },
+    { name: "PROD test web...", icon: MessageCircle },
+    { name: "Test to remove", icon: MessageCircle },
   ]
 
   const contactCentres = ["Syndeo", "GenesysOpenMessaging", "ContactCenter8x8", "Genesys PureEngage", "Five9"]
 
   const inactivityChannels = {
     automated: [
-      { name: "production", icon: MessageCircle, value: 10 },
-      { name: "Slack Channel", icon: MessageCircle, value: 10, color: "purple" },
-      { name: "SMS Production Cha...", icon: Smartphone, value: 10 },
-      { name: "Test to remove", icon: MessageCircle, value: 10 },
-      { name: "Codeseek test page", icon: MessageCircle, value: 7200, color: "blue" },
+      { name: "production", icon: MessageCircle },
+      { name: "Slack Channel", icon: MessageCircle },
+      { name: "SMS Production Cha...", icon: Smartphone },
+      { name: "Test to remove", icon: MessageCircle },
+      { name: "Codeseek test page", icon: MessageCircle },
     ],
     inQueue: [
-      { name: "Bohdan test product...", icon: MessageCircle, value: 5 },
-      { name: "Line channel", icon: MessageCircle, value: 10, color: "green" },
-      { name: "Voice production ch...", icon: MessageCircle, value: 10, color: "red" },
+      { name: "Bohdan test product...", icon: MessageCircle },
+      { name: "Line channel", icon: MessageCircle },
+      { name: "Voice production ch...", icon: MessageCircle },
     ],
     handover: [
-      { name: "test", icon: MessageCircle, value: 10 },
-      { name: "PROD test web cha...", icon: MessageCircle, value: 1 },
-      { name: "DFCX Production Ch...", icon: MessageCircle, value: 10 },
-      { name: "Telegram Productio...", icon: MessageCircle, value: 10, color: "blue" },
+      { name: "test", icon: MessageCircle },
+      { name: "PROD test web cha...", icon: MessageCircle },
+      { name: "DFCX Production Ch...", icon: MessageCircle },
+      { name: "Telegram Productio...", icon: MessageCircle },
     ],
+  }
+
+  function adjustTypingDelay(idx: number, delta: number) {
+    setTypingDelays(prev => prev.map((v, i) => i === idx ? Math.max(0, v + delta) : v))
+  }
+
+  function adjustInactivity(tab: keyof typeof inactivityValues, idx: number, delta: number) {
+    setInactivityValues(prev => ({
+      ...prev,
+      [tab]: prev[tab].map((v, i) => i === idx ? Math.max(0, v + delta) : v),
+    }))
   }
 
   return (
@@ -56,9 +76,9 @@ export function SettingsView() {
               </div>
               <div className="flex items-center gap-2">
                 <div className="flex items-center bg-white/10 rounded-lg overflow-hidden">
-                  <button className="px-2 py-1 text-[#2F8FFF] hover:bg-white/10 transition-colors text-sm font-medium">−</button>
-                  <span className="px-2.5 text-xs font-medium text-white border-x border-white/10">{channel.value}</span>
-                  <button className="px-2 py-1 text-[#2F8FFF] hover:bg-white/10 transition-colors text-sm font-medium">+</button>
+                  <button onClick={() => adjustTypingDelay(idx, -100)} className="px-2 py-1 text-[#2F8FFF] hover:bg-white/10 transition-colors text-sm font-medium">−</button>
+                  <span className="px-2.5 text-xs font-medium text-white border-x border-white/10">{typingDelays[idx]}</span>
+                  <button onClick={() => adjustTypingDelay(idx, 100)} className="px-2 py-1 text-[#2F8FFF] hover:bg-white/10 transition-colors text-sm font-medium">+</button>
                 </div>
                 <span className="text-xs text-white/60">ms</span>
               </div>
@@ -167,15 +187,15 @@ export function SettingsView() {
           </div>
 
           <div className="flex gap-2 mb-6 border-b border-white/10">
-            <button className="px-4 py-2 text-sm font-medium text-white border-b-2 border-[#2F8FFF]">
+            <button onClick={() => setInactivityTab("automated")} className={`px-4 py-2 text-sm font-medium border-b-2 ${inactivityTab === "automated" ? "text-white border-[#2F8FFF]" : "text-white/60 border-transparent hover:text-white"}`}>
               Automated
             </button>
-            <button className="px-4 py-2 text-sm font-medium text-white/60 hover:text-white">In Queue</button>
-            <button className="px-4 py-2 text-sm font-medium text-white/60 hover:text-white">Handover</button>
+            <button onClick={() => setInactivityTab("inQueue")} className={`px-4 py-2 text-sm font-medium border-b-2 ${inactivityTab === "inQueue" ? "text-white border-[#2F8FFF]" : "text-white/60 border-transparent hover:text-white"}`}>In Queue</button>
+            <button onClick={() => setInactivityTab("handover")} className={`px-4 py-2 text-sm font-medium border-b-2 ${inactivityTab === "handover" ? "text-white border-[#2F8FFF]" : "text-white/60 border-transparent hover:text-white"}`}>Handover</button>
           </div>
 
           <div className="grid grid-cols-4 gap-3">
-            {inactivityChannels.automated.map((channel, idx) => (
+            {inactivityChannels[inactivityTab].map((channel, idx) => (
               <div key={idx} className="border border-white/10 rounded-lg p-3">
                 <div className="flex items-center gap-2 mb-2">
                   <MessageCircle className="w-4 h-4 text-white/60" />
@@ -183,9 +203,9 @@ export function SettingsView() {
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="flex items-center bg-white/10 rounded-lg overflow-hidden">
-                    <button className="px-2 py-1 text-[#2F8FFF] hover:bg-white/10 transition-colors text-sm font-medium">−</button>
-                    <span className="px-2.5 text-xs font-medium text-white border-x border-white/10">{channel.value}</span>
-                    <button className="px-2 py-1 text-[#2F8FFF] hover:bg-white/10 transition-colors text-sm font-medium">+</button>
+                    <button onClick={() => adjustInactivity(inactivityTab, idx, -1)} className="px-2 py-1 text-[#2F8FFF] hover:bg-white/10 transition-colors text-sm font-medium">−</button>
+                    <span className="px-2.5 text-xs font-medium text-white border-x border-white/10">{inactivityValues[inactivityTab][idx]}</span>
+                    <button onClick={() => adjustInactivity(inactivityTab, idx, 1)} className="px-2 py-1 text-[#2F8FFF] hover:bg-white/10 transition-colors text-sm font-medium">+</button>
                   </div>
                   <span className="text-xs text-white/60">mins</span>
                 </div>
