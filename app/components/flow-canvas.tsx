@@ -709,11 +709,6 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
               </div>
             </div>
 
-            {/* Backdrop — disables canvas interactions while popover is open */}
-            {activeTab === "flow" && selectedNodeId && (
-              <div className="absolute inset-0 z-20 bg-black/20 backdrop-blur-[1px]" onClick={() => setSelectedNodeId(null)} />
-            )}
-
             {/* Node edit popover */}
             {activeTab === "flow" && selectedNodeId && (() => {
               const node = nodes.find((n) => n.id === selectedNodeId)
@@ -1057,7 +1052,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
             })()}
 
             {/* Left floating panels — Wayfinder + Blocks + Controls */}
-            <div className={`absolute top-4 left-4 z-20 w-40 flex flex-col gap-2 ${activeTab !== "flow" ? "hidden" : ""}`}>
+            <div className={`absolute top-4 left-4 z-20 w-40 flex flex-col gap-2 transition-opacity ${activeTab !== "flow" ? "hidden" : ""} ${selectedNodeId ? "opacity-40 pointer-events-none" : ""}`}>
               {/* Wayfinder */}
               <div className="bg-[#272C41] border border-white/10 rounded-xl shadow-xl overflow-hidden">
                 <div className="p-2">
@@ -1166,10 +1161,6 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
             </div>
 
           </div>
-            {/* Backdrop */}
-            {selectedNodeId && (
-              <div className="absolute inset-0 z-20 bg-black/20 backdrop-blur-[1px]" onClick={() => setSelectedNodeId(null)} />
-            )}
 
             {selectedNodeId && (() => {
               const node = nodes.find((n) => n.id === selectedNodeId)
