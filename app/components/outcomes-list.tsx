@@ -187,12 +187,13 @@ export function OutcomesList({ onOutcomeClick }: OutcomesListProps) {
 
       </div>
 
-      {showNewOutcomeModal && <NewOutcomeModal onClose={() => setShowNewOutcomeModal(false)} />}
+      {showNewOutcomeModal && <NewOutcomeModal onClose={() => setShowNewOutcomeModal(false)} onOpen={onOutcomeClick} />}
     </div>
   )
 }
 
-function NewOutcomeModal({ onClose }: { onClose: () => void }) {
+function NewOutcomeModal({ onClose, onOpen }: { onClose: () => void; onOpen: (id: string, name: string) => void }) {
+  const [name, setName] = useState("")
   const [createIntent, setCreateIntent] = useState(true)
   const [customFields, setCustomFields] = useState<string[]>([])
 
@@ -225,6 +226,8 @@ function NewOutcomeModal({ onClose }: { onClose: () => void }) {
             <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">Name</label>
             <input
               type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               className="w-full px-3 py-2.5 rounded-lg border border-white/10 bg-white/[0.06] text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#2F8FFF]/40 focus:border-[#2F8FFF]"
             />
           </div>
@@ -287,8 +290,11 @@ function NewOutcomeModal({ onClose }: { onClose: () => void }) {
           </div>
 
           {/* Actions */}
-          <Button className="w-full bg-[#2F8FFF] hover:bg-[#2680E8] text-white font-semibold rounded-lg py-2.5 mb-3">
-            Next Step: Customer Statements
+          <Button
+            onClick={() => { onClose(); onOpen("new", name || "Untitled Outcome") }}
+            className="w-full bg-[#2F8FFF] hover:bg-[#2680E8] text-white font-semibold rounded-lg py-2.5 mb-3"
+          >
+            Create &amp; Open in Editor
           </Button>
           <button
             onClick={onClose}
