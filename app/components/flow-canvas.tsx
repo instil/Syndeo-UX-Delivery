@@ -821,7 +821,8 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                           </div>
                           <Button variant="ghost" className="w-full border border-[#DDE5EF] text-[#6A738A] hover:text-[#1E2535] hover:bg-[#F6F8FA] text-sm h-9" onClick={() => setNodeEditContent([...nodeEditContent, ""])}>+ Add Alternative Message</Button>
                         {node.type === "question" && (
-                          <div className="rounded-xl border border-[#DDE5EF] bg-white p-4 space-y-3 mt-3">
+                          <div className="space-y-3 pt-3">
+                            <hr className="border-[#DDE5EF]" />
                             <div className="flex items-center justify-between">
                               <label className="text-xs font-medium text-[#E5534B] uppercase tracking-wider">Entity</label>
                               <button className="px-3 py-1.5 rounded-lg bg-[#2F8FFF] text-white text-xs font-medium hover:bg-[#2680E8] transition-colors">
@@ -1180,7 +1181,8 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                           </div>
                           <Button variant="ghost" className="w-full border border-[#DDE5EF] text-[#6A738A] hover:text-[#1E2535] hover:bg-[#F6F8FA] text-sm h-9" onClick={() => setNodeEditContent([...nodeEditContent, ""])}>+ Add Alternative Message</Button>
                         {node.type === "question" && (
-                          <div className="rounded-xl border border-[#DDE5EF] bg-white p-4 space-y-3 mt-3">
+                          <div className="space-y-3 pt-3">
+                            <hr className="border-[#DDE5EF]" />
                             <div className="flex items-center justify-between">
                               <label className="text-xs font-medium text-[#E5534B] uppercase tracking-wider">Entity</label>
                               <button className="px-3 py-1.5 rounded-lg bg-[#2F8FFF] text-white text-xs font-medium hover:bg-[#2680E8] transition-colors">
