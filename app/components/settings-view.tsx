@@ -62,7 +62,6 @@ export function SettingsView() {
                 </div>
                 <span className="text-xs text-white/60">milliseconds</span>
               </div>
-              <button className="mt-3 text-xs text-white/40 hover:text-white/80">⚡</button>
             </div>
           ))}
         </div>
