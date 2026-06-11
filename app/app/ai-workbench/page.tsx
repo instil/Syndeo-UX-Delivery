@@ -315,33 +315,19 @@ export default function AIWorkbenchPage() {
             {/* Table Container */}
             <div className="bg-[#313750] rounded-lg border border-white/10 overflow-hidden">
               {/* Table Header */}
-              <div className="bg-[#1E5FA8]">
+              <div className="bg-white/[0.04] border-b border-white/10">
                 <div className="flex items-center px-6 py-3">
-                  <div className="flex-[2] flex items-center gap-2">
-                    <span className="text-xs font-semibold text-white uppercase tracking-wider">STATEMENT</span>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="h-5 w-5 text-white hover:bg-white/10 hover:text-white"
-                    >
-                      <span className="text-xs">▲</span>
-                    </Button>
-                  </div>
-                  <div className="flex-1 flex items-center gap-2">
-                    <span className="text-xs font-semibold text-white uppercase tracking-wider">INTENT</span>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="h-5 w-5 text-white hover:bg-white/10 hover:text-white"
-                    >
-                      <span className="text-xs">▼</span>
-                    </Button>
+                  <div className="flex-[2]">
+                    <span className="text-xs font-semibold text-white/60 uppercase tracking-wider">Statement</span>
                   </div>
                   <div className="flex-1">
-                    <span className="text-xs font-semibold text-white uppercase tracking-wider">ENTITIES</span>
+                    <span className="text-xs font-semibold text-white/60 uppercase tracking-wider">Intent</span>
                   </div>
                   <div className="flex-1">
-                    <span className="text-xs font-semibold text-white uppercase tracking-wider">SENTIMENT</span>
+                    <span className="text-xs font-semibold text-white/60 uppercase tracking-wider">Entities</span>
+                  </div>
+                  <div className="flex-1">
+                    <span className="text-xs font-semibold text-white/60 uppercase tracking-wider">Sentiment</span>
                   </div>
                   <div className="w-10"></div>
                 </div>
