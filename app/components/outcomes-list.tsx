@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Search, Plus, MoreVertical, ArrowUpDown, ChevronDown } from "lucide-react"
+import { Search, Plus, MoreVertical, ArrowUpDown, ChevronDown, Info, X } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import type { Outcome } from "@/lib/mock-outcomes"
 import { mockWelcome, mockOutcomes } from "@/lib/mock-outcomes"
@@ -113,6 +113,7 @@ const SORT_OPTIONS: { label: string; field: SortField; dir: SortDir }[] = [
 export function OutcomesList({ onOutcomeClick }: OutcomesListProps) {
   const [outcomesSearch, setOutcomesSearch] = useState("")
   const [sortOption, setSortOption] = useState<(typeof SORT_OPTIONS)[number] | null>(null)
+  const [showNewOutcomeModal, setShowNewOutcomeModal] = useState(false)
 
   return (
     <div className="h-full flex flex-col bg-[#272C41]">
@@ -139,7 +140,7 @@ export function OutcomesList({ onOutcomeClick }: OutcomesListProps) {
         <div>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-base font-semibold text-white">Outcomes</h2>
-            <Button className="bg-[#2F8FFF] hover:bg-[#2680E8] text-white gap-2 rounded-lg">
+            <Button className="bg-[#2F8FFF] hover:bg-[#2680E8] text-white gap-2 rounded-lg" onClick={() => setShowNewOutcomeModal(true)}>
               <Plus className="w-4 h-4" />
               New Outcome
             </Button>
@@ -184,6 +185,118 @@ export function OutcomesList({ onOutcomeClick }: OutcomesListProps) {
           />
         </div>
 
+      </div>
+
+      {showNewOutcomeModal && <NewOutcomeModal onClose={() => setShowNewOutcomeModal(false)} />}
+    </div>
+  )
+}
+
+function NewOutcomeModal({ onClose }: { onClose: () => void }) {
+  const [createIntent, setCreateIntent] = useState(true)
+  const [customFields, setCustomFields] = useState<string[]>([])
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+      <div className="bg-[#272C41] rounded-2xl border border-white/10 w-full max-w-xl shadow-2xl">
+        {/* Modal header */}
+        <div className="flex items-center justify-between px-6 pt-6 pb-2">
+          <h1 className="text-xl font-light tracking-tight text-white">Create a New Outcome</h1>
+          <button onClick={onClose} className="text-white/40 hover:text-white transition-colors">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Card */}
+        <div className="mx-6 mb-6 mt-4 bg-[#313750] rounded-xl border border-white/10 p-6">
+          {/* Card header */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-2">
+              <span className="text-base font-semibold text-white">Outcome Details</span>
+              <Info className="w-4 h-4 text-white/40" />
+            </div>
+            <button onClick={onClose} className="text-sm text-white/50 hover:text-white transition-colors flex items-center gap-1">
+              ← Back to Outcomes
+            </button>
+          </div>
+
+          {/* Name */}
+          <div className="mb-4">
+            <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">Name</label>
+            <input
+              type="text"
+              className="w-full px-3 py-2.5 rounded-lg border border-white/10 bg-white/[0.06] text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#2F8FFF]/40 focus:border-[#2F8FFF]"
+            />
+          </div>
+
+          {/* Description */}
+          <div className="mb-5">
+            <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">Description</label>
+            <textarea
+              rows={4}
+              className="w-full px-3 py-2.5 rounded-lg border border-white/10 bg-white/[0.06] text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#2F8FFF]/40 focus:border-[#2F8FFF] resize-none"
+            />
+          </div>
+
+          {/* Custom Data Fields */}
+          <div className="mb-5">
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-xs font-semibold text-white/50 uppercase tracking-wider">Custom Data Fields</label>
+              <button
+                onClick={() => setCustomFields((f) => [...f, ""])}
+                className="w-8 h-8 flex items-center justify-center bg-[#2F8FFF] hover:bg-[#2680E8] text-white rounded-lg transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
+            {customFields.map((_, idx) => (
+              <div key={idx} className="flex items-center gap-2 mb-2">
+                <input
+                  type="text"
+                  placeholder="Field name"
+                  className="flex-1 px-3 py-2 rounded-lg border border-white/10 bg-white/[0.06] text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#2F8FFF]/40 focus:border-[#2F8FFF]"
+                />
+                <button
+                  onClick={() => setCustomFields((f) => f.filter((_, i) => i !== idx))}
+                  className="text-white/40 hover:text-red-400 transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* Create intent checkbox */}
+          <div className="flex items-center gap-3 mb-6">
+            <button
+              onClick={() => setCreateIntent((v) => !v)}
+              className={`w-5 h-5 rounded flex items-center justify-center border transition-colors ${createIntent ? "bg-[#2F8FFF] border-[#2F8FFF]" : "bg-transparent border-white/30"}`}
+            >
+              {createIntent && (
+                <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 12 12" stroke="currentColor" strokeWidth="2">
+                  <path d="M2 6l3 3 5-5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              )}
+            </button>
+            <label
+              onClick={() => setCreateIntent((v) => !v)}
+              className="text-xs font-semibold text-white/60 uppercase tracking-wider cursor-pointer select-none"
+            >
+              Create New Intent for this Outcome
+            </label>
+          </div>
+
+          {/* Actions */}
+          <Button className="w-full bg-[#2F8FFF] hover:bg-[#2680E8] text-white font-semibold rounded-lg py-2.5 mb-3">
+            Next Step: Customer Statements
+          </Button>
+          <button
+            onClick={onClose}
+            className="w-full text-sm text-white/50 hover:text-white transition-colors text-center"
+          >
+            Cancel Outcome Setup
+          </button>
+        </div>
       </div>
     </div>
   )
