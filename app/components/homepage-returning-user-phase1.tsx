@@ -393,7 +393,7 @@ export function HomepageReturningUserPhase1() {
         </div>
 
           {/* Connected Channels */}
-          <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl">
+          <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl flex flex-col">
             <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
               <p className="text-xs font-semibold uppercase tracking-widest text-white">Connected Channels</p>
               <div className="flex items-center gap-3">
@@ -405,7 +405,7 @@ export function HomepageReturningUserPhase1() {
                 </button>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-2 p-5">
+            <div className="grid grid-cols-2 gap-2 p-5 flex-1 content-start">
               {CHANNELS.map((ch) => {
                 const Icon = ch.icon
                 return (
