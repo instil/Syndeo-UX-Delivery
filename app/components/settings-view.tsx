@@ -47,18 +47,18 @@ export function SettingsView() {
           <Info className="w-4 h-4 text-white/40" />
         </div>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-3">
           {channels.map((channel, idx) => (
-            <div key={idx} className="border border-white/10 rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-3">
-                <MessageCircle className="w-5 h-5 text-white/60" />
-                <span className="text-sm font-medium text-white">{channel.name}</span>
+            <div key={idx} className="border border-white/10 rounded-lg p-3">
+              <div className="flex items-center gap-2 mb-2">
+                <MessageCircle className="w-4 h-4 text-white/60" />
+                <span className="text-xs font-medium text-white">{channel.name}</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="flex items-center bg-white/10 rounded-lg overflow-hidden">
-                  <button className="px-2.5 py-1.5 text-[#2F8FFF] hover:bg-white/10 transition-colors text-sm font-medium">−</button>
-                  <span className="px-3 text-sm font-medium text-white border-x border-white/10">{channel.value}</span>
-                  <button className="px-2.5 py-1.5 text-[#2F8FFF] hover:bg-white/10 transition-colors text-sm font-medium">+</button>
+                  <button className="px-2 py-1 text-[#2F8FFF] hover:bg-white/10 transition-colors text-sm font-medium">−</button>
+                  <span className="px-2.5 text-xs font-medium text-white border-x border-white/10">{channel.value}</span>
+                  <button className="px-2 py-1 text-[#2F8FFF] hover:bg-white/10 transition-colors text-sm font-medium">+</button>
                 </div>
                 <span className="text-xs text-white/60">ms</span>
               </div>
@@ -174,22 +174,21 @@ export function SettingsView() {
             <button className="px-4 py-2 text-sm font-medium text-white/60 hover:text-white">Handover</button>
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-3">
             {inactivityChannels.automated.map((channel, idx) => (
-              <div key={idx} className="border border-white/10 rounded-lg p-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <MessageCircle className="w-5 h-5 text-white/60" />
-                  <span className="text-sm font-medium text-white">{channel.name}</span>
+              <div key={idx} className="border border-white/10 rounded-lg p-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <MessageCircle className="w-4 h-4 text-white/60" />
+                  <span className="text-xs font-medium text-white">{channel.name}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="flex flex-col bg-white/10 rounded px-3 py-2">
-                    <button className="text-xs text-[#2F8FFF]">▲</button>
-                    <span className="text-sm font-medium text-white my-1">{channel.value}</span>
-                    <button className="text-xs text-[#2F8FFF]">▼</button>
+                  <div className="flex items-center bg-white/10 rounded-lg overflow-hidden">
+                    <button className="px-2 py-1 text-[#2F8FFF] hover:bg-white/10 transition-colors text-sm font-medium">−</button>
+                    <span className="px-2.5 text-xs font-medium text-white border-x border-white/10">{channel.value}</span>
+                    <button className="px-2 py-1 text-[#2F8FFF] hover:bg-white/10 transition-colors text-sm font-medium">+</button>
                   </div>
-                  <span className="text-xs text-white/60">minutes</span>
+                  <span className="text-xs text-white/60">mins</span>
                 </div>
-                <button className="mt-3 text-xs text-white/40 hover:text-white/80">⚡</button>
               </div>
             ))}
           </div>
