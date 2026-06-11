@@ -205,10 +205,6 @@ export default function ChannelsPage() {
             return (
               <Link key={channel.id} href={`/channels/${channel.id}`}>
                 <Card className="relative bg-[#313750] border-white/10 hover:border-[#2F8FFF]/50 transition-all cursor-pointer group">
-                  <div className="absolute top-3 right-3">
-                    <Zap className="h-4 w-4 text-white/40" />
-                  </div>
-
                   <CardContent className="p-6 space-y-4">
                     <div className="flex justify-center">
                       <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center">
