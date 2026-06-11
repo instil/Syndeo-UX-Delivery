@@ -1,7 +1,8 @@
 "use client"
 
+import { useState } from "react"
 import type { LucideIcon } from "lucide-react"
-import { Download } from "lucide-react"
+import { Download, Loader2, Check } from "lucide-react"
 import { Card } from "@/components/ui/card"
 
 interface AgentCardProps {
@@ -14,6 +15,15 @@ interface AgentCardProps {
 }
 
 export function AgentCard({ title, description, icon: Icon, iconColor, onClick, hasVariants }: AgentCardProps) {
+  const [installState, setInstallState] = useState<"idle" | "loading" | "installed">("idle")
+
+  function handleInstall(e: React.MouseEvent) {
+    e.stopPropagation()
+    if (installState !== "idle") return
+    setInstallState("loading")
+    setTimeout(() => setInstallState("installed"), 1500)
+  }
+
   return (
     <Card className="bg-[#313750] border-white/10 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
       <div
@@ -28,14 +38,20 @@ export function AgentCard({ title, description, icon: Icon, iconColor, onClick, 
             <Icon className="h-6 w-6" style={{ color: iconColor }} />
           </div>
           <button
-            onClick={(e) => {
-              e.stopPropagation()
-              // TODO: wire up install action
-            }}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-[#2F8FFF] text-white/70 hover:text-white text-xs font-medium transition-all duration-150"
+            onClick={handleInstall}
+            disabled={installState !== "idle"}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
+              installState === "installed"
+                ? "bg-green-500/20 text-green-400 cursor-default"
+                : installState === "loading"
+                ? "bg-white/10 text-white/50 cursor-default"
+                : "bg-white/10 hover:bg-[#2F8FFF] text-white/70 hover:text-white"
+            }`}
           >
-            <Download className="w-3.5 h-3.5" />
-            Install
+            {installState === "loading" && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+            {installState === "installed" && <Check className="w-3.5 h-3.5" />}
+            {installState === "idle" && <Download className="w-3.5 h-3.5" />}
+            {installState === "loading" ? "Installing…" : installState === "installed" ? "Installed" : "Install"}
           </button>
         </div>
 
