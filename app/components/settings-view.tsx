@@ -47,7 +47,7 @@ export function SettingsView() {
           <Info className="w-4 h-4 text-white/40" />
         </div>
 
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-4 gap-3">
           {channels.map((channel, idx) => (
             <div key={idx} className="border border-white/10 rounded-lg p-3">
               <div className="flex items-center gap-2 mb-2">
@@ -174,7 +174,7 @@ export function SettingsView() {
             <button className="px-4 py-2 text-sm font-medium text-white/60 hover:text-white">Handover</button>
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-4 gap-3">
             {inactivityChannels.automated.map((channel, idx) => (
               <div key={idx} className="border border-white/10 rounded-lg p-3">
                 <div className="flex items-center gap-2 mb-2">
