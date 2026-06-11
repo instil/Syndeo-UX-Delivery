@@ -5,16 +5,16 @@ import { useRouter } from "next/navigation"
 import { MessageSquare, ArrowRight, Play, Square, Send, ChevronDown, X, Clock, BarChart3, Mic, Globe, Smartphone, Camera, MessageCircle, Phone, Hash, Facebook, Settings, Eye, Plus } from "lucide-react"
 
 const CHANNELS = [
-  { name: "Voice",     count: 10, color: "bg-[#9B3A3A]", icon: Mic },
-  { name: "Web",       count: 10, color: "bg-[#4A5568]", icon: Globe },
-  { name: "WhatsApp",  count: 10, color: "bg-[#25A366]", icon: MessageCircle },
-  { name: "Mobile",    count: 6,  color: "bg-[#718096]", icon: Smartphone },
-  { name: "Instagram", count: 4,  color: "bg-[#C2185B]", icon: Camera },
-  { name: "Facebook",  count: 3,  color: "bg-[#3B5998]", icon: Facebook },
-  { name: "Telegram",  count: 2,  color: "bg-[#2CA5E0]", icon: Phone },
-  { name: "Slack",     count: 2,  color: "bg-[#4A154B]", icon: Hash },
-  { name: "Viber",     count: 4,  color: "bg-[#7360F2]", icon: Phone },
-  { name: "Line",      count: 4,  color: "bg-[#06C755]", icon: MessageCircle },
+  { name: "Voice",     count: 10, hex: "#9B3A3A", icon: Mic },
+  { name: "Web",       count: 10, hex: "#4A5568", icon: Globe },
+  { name: "WhatsApp",  count: 10, hex: "#25A366", icon: MessageCircle },
+  { name: "Mobile",    count: 6,  hex: "#718096", icon: Smartphone },
+  { name: "Instagram", count: 4,  hex: "#C2185B", icon: Camera },
+  { name: "Facebook",  count: 3,  hex: "#3B5998", icon: Facebook },
+  { name: "Telegram",  count: 2,  hex: "#2CA5E0", icon: Phone },
+  { name: "Slack",     count: 2,  hex: "#4A154B", icon: Hash },
+  { name: "Viber",     count: 4,  hex: "#7360F2", icon: Phone },
+  { name: "Line",      count: 4,  hex: "#06C755", icon: MessageCircle },
 ]
 
 const DEFAULT_BOT_REPLY = "Thanks for your message! Let me look into that for you. Could you provide a bit more detail so I can help?"
@@ -409,8 +409,12 @@ export function HomepageReturningUserPhase1() {
               {CHANNELS.map((ch) => {
                 const Icon = ch.icon
                 return (
-                  <div key={ch.name} className={`${ch.color} flex items-center justify-center rounded-lg p-3 cursor-pointer hover:brightness-110 transition-all`}>
-                    <Icon className="h-5 w-5 text-white" />
+                  <div
+                    key={ch.name}
+                    className="flex items-center justify-center rounded-xl border bg-white/[0.04] p-3 cursor-pointer transition-all hover:bg-white/[0.08]"
+                    style={{ borderColor: `${ch.hex}66` }}
+                  >
+                    <Icon className="h-5 w-5" style={{ color: ch.hex }} />
                   </div>
                 )
               })}
