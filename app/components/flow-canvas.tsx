@@ -1001,7 +1001,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                              <label className="text-sm font-medium text-[#1E2535]">Mode</label>
                              <div className="relative group">
                                <Info className="w-3.5 h-3.5 text-[#9AA3B0] cursor-pointer hover:text-[#2F8FFF] transition-colors" />
-                               <div className="absolute left-5 top-1/2 -translate-y-1/2 z-50 w-64 bg-[#1E2535] text-white text-xs rounded-xl shadow-xl p-3 space-y-2 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-150 pointer-events-none">
+                               <div className="absolute left-5 top-0 z-50 w-64 bg-[#1E2535] text-white text-xs rounded-xl shadow-xl p-3 space-y-2 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-150 pointer-events-none">
                                  <div>
                                    <p className="font-semibold text-white mb-0.5">Flow Guided</p>
                                    <p className="text-white/70 leading-relaxed">The LLM follows the defined conversation flow strictly, keeping responses aligned with the flow structure and steps.</p>
@@ -1469,7 +1469,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                              <label className="text-sm font-medium text-[#1E2535]">Mode</label>
                              <div className="relative group">
                                <Info className="w-3.5 h-3.5 text-[#9AA3B0] cursor-pointer hover:text-[#2F8FFF] transition-colors" />
-                               <div className="absolute left-5 top-1/2 -translate-y-1/2 z-50 w-64 bg-[#1E2535] text-white text-xs rounded-xl shadow-xl p-3 space-y-2 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-150 pointer-events-none">
+                               <div className="absolute left-5 top-0 z-50 w-64 bg-[#1E2535] text-white text-xs rounded-xl shadow-xl p-3 space-y-2 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-150 pointer-events-none">
                                  <div>
                                    <p className="font-semibold text-white mb-0.5">Flow Guided</p>
                                    <p className="text-white/70 leading-relaxed">The LLM follows the defined conversation flow strictly, keeping responses aligned with the flow structure and steps.</p>
@@ -1763,7 +1763,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                              <label className="text-sm font-medium text-[#1E2535]">Mode</label>
                              <div className="relative group">
                                <Info className="w-3.5 h-3.5 text-[#9AA3B0] cursor-pointer hover:text-[#2F8FFF] transition-colors" />
-                               <div className="absolute left-5 top-1/2 -translate-y-1/2 z-50 w-64 bg-[#1E2535] text-white text-xs rounded-xl shadow-xl p-3 space-y-2 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-150 pointer-events-none">
+                               <div className="absolute left-5 top-0 z-50 w-64 bg-[#1E2535] text-white text-xs rounded-xl shadow-xl p-3 space-y-2 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-150 pointer-events-none">
                                  <div>
                                    <p className="font-semibold text-white mb-0.5">Flow Guided</p>
                                    <p className="text-white/70 leading-relaxed">The LLM follows the defined conversation flow strictly, keeping responses aligned with the flow structure and steps.</p>
