@@ -392,10 +392,8 @@ export function HomepageReturningUserPhase1() {
             </div>
           </div>
         </div>
-        </div>
 
-        {/* Connected Channels */}
-        <div className="mx-auto mt-6 flex w-fit">
+          {/* Connected Channels */}
           <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl flex flex-col min-w-[280px]">
             <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
               <p className="text-xs font-semibold uppercase tracking-widest text-white">Connected Channels</p>
