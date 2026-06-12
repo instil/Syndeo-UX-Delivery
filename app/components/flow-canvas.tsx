@@ -803,7 +803,14 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                   onMouseDown={(e) => e.stopPropagation()}
                 >
                   {/* Header */}
-                  <div className={`flex items-center justify-between px-4 py-3 border-b border-[#DDE5EF] ${draggableModals ? "cursor-grab active:cursor-grabbing" : ""}`} onMouseDown={handleModalHeaderMouseDown}>
+                  <div className={`relative flex items-center justify-between px-4 py-3 border-b border-[#DDE5EF] ${draggableModals ? "cursor-grab active:cursor-grabbing" : ""}`} onMouseDown={handleModalHeaderMouseDown}>
+                    {draggableModals && (
+                      <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-1">
+                        <div className="w-1 h-1 rounded-full bg-[#CBD5E0]" />
+                        <div className="w-1 h-1 rounded-full bg-[#CBD5E0]" />
+                        <div className="w-1 h-1 rounded-full bg-[#CBD5E0]" />
+                      </div>
+                    )}
                     <div className="flex items-center gap-2.5">
                       <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: nodeColor }}>
                         <NodeIcon className="w-3.5 h-3.5 text-white" />
@@ -1278,7 +1285,14 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                   onMouseDown={(e) => e.stopPropagation()}
                 >
                   {/* Header */}
-                  <div className={`flex items-center justify-between px-4 py-3 border-b border-[#DDE5EF] ${draggableModals ? "cursor-grab active:cursor-grabbing" : ""}`} onMouseDown={handleModalHeaderMouseDown}>
+                  <div className={`relative flex items-center justify-between px-4 py-3 border-b border-[#DDE5EF] ${draggableModals ? "cursor-grab active:cursor-grabbing" : ""}`} onMouseDown={handleModalHeaderMouseDown}>
+                    {draggableModals && (
+                      <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-1">
+                        <div className="w-1 h-1 rounded-full bg-[#CBD5E0]" />
+                        <div className="w-1 h-1 rounded-full bg-[#CBD5E0]" />
+                        <div className="w-1 h-1 rounded-full bg-[#CBD5E0]" />
+                      </div>
+                    )}
                     <div className="flex items-center gap-2.5">
                       <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: nodeColor }}>
                         <NodeIcon className="w-3.5 h-3.5 text-white" />
