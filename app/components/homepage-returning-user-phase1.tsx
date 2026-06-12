@@ -2,20 +2,8 @@
 
 import { useState, useEffect, useRef, KeyboardEvent } from "react"
 import { useRouter } from "next/navigation"
-import { MessageSquare, ArrowRight, Play, Square, Send, ChevronDown, X, Clock, BarChart3, Mic, Globe, Smartphone, Camera, MessageCircle, Phone, Hash, Facebook, Eye, Plus } from "lucide-react"
+import { MessageSquare, ArrowRight, Play, Square, Send, ChevronDown, X, Clock, BarChart3 } from "lucide-react"
 
-const CHANNELS = [
-  { name: "Voice",     count: 10, hex: "#9B3A3A", icon: Mic },
-  { name: "Web",       count: 10, hex: "#4A5568", icon: Globe },
-  { name: "WhatsApp",  count: 10, hex: "#25A366", icon: MessageCircle },
-  { name: "Mobile",    count: 6,  hex: "#718096", icon: Smartphone },
-  { name: "Instagram", count: 4,  hex: "#C2185B", icon: Camera },
-  { name: "Facebook",  count: 3,  hex: "#3B5998", icon: Facebook },
-  { name: "Telegram",  count: 2,  hex: "#2CA5E0", icon: Phone },
-  { name: "Slack",     count: 2,  hex: "#4A154B", icon: Hash },
-  { name: "Viber",     count: 4,  hex: "#7360F2", icon: Phone },
-  { name: "Line",      count: 4,  hex: "#06C755", icon: MessageCircle },
-]
 
 const DEFAULT_BOT_REPLY = "Thanks for your message! Let me look into that for you. Could you provide a bit more detail so I can help?"
 
@@ -119,7 +107,6 @@ export function HomepageReturningUserPhase1() {
   const [isTyping, setIsTyping] = useState(false)
   const [activeFlowIndex, setActiveFlowIndex] = useState<number | null>(null)
   const [stoppingIndex, setStoppingIndex] = useState<number | null>(null)
-  const [hoveredChannel, setHoveredChannel] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -392,43 +379,6 @@ export function HomepageReturningUserPhase1() {
             </div>
           </div>
         </div>
-
-          {/* Connected Channels */}
-          <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl flex flex-col min-w-[280px]">
-            <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
-              <p className="text-xs font-semibold uppercase tracking-widest text-white">Connected Channels</p>
-              <div className="flex items-center gap-3">
-                <button className="flex items-center justify-center rounded-lg bg-[#2F8FFF] p-1.5 text-white hover:bg-[#2680E8] transition-colors">
-                  <Plus className="h-3.5 w-3.5" />
-                </button>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-2 p-5 flex-1 content-start">
-              {CHANNELS.map((ch) => {
-                const Icon = ch.icon
-                return (
-                  <div
-                    key={ch.name}
-                    className="flex items-center justify-center rounded-xl border bg-white/[0.04] p-3 cursor-pointer transition-all"
-                    style={{
-                      borderColor: `${ch.hex}66`,
-                      backgroundColor: hoveredChannel === ch.name ? ch.hex : undefined,
-                    }}
-                    onMouseEnter={() => setHoveredChannel(ch.name)}
-                    onMouseLeave={() => setHoveredChannel(null)}
-                  >
-                    <Icon className="h-5 w-5 text-white" />
-                  </div>
-                )
-              })}
-            </div>
-            <div className="flex justify-end border-t border-white/10 px-6 py-3">
-              <button className="flex items-center gap-1.5 text-xs text-white/50 hover:text-white transition-colors">
-                <Eye className="h-3.5 w-3.5" />
-                View All Channels
-              </button>
-            </div>
-          </div>
         </div>
 
       </div>
