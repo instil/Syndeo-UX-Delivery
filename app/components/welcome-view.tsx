@@ -1,6 +1,6 @@
 "use client"
 
-import { Sparkles, Workflow, Target, Plus, Mic, Globe, Smartphone, Camera, MessageCircle, Phone, Send, Hash, Facebook, Eye } from "lucide-react"
+import { Sparkles, Workflow, Target, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 const STEPS = [
@@ -22,18 +22,6 @@ const STEPS = [
   },
 ]
 
-const CHANNELS = [
-  { name: "Voice",     count: 10, color: "bg-[#9B3A3A]", icon: Mic },
-  { name: "Web",       count: 10, color: "bg-[#4A5568]", icon: Globe },
-  { name: "WhatsApp",  count: 10, color: "bg-[#25A366]", icon: MessageCircle },
-  { name: "Mobile",    count: 6,  color: "bg-[#718096]", icon: Smartphone },
-  { name: "Instagram", count: 4,  color: "bg-[#C2185B]", icon: Camera },
-  { name: "Facebook",  count: 3,  color: "bg-[#3B5998]", icon: Facebook },
-  { name: "Telegram",  count: 2,  color: "bg-[#2CA5E0]", icon: Send },
-  { name: "Slack",     count: 2,  color: "bg-[#4A154B]", icon: Hash },
-  { name: "Viber",     count: 4,  color: "bg-[#7360F2]", icon: Phone },
-  { name: "Line",      count: 4,  color: "bg-[#06C755]", icon: MessageCircle },
-]
 
 interface WelcomeViewProps {
   onNewOutcome?: () => void
@@ -116,45 +104,6 @@ export function WelcomeView({ onNewOutcome }: WelcomeViewProps) {
           </div>
         </div>
 
-        {/* Connected Channels */}
-        <div className="mt-8 p-6 rounded-xl border border-white/10 bg-white/5">
-          <div className="flex items-center justify-between mb-5">
-            <h3 className="text-lg font-semibold text-white">Connected Channels</h3>
-            <div className="flex items-center gap-2">
-              <Button
-                size="sm"
-                className="gap-1.5 bg-[#2F8FFF] hover:bg-[#2680E8] text-white text-xs rounded-lg h-7 px-3"
-              >
-                <Plus className="w-3 h-3" />
-                Add Channel
-              </Button>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-2">
-            {CHANNELS.map((channel) => {
-              const Icon = channel.icon
-              return (
-                <div
-                  key={channel.name}
-                  className={`${channel.color} flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer hover:brightness-110 transition-all`}
-                >
-                  <Icon className="w-5 h-5 text-white flex-shrink-0" />
-                  <span className="flex-1 text-sm font-medium text-white text-center">
-                    {channel.name} ({channel.count})
-                  </span>
-                </div>
-              )
-            })}
-          </div>
-
-          <div className="mt-4 flex justify-end">
-            <button className="flex items-center gap-1.5 text-xs text-white/50 hover:text-white transition-colors">
-              <Eye className="w-3.5 h-3.5" />
-              View All Channels
-            </button>
-          </div>
-        </div>
 
       </div>
     </div>
