@@ -754,7 +754,14 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
               return (
                 <div
                   className="absolute z-30 w-[480px] bg-white rounded-xl shadow-2xl border border-[#DDE5EF] flex flex-col overflow-hidden"
-                  style={{ left: popX, top: node.y * scale + panOffset.y, minHeight: "520px", maxHeight: "90vh" }}
+                  style={(() => {
+                    const rawTop = node.y * scale + panOffset.y
+                    const viewH = canvasRef.current?.clientHeight ?? 600
+                    const PAD = 8
+                    const clampedTop = Math.max(PAD, rawTop)
+                    const dynMaxH = Math.max(200, viewH - clampedTop - PAD)
+                    return { left: popX, top: clampedTop, maxHeight: dynMaxH }
+                  })()}
                   onMouseDown={(e) => e.stopPropagation()}
                 >
                   {/* Header */}
@@ -1222,7 +1229,14 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
               return (
                 <div
                   className="absolute z-30 w-[480px] bg-white rounded-xl shadow-2xl border border-[#DDE5EF] flex flex-col overflow-hidden"
-                  style={{ left: popX, top: node.y * scale + panOffset.y, minHeight: "520px", maxHeight: "90vh" }}
+                  style={(() => {
+                    const rawTop = node.y * scale + panOffset.y
+                    const viewH = canvasRef.current?.clientHeight ?? 600
+                    const PAD = 8
+                    const clampedTop = Math.max(PAD, rawTop)
+                    const dynMaxH = Math.max(200, viewH - clampedTop - PAD)
+                    return { left: popX, top: clampedTop, maxHeight: dynMaxH }
+                  })()}
                   onMouseDown={(e) => e.stopPropagation()}
                 >
                   {/* Header */}
