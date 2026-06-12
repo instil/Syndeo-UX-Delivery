@@ -132,6 +132,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
   const [showDetailsInfo, setShowDetailsInfo] = useState(false)
   const [editingNodeId, setEditingNodeId] = useState<string | null>(null)
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null)
+  const [draggableModals, setDraggableModals] = useState(false)
   const [nodeEditTab, setNodeEditTab] = useState<"skip" | "message" | "llm" | "exception">("message")
   const [nodeEditContent, setNodeEditContent] = useState<string[]>([""])
   const [llmEnabled, setLlmEnabled] = useState(false)
@@ -526,29 +527,40 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
         </div>
 
         {/* Tabs — Figma-style bordered pill for active */}
-        <div className="flex items-center gap-1">
-          {(["flow", "statements", "details"] as const).map((tab) => {
-            const labels = { flow: "Outcome Flow", statements: "Customer Statements", details: "Outcome Details" }
-            return (
-              <button
-                key={tab}
-                onClick={() => {
-                  if (tab !== "flow" && selectedNodeId) {
-                    setSelectedNodeId(null)
-                    setSimulatorCollapsed(false)
-                  }
-                  setActiveTab(tab)
-                }}
-                className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${
-                  activeTab === tab
-                    ? "bg-[#E2E8F0] text-[#1E2535] font-semibold"
-                    : "border border-transparent text-[#6A738A] hover:text-[#1E2535] hover:bg-[#EAECF0]"
-                }`}
-              >
-                {labels[tab]}
-              </button>
-            )
-          })}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1">
+            {(["flow", "statements", "details"] as const).map((tab) => {
+              const labels = { flow: "Outcome Flow", statements: "Customer Statements", details: "Outcome Details" }
+              return (
+                <button
+                  key={tab}
+                  onClick={() => {
+                    if (tab !== "flow" && selectedNodeId) {
+                      setSelectedNodeId(null)
+                      setSimulatorCollapsed(false)
+                    }
+                    setActiveTab(tab)
+                  }}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-md transition-all ${
+                    activeTab === tab
+                      ? "bg-[#E2E8F0] text-[#1E2535] font-semibold"
+                      : "border border-transparent text-[#6A738A] hover:text-[#1E2535] hover:bg-[#EAECF0]"
+                  }`}
+                >
+                  {labels[tab]}
+                </button>
+              )
+            })}
+          </div>
+          <button
+            onClick={() => setDraggableModals(!draggableModals)}
+            className="flex items-center gap-2 text-sm text-[#6A738A] hover:text-[#1E2535] transition-colors select-none"
+          >
+            <span>Draggable Modals</span>
+            <div className={`relative w-8 h-4 rounded-full transition-colors ${draggableModals ? "bg-[#2F8FFF]" : "bg-[#CBD5E0]"}`}>
+              <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full shadow transition-transform ${draggableModals ? "translate-x-4" : "translate-x-0.5"}`} />
+            </div>
+          </button>
         </div>
       </div>
 
