@@ -272,15 +272,15 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
         const canvasW = canvasRef.current?.clientWidth ?? 800
         const canvasH = canvasRef.current?.clientHeight ?? 600
         const NODE_W = 200
-        const NODE_H = 72
         const EDIT_W = 480
+        const EDIT_H = 520 // min-height of edit panel
         const GAP = 12
-        // Group layout: [edit panel][gap][node]
+        // Group layout: [edit panel][gap][node], aligned at the top
         const groupW = EDIT_W + GAP + NODE_W
-        // Target node screen X so the group is horizontally centred
+        // Horizontally centre the group
         const targetNodeX = (canvasW - groupW) / 2 + EDIT_W + GAP
-        // Target node screen Y so the node is vertically centred
-        const targetNodeY = canvasH / 2 - NODE_H / 2
+        // Vertically: align group top so the panel (tallest element) is centred
+        const targetNodeY = canvasH / 2 - EDIT_H / 2
         setIsPanAnimating(true)
         setPanOffset({
           x: targetNodeX - n.x * scale,
@@ -754,7 +754,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
               return (
                 <div
                   className="absolute z-30 w-[480px] bg-white rounded-xl shadow-2xl border border-[#DDE5EF] flex flex-col overflow-hidden"
-                  style={{ left: popX, top: "50%", transform: "translateY(-50%)", minHeight: "520px", maxHeight: "90vh" }}
+                  style={{ left: popX, top: node.y * scale + panOffset.y, minHeight: "520px", maxHeight: "90vh" }}
                   onMouseDown={(e) => e.stopPropagation()}
                 >
                   {/* Header */}
@@ -1222,7 +1222,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
               return (
                 <div
                   className="absolute z-30 w-[480px] bg-white rounded-xl shadow-2xl border border-[#DDE5EF] flex flex-col overflow-hidden"
-                  style={{ left: popX, top: "50%", transform: "translateY(-50%)", minHeight: "520px", maxHeight: "90vh" }}
+                  style={{ left: popX, top: node.y * scale + panOffset.y, minHeight: "520px", maxHeight: "90vh" }}
                   onMouseDown={(e) => e.stopPropagation()}
                 >
                   {/* Header */}
