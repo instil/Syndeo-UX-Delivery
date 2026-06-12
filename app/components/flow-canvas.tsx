@@ -259,10 +259,32 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
     if (dist < 5) {
       // It's a click, not a drag — select the node
       const n = nodes.find((n) => n.id === nodeId)
-      setSelectedNodeId((prev) => prev === nodeId ? null : nodeId)
+      const isDeselecting = selectedNodeId === nodeId
+      setSelectedNodeId(isDeselecting ? null : nodeId)
       setNodeEditContent([n?.label ?? ""])
       setNodeEditTab("message")
       if (n?.type === "decision") setDecisionRules([{ matchMode: "all" }])
+
+      // Center the block + edit panel group in the viewport
+      if (n && !isDeselecting) {
+        const scale = zoom / 100
+        const canvasW = canvasRef.current?.clientWidth ?? 800
+        const canvasH = canvasRef.current?.clientHeight ?? 600
+        const NODE_W = 200
+        const NODE_H = 72
+        const EDIT_W = 480
+        const GAP = 12
+        // Group layout: [edit panel][gap][node]
+        const groupW = EDIT_W + GAP + NODE_W
+        // Target node screen X so the group is horizontally centred
+        const targetNodeX = (canvasW - groupW) / 2 + EDIT_W + GAP
+        // Target node screen Y so the node is vertically centred
+        const targetNodeY = canvasH / 2 - NODE_H / 2
+        setPanOffset({
+          x: targetNodeX - n.x * scale,
+          y: targetNodeY - n.y * scale,
+        })
+      }
     }
   }
 
@@ -727,7 +749,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
               return (
                 <div
                   className="absolute z-30 w-[480px] bg-white rounded-xl shadow-2xl border border-[#DDE5EF] flex flex-col overflow-hidden"
-                  style={{ left: popX, top: "5%", minHeight: "520px", maxHeight: "90vh" }}
+                  style={{ left: popX, top: "50%", transform: "translateY(-50%)", minHeight: "520px", maxHeight: "90vh" }}
                   onMouseDown={(e) => e.stopPropagation()}
                 >
                   {/* Header */}
@@ -1195,7 +1217,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
               return (
                 <div
                   className="absolute z-30 w-[480px] bg-white rounded-xl shadow-2xl border border-[#DDE5EF] flex flex-col overflow-hidden"
-                  style={{ left: popX, top: "5%", minHeight: "520px", maxHeight: "90vh" }}
+                  style={{ left: popX, top: "50%", transform: "translateY(-50%)", minHeight: "520px", maxHeight: "90vh" }}
                   onMouseDown={(e) => e.stopPropagation()}
                 >
                   {/* Header */}
