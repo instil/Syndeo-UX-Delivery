@@ -1,6 +1,6 @@
 "use client"
 
-import { Sparkles, Workflow, Target, Plus, Mic, Globe, Smartphone, Camera, MessageCircle, Phone, Send, Hash, Facebook, Settings, Eye } from "lucide-react"
+import { Sparkles, Workflow, Target, Plus, Mic, Globe, Smartphone, Camera, MessageCircle, Phone, Send, Hash, Facebook, Eye } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 const STEPS = [
@@ -121,9 +121,6 @@ export function WelcomeView({ onNewOutcome }: WelcomeViewProps) {
           <div className="flex items-center justify-between mb-5">
             <h3 className="text-lg font-semibold text-white">Connected Channels</h3>
             <div className="flex items-center gap-2">
-              <button className="text-white/40 hover:text-white transition-colors">
-                <Settings className="w-4 h-4" />
-              </button>
               <Button
                 size="sm"
                 className="gap-1.5 bg-[#2F8FFF] hover:bg-[#2680E8] text-white text-xs rounded-lg h-7 px-3"

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, KeyboardEvent } from "react"
 import { useRouter } from "next/navigation"
-import { MessageSquare, ArrowRight, Play, Square, Send, ChevronDown, X, Clock, BarChart3, Mic, Globe, Smartphone, Camera, MessageCircle, Phone, Hash, Facebook, Settings, Eye, Plus } from "lucide-react"
+import { MessageSquare, ArrowRight, Play, Square, Send, ChevronDown, X, Clock, BarChart3, Mic, Globe, Smartphone, Camera, MessageCircle, Phone, Hash, Facebook, Eye, Plus } from "lucide-react"
 
 const CHANNELS = [
   { name: "Voice",     count: 10, hex: "#9B3A3A", icon: Mic },
@@ -394,13 +394,10 @@ export function HomepageReturningUserPhase1() {
         </div>
 
           {/* Connected Channels */}
-          <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl flex flex-col">
+          <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl flex flex-col min-w-[280px]">
             <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
               <p className="text-xs font-semibold uppercase tracking-widest text-white">Connected Channels</p>
               <div className="flex items-center gap-3">
-                <button className="text-white/40 hover:text-white transition-colors">
-                  <Settings className="h-4 w-4" />
-                </button>
                 <button className="flex items-center justify-center rounded-lg bg-[#2F8FFF] p-1.5 text-white hover:bg-[#2680E8] transition-colors">
                   <Plus className="h-3.5 w-3.5" />
                 </button>
