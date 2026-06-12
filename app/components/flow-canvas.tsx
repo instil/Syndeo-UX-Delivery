@@ -121,6 +121,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 })
   const [isPanning, setIsPanning] = useState(false)
   const [panStart, setPanStart] = useState({ x: 0, y: 0 })
+  const [isPanAnimating, setIsPanAnimating] = useState(false)
   const canvasRef = useRef<HTMLDivElement>(null)
   const minimapRef = useRef<HTMLDivElement>(null)
   const [statements, setStatements] = useState<{ text: string; createdAt: string }[]>([
@@ -280,10 +281,12 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
         const targetNodeX = (canvasW - groupW) / 2 + EDIT_W + GAP
         // Target node screen Y so the node is vertically centred
         const targetNodeY = canvasH / 2 - NODE_H / 2
+        setIsPanAnimating(true)
         setPanOffset({
           x: targetNodeX - n.x * scale,
           y: targetNodeY - n.y * scale,
         })
+        setTimeout(() => setIsPanAnimating(false), 450)
       }
     }
   }
@@ -430,6 +433,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
     const target = e.target as HTMLElement
     if (!target.closest('[data-node]') && !target.closest('button') && !target.closest('[role="menuitem"]')) {
       setIsPanning(true)
+      setIsPanAnimating(false)
       setPanStart({ x: e.clientX, y: e.clientY })
       setSelectedNodeId(null)
     }
@@ -580,6 +584,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                   transformOrigin: "top left",
                   width: "2000px",
                   height: "2000px",
+                  transition: isPanAnimating ? "transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)" : "none",
                   position: "relative",
                 }}
               >
@@ -749,7 +754,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
               return (
                 <div
                   className="absolute z-30 w-[480px] bg-white rounded-xl shadow-2xl border border-[#DDE5EF] flex flex-col overflow-hidden"
-                  style={{ left: popX, top: "50%", transform: "translateY(-50%)", minHeight: "520px", maxHeight: "90vh" }}
+                  style={{ left: popX, top: node.y * scale + panOffset.y, minHeight: "520px", maxHeight: "90vh" }}
                   onMouseDown={(e) => e.stopPropagation()}
                 >
                   {/* Header */}
@@ -1217,7 +1222,7 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
               return (
                 <div
                   className="absolute z-30 w-[480px] bg-white rounded-xl shadow-2xl border border-[#DDE5EF] flex flex-col overflow-hidden"
-                  style={{ left: popX, top: "50%", transform: "translateY(-50%)", minHeight: "520px", maxHeight: "90vh" }}
+                  style={{ left: popX, top: node.y * scale + panOffset.y, minHeight: "520px", maxHeight: "90vh" }}
                   onMouseDown={(e) => e.stopPropagation()}
                 >
                   {/* Header */}
