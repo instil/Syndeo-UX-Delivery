@@ -133,6 +133,8 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
   const [editingNodeId, setEditingNodeId] = useState<string | null>(null)
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null)
   const [draggableModals, setDraggableModals] = useState(false)
+  const [modalOffset, setModalOffset] = useState({ x: 0, y: 0 })
+  const modalDragStart = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null)
   const [nodeEditTab, setNodeEditTab] = useState<"skip" | "message" | "llm" | "exception">("message")
   const [nodeEditContent, setNodeEditContent] = useState<string[]>([""])
   const [llmEnabled, setLlmEnabled] = useState(false)
@@ -160,6 +162,30 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
     registerSimulatorToggle(() => setSimulatorCollapsed((v) => !v))
     return () => registerSimulatorToggle(null)
   }, [registerSimulatorToggle])
+
+  // Reset modal drag offset whenever the selected node changes
+  useEffect(() => { setModalOffset({ x: 0, y: 0 }) }, [selectedNodeId])
+
+  const handleModalHeaderMouseDown = (e: React.MouseEvent) => {
+    if (!draggableModals) return
+    e.stopPropagation()
+    const start = { x: e.clientX, y: e.clientY, ox: modalOffset.x, oy: modalOffset.y }
+    modalDragStart.current = start
+    const onMove = (ev: MouseEvent) => {
+      if (!modalDragStart.current) return
+      setModalOffset({
+        x: modalDragStart.current.ox + ev.clientX - modalDragStart.current.x,
+        y: modalDragStart.current.oy + ev.clientY - modalDragStart.current.y,
+      })
+    }
+    const onUp = () => {
+      modalDragStart.current = null
+      window.removeEventListener("mousemove", onMove)
+      window.removeEventListener("mouseup", onUp)
+    }
+    window.addEventListener("mousemove", onMove)
+    window.addEventListener("mouseup", onUp)
+  }
 
   const WORLD = 2000
   const SNAP_THRESHOLD = 160 // canvas px
@@ -772,12 +798,12 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                     const PAD = 8
                     const clampedTop = Math.max(PAD, rawTop)
                     const dynMaxH = Math.max(200, viewH - clampedTop - PAD)
-                    return { left: popX, top: clampedTop, maxHeight: dynMaxH }
+                    return { left: popX + modalOffset.x, top: clampedTop + modalOffset.y, maxHeight: dynMaxH }
                   })()}
                   onMouseDown={(e) => e.stopPropagation()}
                 >
                   {/* Header */}
-                  <div className="flex items-center justify-between px-4 py-3 border-b border-[#DDE5EF]">
+                  <div className={`flex items-center justify-between px-4 py-3 border-b border-[#DDE5EF] ${draggableModals ? "cursor-grab active:cursor-grabbing" : ""}`} onMouseDown={handleModalHeaderMouseDown}>
                     <div className="flex items-center gap-2.5">
                       <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: nodeColor }}>
                         <NodeIcon className="w-3.5 h-3.5 text-white" />
@@ -1247,12 +1273,12 @@ export function FlowCanvas({ outcomeId, outcomeName, onBack, onOutcomeChange }: 
                     const PAD = 8
                     const clampedTop = Math.max(PAD, rawTop)
                     const dynMaxH = Math.max(200, viewH - clampedTop - PAD)
-                    return { left: popX, top: clampedTop, maxHeight: dynMaxH }
+                    return { left: popX + modalOffset.x, top: clampedTop + modalOffset.y, maxHeight: dynMaxH }
                   })()}
                   onMouseDown={(e) => e.stopPropagation()}
                 >
                   {/* Header */}
-                  <div className="flex items-center justify-between px-4 py-3 border-b border-[#DDE5EF]">
+                  <div className={`flex items-center justify-between px-4 py-3 border-b border-[#DDE5EF] ${draggableModals ? "cursor-grab active:cursor-grabbing" : ""}`} onMouseDown={handleModalHeaderMouseDown}>
                     <div className="flex items-center gap-2.5">
                       <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: nodeColor }}>
                         <NodeIcon className="w-3.5 h-3.5 text-white" />
